@@ -9,26 +9,38 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   template: `
-    <div class="max-w-lg mx-auto mt-10 p-8 bg-white rounded-xl shadow-md">
-      <h2 class="text-2xl font-bold text-gray-800 mb-6">Cambiar Contraseña</h2>
-      <form [formGroup]="form" (ngSubmit)="onSubmit()">
-        <div class="mb-4">
-          <label class="block text-sm font-medium text-gray-700 mb-1">Contraseña actual</label>
-          <input type="password" formControlName="passwordActual"
-            class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-primary-500 outline-none" />
+    <div class="p-6 animate-fade-in">
+      <div class="max-w-lg mx-auto glass-card-strong rounded-2xl p-8">
+        <div class="flex items-center gap-3 mb-8">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center text-white text-sm font-bold shadow-sm">
+            &#128273;
+          </div>
+          <div>
+            <h2 class="text-xl font-bold text-gray-800 font-heading">Cambiar Contraseña</h2>
+            <p class="text-gray-400 text-sm">Actualiza tu contraseña de acceso</p>
+          </div>
         </div>
-        <div class="mb-6">
-          <label class="block text-sm font-medium text-gray-700 mb-1">Nueva contraseña</label>
-          <input type="password" formControlName="passwordNuevo"
-            class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-primary-500 outline-none" />
-        </div>
-        <button type="submit" [disabled]="form.invalid || loading"
-          class="w-full py-2.5 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 disabled:opacity-50 transition-colors">
-          Cambiar contraseña
-        </button>
-        <p *ngIf="mensaje" class="mt-4 text-sm font-medium text-center"
-           [class.text-green-600]="exito" [class.text-red-600]="!exito">{{ mensaje }}</p>
-      </form>
+
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+          <div class="mb-5">
+            <label class="block text-sm font-medium text-gray-600 mb-1.5">Contraseña actual</label>
+            <input type="password" formControlName="passwordActual" placeholder="Ingrese su contraseña actual"
+              class="input-field" />
+          </div>
+          <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-600 mb-1.5">Nueva contraseña</label>
+            <input type="password" formControlName="passwordNuevo" placeholder="Mín. 6 caracteres"
+              class="input-field" />
+          </div>
+          <button type="submit" [disabled]="form.invalid || loading"
+            class="btn-primary w-full py-3">
+            <span *ngIf="loading" class="inline-block mr-2 w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+            {{ loading ? 'Cambiando...' : 'Cambiar contraseña' }}
+          </button>
+          <p *ngIf="mensaje" class="mt-4 text-sm font-medium text-center animate-fade-in"
+             [class.text-green-600]="exito" [class.text-red-600]="!exito">{{ mensaje }}</p>
+        </form>
+      </div>
     </div>
   `
 })

@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Inventory &amp; Sales Management - RehabCore</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline-variant": "#c6c6cd",
+                        "background": "#f7f9fb",
+                        "primary-fixed": "#dae2fd",
+                        "on-tertiary-fixed-variant": "#005236",
+                        "on-surface-variant": "#45464d",
+                        "on-primary-fixed-variant": "#3f465c",
+                        "tertiary-fixed": "#6ffbbe",
+                        "on-secondary-fixed": "#00201d",
+                        "surface-container": "#eceef0",
+                        "surface-container-high": "#e6e8ea",
+                        "on-error": "#ffffff",
+                        "secondary-fixed-dim": "#6bd8cb",
+                        "on-primary": "#ffffff",
+                        "inverse-on-surface": "#eff1f3",
+                        "tertiary-fixed-dim": "#4edea3",
+                        "surface-bright": "#f7f9fb",
+                        "on-background": "#191c1e",
+                        "surface-container-low": "#f2f4f6",
+                        "surface-dim": "#d8dadc",
+                        "on-primary-container": "#7c839b",
+                        "on-error-container": "#93000a",
+                        "tertiary": "#000000",
+                        "primary-container": "#131b2e",
+                        "surface": "#f7f9fb",
+                        "primary-fixed-dim": "#bec6e0",
+                        "on-secondary": "#ffffff",
+                        "on-primary-fixed": "#131b2e",
+                        "surface-tint": "#565e74",
+                        "error": "#ba1a1a",
+                        "secondary": "#006a61",
+                        "inverse-surface": "#2d3133",
+                        "secondary-fixed": "#89f5e7",
+                        "surface-container-highest": "#e0e3e5",
+                        "on-surface": "#191c1e",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-primary": "#bec6e0",
+                        "primary": "#000000",
+                        "on-tertiary-fixed": "#002113",
+                        "secondary-container": "#86f2e4",
+                        "outline": "#76777d",
+                        "error-container": "#ffdad6",
+                        "on-secondary-fixed-variant": "#005049",
+                        "on-secondary-container": "#006f66",
+                        "tertiary-container": "#002113",
+                        "on-tertiary-container": "#009668",
+                        "on-tertiary": "#ffffff",
+                        "surface-variant": "#e0e3e5"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "section-gap": "40px",
+                        "base": "8px",
+                        "gutter": "16px",
+                        "container-padding": "24px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "data-mono": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "data-mono": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md text-body-md overflow-hidden">
+<!-- App Shell Container -->
+<div class="flex h-screen w-full overflow-hidden">
+<!-- SideNavBar -->
+<aside class="hidden md:flex flex-col h-full border-r border-outline-variant bg-surface-container-low w-64 shrink-0 overflow-y-auto">
+<div class="p-6">
+<h1 class="font-headline-md text-headline-md font-bold text-on-surface">HealthSync Rehab</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Clinical Management</p>
+</div>
+<nav class="flex-1 px-2 space-y-1">
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg px-4 py-3 mx-2 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg px-4 py-3 mx-2 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_today">calendar_today</span>
+<span class="font-label-md text-label-md">Appointments</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg px-4 py-3 mx-2 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-label-md text-label-md">Patients</span>
+</a>
+<a class="flex items-center gap-3 bg-secondary-container text-on-secondary-container rounded-lg px-4 py-3 mx-2 opacity-90" href="#">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+<span class="font-label-md text-label-md">Inventory</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg px-4 py-3 mx-2 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span class="font-label-md text-label-md">Sales</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg px-4 py-3 mx-2 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+</nav>
+<div class="px-4 py-4 space-y-4">
+<button class="w-full bg-secondary text-on-secondary font-label-md text-label-md py-3 rounded-lg flex items-center justify-center gap-2 hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+                    New Appointment
+                </button>
+</div>
+<div class="mt-auto border-t border-outline-variant p-4 space-y-1">
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg px-4 py-2 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span class="font-label-md text-label-md">Help Center</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg px-4 py-2 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="font-label-md text-label-md">Logout</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 flex flex-col min-w-0 bg-background overflow-hidden relative">
+<!-- TopAppBar -->
+<header class="flex justify-between items-center w-full px-container-padding h-16 sticky top-0 z-50 bg-surface shadow-sm shrink-0">
+<div class="flex items-center gap-8 flex-1">
+<span class="text-headline-md font-headline-md font-extrabold text-primary">RehabCore</span>
+<div class="relative w-full max-w-md hidden lg:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant" data-icon="search">search</span>
+<input class="w-full bg-surface-container-low border-none rounded-full py-2 pl-10 pr-4 text-body-md focus:ring-2 focus:ring-secondary-container" placeholder="Search inventory or patients..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center overflow-hidden">
+<img alt="Medical Practitioner Profile" class="w-full h-full object-cover" data-alt="A professional headshot of a female medical practitioner in her late 30s, wearing clinical attire with a stethoscope. The lighting is soft and professional against a neutral, high-key clinic background, reflecting a calm and authoritative healthcare environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDQOPwPJi5b6GCIjyj64a7CpiPurW0itwpk1ult8OweG3-nsifvNg84VOQQxo0Hc1QtQsMt8g8Fx1TCT9dRgeYfksoMTjASwJtKZjOsaFw4bJOWCIG8JlPJs77mZMGfyGS0qLJnH9mpg6U1g98rfme4kRyd484LQ8zH0Z8VZqFNvMkas9Ud9w0c08Dh9vkkU11U1F6UHyweJa2_wVR4VQKIhBlpViDg49RaX042Qk0Wn84w8xKkFFfR9QGKWyYPgFRSJZUHv-M00lg"/>
+</div>
+</div>
+</header>
+<!-- Content Area: Split View -->
+<div class="flex-1 flex overflow-hidden p-container-padding gap-gutter">
+<!-- Left: Product Catalog -->
+<section class="flex-[2] flex flex-col gap-6 overflow-hidden">
+<div class="flex justify-between items-center">
+<h2 class="font-headline-md text-headline-md font-semibold">Product Catalog</h2>
+<div class="flex gap-2">
+<button class="px-4 py-2 bg-surface-container-highest rounded-lg font-label-md text-label-md hover:bg-secondary-container transition-colors">All Products</button>
+<button class="px-4 py-2 text-on-surface-variant hover:bg-surface-container-high rounded-lg font-label-md text-label-md transition-colors">Orthopedics</button>
+<button class="px-4 py-2 text-on-surface-variant hover:bg-surface-container-high rounded-lg font-label-md text-label-md transition-colors">Supplements</button>
+<button class="px-4 py-2 text-on-surface-variant hover:bg-surface-container-high rounded-lg font-label-md text-label-md transition-colors">Equipment</button>
+</div>
+</div>
+<!-- Catalog Grid (Bento Style) -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-gutter overflow-y-auto pr-2 no-scrollbar">
+<!-- Product Card: Low Stock (Coral) -->
+<div class="bg-surface-container-lowest border border-error-container/30 rounded-xl p-4 shadow-sm hover:shadow-md transition-all group relative cursor-pointer active:scale-[0.98]">
+<div class="flex items-start justify-between mb-4">
+<div class="w-16 h-16 rounded-lg bg-surface-container-high flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary text-3xl" data-icon="medical_services">medical_services</span>
+</div>
+<span class="bg-error-container text-on-error-container font-label-md text-[10px] px-2 py-0.5 rounded-full">LOW STOCK</span>
+</div>
+<h3 class="font-headline-md text-body-lg font-bold mb-1">Flexi-Knee Brace Pro</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-4">Orthopedic Support • Size M</p>
+<div class="flex items-end justify-between">
+<div>
+<p class="font-label-md text-label-md text-on-surface-variant">Price</p>
+<p class="font-data-mono text-lg font-bold text-secondary">$124.50</p>
+</div>
+<div class="text-right">
+<p class="font-label-md text-label-md text-error">Only 3 left</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Min. Required: 10</p>
+</div>
+</div>
+</div>
+<!-- Product Card: Stable -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-4 shadow-sm hover:shadow-md transition-all group cursor-pointer active:scale-[0.98]">
+<div class="flex items-start justify-between mb-4">
+<div class="w-16 h-16 rounded-lg bg-surface-container-high flex items-center justify-center overflow-hidden">
+<img alt="Omega-3 Supplement" class="w-full h-full object-cover" data-alt="A clean, clinical product photography shot of a high-quality glass supplement bottle labeled Omega-3 Professional. The lighting is bright and airy with soft shadows on a minimalist white marble surface, conveying a sense of health and premium quality." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBY6v3ZJIiHm3RNtsPGvmMH2zwIQBJYlWCNbJNsI6KzN_aYMBLuMVvDT8D7gq7LJj11czNpiS7zHZWiOnie0ZzlhsP81OoWhHOpjziC5-v9Mwa5j6r7b3-vBvAx1FY-DTo8lE8gJsp6tW4mjwMzAspRe1ltVxzWrMbcm9gH6vZ8eGOqM4l6bLCi69TQdK5cN18mI6Pw97Xe0MPxT-HQmBGodFdG5HNfeGHQ4LdJWm9BinwwGEOlVcMuVF90ByIInSVRnZ7SRXV0UVY"/>
+</div>
+<span class="bg-secondary-container/30 text-on-secondary-container font-label-md text-[10px] px-2 py-0.5 rounded-full">IN STOCK</span>
+</div>
+<h3 class="font-headline-md text-body-lg font-bold mb-1">Advanced Omega-3</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-4">Supplements • 90 Capsules</p>
+<div class="flex items-end justify-between">
+<div>
+<p class="font-label-md text-label-md text-on-surface-variant">Price</p>
+<p class="font-data-mono text-lg font-bold text-secondary">$45.00</p>
+</div>
+<div class="text-right">
+<p class="font-label-md text-label-md text-on-surface-variant">Stock: 48 units</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Shelf: B-12</p>
+</div>
+</div>
+</div>
+<!-- Product Card: Stable -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-4 shadow-sm hover:shadow-md transition-all group cursor-pointer active:scale-[0.98]">
+<div class="flex items-start justify-between mb-4">
+<div class="w-16 h-16 rounded-lg bg-surface-container-high flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary text-3xl" data-icon="fitness_center">fitness_center</span>
+</div>
+<span class="bg-secondary-container/30 text-on-secondary-container font-label-md text-[10px] px-2 py-0.5 rounded-full">IN STOCK</span>
+</div>
+<h3 class="font-headline-md text-body-lg font-bold mb-1">Resistance Band Set</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-4">Equipment • 5 Intensity Levels</p>
+<div class="flex items-end justify-between">
+<div>
+<p class="font-label-md text-label-md text-on-surface-variant">Price</p>
+<p class="font-data-mono text-lg font-bold text-secondary">$29.99</p>
+</div>
+<div class="text-right">
+<p class="font-label-md text-label-md text-on-surface-variant">Stock: 12 units</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Shelf: A-04</p>
+</div>
+</div>
+</div>
+<!-- Product Card: Low Stock (Coral) -->
+<div class="bg-surface-container-lowest border border-error-container/30 rounded-xl p-4 shadow-sm hover:shadow-md transition-all group cursor-pointer active:scale-[0.98]">
+<div class="flex items-start justify-between mb-4">
+<div class="w-16 h-16 rounded-lg bg-surface-container-high flex items-center justify-center overflow-hidden">
+<img alt="Pain Relief Gel" class="w-full h-full object-cover" data-alt="A focused studio shot of a pharmaceutical cream tube for localized pain relief. The tube is white with professional teal lettering, resting on a clean glass surface with subtle reflections and bright, clinical lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCvohxdvefNbx0Q6MiviSKKT6WkJc0MEw1A2TamgbbeTu3VRh74uQXQNmP1xr5VOTuQ7cqP7l3qWxiMzSJGrTl8rL2lEDGPHALI5spF8R_PuwpmEXg8YAk9bJTUkfoZkOzsC8sacgq5rRzW0j3esll0kuzw2IWZfNSrCv6sXgmGABdPxlO3VKoN8qiG0HTVMvjFWA9KWCHvneN0aobmmDe_odMuOfvYOzecxGkUDaYHBNmWPUMu0Cor6TKkxg1KOj2QlZEtks7C5eA"/>
+</div>
+<span class="bg-error-container text-on-error-container font-label-md text-[10px] px-2 py-0.5 rounded-full">LOW STOCK</span>
+</div>
+<h3 class="font-headline-md text-body-lg font-bold mb-1">Recovery Gel Max</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-4">Topical • 100ml</p>
+<div class="flex items-end justify-between">
+<div>
+<p class="font-label-md text-label-md text-on-surface-variant">Price</p>
+<p class="font-data-mono text-lg font-bold text-secondary">$18.25</p>
+</div>
+<div class="text-right">
+<p class="font-label-md text-label-md text-error">Only 2 left</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Min. Required: 15</p>
+</div>
+</div>
+</div>
+<!-- Product Card: Stable -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-4 shadow-sm hover:shadow-md transition-all group cursor-pointer active:scale-[0.98]">
+<div class="flex items-start justify-between mb-4">
+<div class="w-16 h-16 rounded-lg bg-surface-container-high flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary text-3xl" data-icon="monitor_heart">monitor_heart</span>
+</div>
+<span class="bg-secondary-container/30 text-on-secondary-container font-label-md text-[10px] px-2 py-0.5 rounded-full">IN STOCK</span>
+</div>
+<h3 class="font-headline-md text-body-lg font-bold mb-1">Smart BP Monitor</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-4">Equipment • Bluetooth Enabled</p>
+<div class="flex items-end justify-between">
+<div>
+<p class="font-label-md text-label-md text-on-surface-variant">Price</p>
+<p class="font-data-mono text-lg font-bold text-secondary">$89.00</p>
+</div>
+<div class="text-right">
+<p class="font-label-md text-label-md text-on-surface-variant">Stock: 22 units</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Shelf: D-01</p>
+</div>
+</div>
+</div>
+<!-- Add New Product Placeholder -->
+<div class="border-2 border-dashed border-outline-variant rounded-xl p-4 flex flex-col items-center justify-center text-on-surface-variant hover:border-secondary hover:text-secondary transition-all cursor-pointer">
+<span class="material-symbols-outlined text-4xl mb-2" data-icon="add_circle">add_circle</span>
+<span class="font-label-md text-label-md">Add New Product</span>
+</div>
+</div>
+</section>
+<!-- Right: New Sale Cart Area -->
+<aside class="flex-1 max-w-sm flex flex-col bg-surface-container-low border border-outline-variant rounded-2xl shadow-lg overflow-hidden">
+<div class="p-6 border-b border-outline-variant bg-surface-container">
+<h2 class="font-headline-md text-headline-md font-bold mb-4">New Sale</h2>
+<!-- Patient Search -->
+<div class="relative mb-2">
+<label class="block font-label-md text-label-md text-on-surface-variant mb-1.5 ml-1">Patient Search</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-xl" data-icon="person_search">person_search</span>
+<input class="w-full bg-surface-container-lowest border-outline-variant border rounded-lg py-2.5 pl-10 pr-4 text-body-md focus:ring-2 focus:ring-secondary focus:border-secondary" type="text" value="James Wilson"/>
+</div>
+</div>
+<div class="flex items-center gap-3 px-1">
+<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center font-bold text-on-secondary-container">JW</div>
+<div>
+<p class="font-label-md text-label-md font-bold">James Wilson</p>
+<p class="font-body-sm text-[12px] text-on-surface-variant">ID: #REH-8821 • Active Plan</p>
+</div>
+</div>
+</div>
+<!-- Cart Items -->
+<div class="flex-1 overflow-y-auto p-4 space-y-4">
+<p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-2">Items (2)</p>
+<!-- Item 1 -->
+<div class="flex gap-3">
+<div class="w-12 h-12 bg-surface-container-highest rounded-lg flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-secondary" data-icon="medical_services">medical_services</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between">
+<h4 class="font-label-md text-label-md font-bold">Flexi-Knee Brace Pro</h4>
+<button class="text-on-surface-variant hover:text-error transition-colors">
+<span class="material-symbols-outlined text-lg" data-icon="delete">delete</span>
+</button>
+</div>
+<div class="flex justify-between items-center mt-1">
+<div class="flex items-center border border-outline-variant rounded bg-surface-container-lowest">
+<button class="px-2 py-0.5 hover:bg-surface-container-high transition-colors"><span class="material-symbols-outlined text-sm" data-icon="remove">remove</span></button>
+<span class="px-2 font-data-mono text-sm">1</span>
+<button class="px-2 py-0.5 hover:bg-surface-container-high transition-colors"><span class="material-symbols-outlined text-sm" data-icon="add">add</span></button>
+</div>
+<p class="font-data-mono text-sm font-bold">$124.50</p>
+</div>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="flex gap-3">
+<div class="w-12 h-12 bg-surface-container-highest rounded-lg flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-secondary" data-icon="fitness_center">fitness_center</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between">
+<h4 class="font-label-md text-label-md font-bold">Resistance Band Set</h4>
+<button class="text-on-surface-variant hover:text-error transition-colors">
+<span class="material-symbols-outlined text-lg" data-icon="delete">delete</span>
+</button>
+</div>
+<div class="flex justify-between items-center mt-1">
+<div class="flex items-center border border-outline-variant rounded bg-surface-container-lowest">
+<button class="px-2 py-0.5 hover:bg-surface-container-high transition-colors"><span class="material-symbols-outlined text-sm" data-icon="remove">remove</span></button>
+<span class="px-2 font-data-mono text-sm">2</span>
+<button class="px-2 py-0.5 hover:bg-surface-container-high transition-colors"><span class="material-symbols-outlined text-sm" data-icon="add">add</span></button>
+</div>
+<p class="font-data-mono text-sm font-bold">$59.98</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Checkout Summary -->
+<div class="p-6 bg-surface border-t border-outline-variant space-y-3">
+<div class="flex justify-between font-body-sm text-body-sm text-on-surface-variant">
+<span>Subtotal</span>
+<span class="font-data-mono">$184.48</span>
+</div>
+<div class="flex justify-between font-body-sm text-body-sm text-on-surface-variant">
+<span>Clinical Discount (5%)</span>
+<span class="font-data-mono text-secondary">-$9.22</span>
+</div>
+<div class="flex justify-between font-body-sm text-body-sm text-on-surface-variant">
+<span>Tax (8%)</span>
+<span class="font-data-mono">$14.02</span>
+</div>
+<div class="flex justify-between font-headline-md text-headline-md font-bold pt-2 border-t border-outline-variant">
+<span>Total</span>
+<span class="text-secondary">$189.28</span>
+</div>
+<button class="w-full mt-4 bg-secondary text-on-secondary py-4 rounded-xl font-headline-md text-body-lg font-bold flex items-center justify-center gap-2 shadow-lg hover:shadow-xl active:scale-[0.98] transition-all">
+<span class="material-symbols-outlined" data-icon="point_of_sale">point_of_sale</span>
+                            Complete Transaction
+                        </button>
+</div>
+</aside>
+</div>
+<!-- Floating Action Button: Suppressed on Details/Settings as per hierarchy, but shown here for Inventory creation -->
+<button class="md:hidden absolute bottom-6 right-6 w-14 h-14 bg-secondary text-on-secondary rounded-full shadow-xl flex items-center justify-center active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-3xl" data-icon="add">add</span>
+</button>
+</main>
+</div>
+</body></html>

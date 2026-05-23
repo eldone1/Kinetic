@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Appointments &amp; Scheduling - RehabCore</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                "outline-variant": "#c6c6cd",
+                "background": "#f7f9fb",
+                "primary-fixed": "#dae2fd",
+                "on-tertiary-fixed-variant": "#005236",
+                "on-surface-variant": "#45464d",
+                "on-primary-fixed-variant": "#3f465c",
+                "tertiary-fixed": "#6ffbbe",
+                "on-secondary-fixed": "#00201d",
+                "surface-container": "#eceef0",
+                "surface-container-high": "#e6e8ea",
+                "on-error": "#ffffff",
+                "secondary-fixed-dim": "#6bd8cb",
+                "on-primary": "#ffffff",
+                "inverse-on-surface": "#eff1f3",
+                "tertiary-fixed-dim": "#4edea3",
+                "surface-bright": "#f7f9fb",
+                "on-background": "#191c1e",
+                "surface-container-low": "#f2f4f6",
+                "surface-dim": "#d8dadc",
+                "on-primary-container": "#7c839b",
+                "on-error-container": "#93000a",
+                "tertiary": "#000000",
+                "primary-container": "#131b2e",
+                "surface": "#f7f9fb",
+                "primary-fixed-dim": "#bec6e0",
+                "on-secondary": "#ffffff",
+                "on-primary-fixed": "#131b2e",
+                "surface-tint": "#565e74",
+                "error": "#ba1a1a",
+                "secondary": "#006a61",
+                "inverse-surface": "#2d3133",
+                "secondary-fixed": "#89f5e7",
+                "surface-container-highest": "#e0e3e5",
+                "on-surface": "#191c1e",
+                "surface-container-lowest": "#ffffff",
+                "inverse-primary": "#bec6e0",
+                "primary": "#000000",
+                "on-tertiary-fixed": "#002113",
+                "secondary-container": "#86f2e4",
+                "outline": "#76777d",
+                "error-container": "#ffdad6",
+                "on-secondary-fixed-variant": "#005049",
+                "on-secondary-container": "#006f66",
+                "tertiary-container": "#002113",
+                "on-tertiary-container": "#009668",
+                "on-tertiary": "#ffffff",
+                "surface-variant": "#e0e3e5"
+            },
+            "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+            },
+            "spacing": {
+                "section-gap": "40px",
+                "base": "8px",
+                "gutter": "16px",
+                "container-padding": "24px"
+            },
+            "fontFamily": {
+                "display-lg": ["Inter"],
+                "headline-lg-mobile": ["Inter"],
+                "body-lg": ["Inter"],
+                "headline-lg": ["Inter"],
+                "data-mono": ["Inter"],
+                "body-md": ["Inter"],
+                "label-md": ["Inter"],
+                "headline-md": ["Inter"],
+                "body-sm": ["Inter"]
+            },
+            "fontSize": {
+                "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                "data-mono": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: 80px repeat(5, 1fr);
+            grid-template-rows: auto repeat(12, 80px);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md overflow-hidden h-screen flex">
+<!-- Sidebar Navigation -->
+<aside class="hidden md:flex flex-col h-full border-r border-outline-variant bg-surface-container-low w-64 shrink-0 z-40">
+<div class="p-container-padding">
+<h1 class="font-headline-md text-headline-md font-bold text-on-surface">HealthSync Rehab</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Clinical Management</p>
+</div>
+<nav class="flex-1 mt-4">
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg px-4 py-3 mx-2 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 bg-secondary-container text-on-secondary-container rounded-lg px-4 py-3 mx-2 opacity-90" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_today">calendar_today</span>
+<span class="font-label-md text-label-md">Appointments</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg px-4 py-3 mx-2 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-label-md text-label-md">Patients</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg px-4 py-3 mx-2 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+<span class="font-label-md text-label-md">Inventory</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg px-4 py-3 mx-2 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span class="font-label-md text-label-md">Sales</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg px-4 py-3 mx-2 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+</nav>
+<div class="p-4 border-t border-outline-variant">
+<button class="w-full bg-secondary text-on-secondary font-label-md text-label-md py-3 rounded-lg flex items-center justify-center gap-2 hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined text-[20px]" data-icon="add">add</span>
+                New Appointment
+            </button>
+</div>
+<footer class="mb-4">
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg px-4 py-3 mx-2 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span class="font-label-md text-label-md">Help Center</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg px-4 py-3 mx-2 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="font-label-md text-label-md">Logout</span>
+</a>
+</footer>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col h-full relative overflow-hidden">
+<!-- Top App Bar -->
+<header class="flex justify-between items-center w-full px-container-padding h-16 sticky top-0 z-50 shadow-sm bg-surface">
+<div class="flex items-center gap-4">
+<button class="md:hidden p-2 text-primary">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="calendar_month">calendar_month</span>
+<h2 class="font-headline-md text-headline-md font-bold text-primary">October 23 - 27, 2023</h2>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="hidden lg:flex items-center bg-surface-container rounded-full px-4 py-2 border border-outline-variant">
+<span class="material-symbols-outlined text-on-surface-variant mr-2" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-48" placeholder="Search appointments..." type="text"/>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+</button>
+<div class="h-8 w-8 rounded-full overflow-hidden border border-outline-variant bg-surface-container ml-2">
+<img alt="Medical Practitioner Profile" data-alt="A professional headshot of a medical practitioner in a clean clinical environment. The lighting is bright and warm, reflecting a professional yet empathetic persona. The person is wearing a light gray medical scrub, and the background is softly blurred showing a modern rehabilitation center with subtle teal accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB35VhMCuS-qv-HG822C1misIxMlp1Micoy-WBTHzFutb2S3MJqUAzcDoZ2v8vvhqgjKv9jCL6J6JZDV7Tv8NfCa8YsX25IgtczzHJ7Pn9yZnDo1P62VS_g-TpYcl7MDT6_0dG95-mPkzFq8eOyMyepLBTYML28elB07gXz9bbGhaWc8Hx5G8BnwlfwSdjE49kBB65Uttr703Rg8Qpf1DRk5PyO4f2GsKQ6lp9qTQn-v_qHNWJ-JlQ3v3bmnT4m59pmY3Ldo6R0-ZI"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Secondary Toolbar -->
+<div class="px-container-padding py-4 flex flex-wrap items-center justify-between border-b border-outline-variant bg-white">
+<div class="flex items-center gap-2 bg-surface-container p-1 rounded-lg">
+<button class="px-4 py-1.5 rounded-md font-label-md text-label-md bg-white shadow-sm text-primary">Week</button>
+<button class="px-4 py-1.5 rounded-md font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-high">Day</button>
+<button class="px-4 py-1.5 rounded-md font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-high">Month</button>
+</div>
+<div class="flex items-center gap-3">
+<div class="flex -space-x-2">
+<img alt="Therapist 1" class="w-8 h-8 rounded-full border-2 border-white" data-alt="A friendly male therapist profile icon in a minimalist flat design style, using a professional color palette of teals and grays." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-ZJmep6s5mstIN-2Rnq54R70dTiwwRQ1xXKZ4VkC7SzrKron8_p28FhHXzrsm4zjrA05pKCnBLnHBOMfLctDscEyzGkPSUTDRhKUCY6Wcqhih0jvzuR8diD9vFufkgoNLbVLLeLUPBvbko08yORwnvd8ID2yKppryrHCQyanggu9DPKwFVHmrDFjBPCfZgKxma1XiARrUgUUgqkiX_q5SKIVS3YaMQRtghW1P2cGUxbh_L_6Vi05N3Jmzbggg3lQWkz5ZMXdd_fM"/>
+<img alt="Therapist 2" class="w-8 h-8 rounded-full border-2 border-white" data-alt="A professional female physical therapist portrait icon, with a calm and welcoming expression, designed with clean lines and medical-themed color accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCAQ2vAizUQWw5c0_LcoX4JQwWzZB3BVVpg6l9BLDD_jZpvU1g3mEZXHW0-TvV2y9pQVaLyyHKoCJJKiyiHz70XYXuI9dBHhZlUf9CbtCvIMiNj0Ks8Esgl5BGMTeV679VTuJMxR0Q8NuopAGxEuJOKq5Xfyw3EGuSW8dQq0hMhqpev1MnDtJoEnMLgjmRnIOfB2mC5DDam-6jQUusrP6IX0iB5A6GCifcTLXoZR5ocffkpDcnPZ8mrQogvPCsovusXnUvAIAN1nLU"/>
+<img alt="Therapist 3" class="w-8 h-8 rounded-full border-2 border-white" data-alt="An experienced senior medical professional profile icon, rendered in a crisp vector style with a soft-focus clinical background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAryWyf_XBbf1JL03WYKzBdGRwlcWDmDxZRLAGZGRbLHmSjapDX3Rsu2bRVRMUupO1n3rD5QPDCDcUH--9jpSlw2cltE72m6HymMmZ2HEf0CidOvn6guMfUu3BYBhHZfZYr-OXL2LJmYfn4sfC0CoL-W2-t3oA_Z6Uye7TyFJDSXvStcB1yHuvBBBOftLHcmZmHu8PdKk3RiBBEQk0Yh83ZOkvueJpEYaSSF3Hk2vwL9BTXZvVQ3rrvq0Qt9HEvC2MxM495_QO28gc"/>
+<div class="w-8 h-8 rounded-full border-2 border-white bg-surface-container-highest flex items-center justify-center text-[10px] font-bold text-on-surface-variant">+4</div>
+</div>
+<button class="flex items-center gap-2 px-3 py-1.5 border border-outline-variant rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="filter_list">filter_list</span>
+                    Filter
+                </button>
+</div>
+</div>
+<div class="flex-1 flex overflow-hidden">
+<!-- Calendar Grid -->
+<div class="flex-1 overflow-y-auto bg-white custom-scrollbar">
+<div class="calendar-grid min-w-[800px]">
+<!-- Header -->
+<div class="sticky top-0 z-20 bg-white border-b border-outline-variant h-12"></div>
+<div class="sticky top-0 z-20 bg-white border-b border-outline-variant h-12 flex flex-col items-center justify-center border-l border-outline-variant/30">
+<span class="text-on-surface-variant font-label-md text-[11px] uppercase tracking-wider">Mon</span>
+<span class="font-headline-md text-headline-md leading-none">23</span>
+</div>
+<div class="sticky top-0 z-20 bg-white border-b border-outline-variant h-12 flex flex-col items-center justify-center border-l border-outline-variant/30">
+<span class="text-on-surface-variant font-label-md text-[11px] uppercase tracking-wider">Tue</span>
+<span class="font-headline-md text-headline-md leading-none">24</span>
+</div>
+<div class="sticky top-0 z-20 bg-white border-b border-outline-variant h-12 flex flex-col items-center justify-center border-l border-outline-variant/30 bg-secondary-container/10">
+<span class="text-on-secondary-container font-label-md text-[11px] uppercase tracking-wider">Wed</span>
+<span class="font-headline-md text-headline-md leading-none text-on-secondary-container">25</span>
+</div>
+<div class="sticky top-0 z-20 bg-white border-b border-outline-variant h-12 flex flex-col items-center justify-center border-l border-outline-variant/30">
+<span class="text-on-surface-variant font-label-md text-[11px] uppercase tracking-wider">Thu</span>
+<span class="font-headline-md text-headline-md leading-none">26</span>
+</div>
+<div class="sticky top-0 z-20 bg-white border-b border-outline-variant h-12 flex flex-col items-center justify-center border-l border-outline-variant/30">
+<span class="text-on-surface-variant font-label-md text-[11px] uppercase tracking-wider">Fri</span>
+<span class="font-headline-md text-headline-md leading-none">27</span>
+</div>
+<!-- Time Slots & Grid -->
+<!-- Repeat for 8 AM to 8 PM -->
+<div class="text-right pr-4 pt-2 text-on-surface-variant font-data-mono text-xs border-r border-outline-variant/30">08:00 AM</div>
+<div class="border-b border-l border-outline-variant/30 relative group hover:bg-slate-50 transition-colors"></div>
+<div class="border-b border-l border-outline-variant/30 relative group hover:bg-slate-50 transition-colors">
+<!-- Appointment Block -->
+<div class="absolute inset-x-1 top-2 bottom-8 bg-secondary-container/80 border-l-4 border-secondary text-on-secondary-container rounded p-2 z-10 shadow-sm cursor-pointer hover:brightness-95 transition-all">
+<p class="font-label-md text-[12px] leading-tight truncate">James Wilson</p>
+<p class="text-[10px] font-medium opacity-80">Physio Therapy</p>
+</div>
+</div>
+<div class="border-b border-l border-outline-variant/30 relative group hover:bg-slate-50 transition-colors"></div>
+<div class="border-b border-l border-outline-variant/30 relative group hover:bg-slate-50 transition-colors">
+<div class="absolute inset-x-1 top-10 bottom-2 bg-tertiary-fixed-dim/80 border-l-4 border-on-tertiary-fixed-variant text-on-tertiary-fixed-variant rounded p-2 z-10 shadow-sm cursor-pointer hover:brightness-95 transition-all">
+<p class="font-label-md text-[12px] leading-tight truncate">Sarah Chen</p>
+<p class="text-[10px] font-medium opacity-80">Post-Op Rehab</p>
+</div>
+</div>
+<div class="border-b border-l border-outline-variant/30 relative group hover:bg-slate-50 transition-colors"></div>
+<div class="text-right pr-4 pt-2 text-on-surface-variant font-data-mono text-xs border-r border-outline-variant/30">09:00 AM</div>
+<div class="border-b border-l border-outline-variant/30 relative"></div>
+<div class="border-b border-l border-outline-variant/30 relative"></div>
+<div class="border-b border-l border-outline-variant/30 relative">
+<div class="absolute inset-x-1 top-4 h-24 bg-primary-fixed border-l-4 border-primary text-on-primary-fixed-variant rounded p-2 z-10 shadow-sm">
+<p class="font-label-md text-[12px] leading-tight truncate">Marcus Reed</p>
+<p class="text-[10px] font-medium opacity-80">Consultation</p>
+</div>
+</div>
+<div class="border-b border-l border-outline-variant/30 relative"></div>
+<div class="border-b border-l border-outline-variant/30 relative"></div>
+<div class="text-right pr-4 pt-2 text-on-surface-variant font-data-mono text-xs border-r border-outline-variant/30">10:00 AM</div>
+<div class="border-b border-l border-outline-variant/30 relative">
+<div class="absolute inset-x-1 top-2 bottom-10 bg-error-container/80 border-l-4 border-error text-on-error-container rounded p-2 z-10 shadow-sm">
+<p class="font-label-md text-[12px] leading-tight truncate">Elena Gilbert</p>
+<p class="text-[10px] font-medium opacity-80">Emergency Adjustment</p>
+</div>
+</div>
+<div class="border-b border-l border-outline-variant/30 relative"></div>
+<div class="border-b border-l border-outline-variant/30 relative"></div>
+<div class="border-b border-l border-outline-variant/30 relative"></div>
+<div class="border-b border-l border-outline-variant/30 relative"></div>
+<div class="text-right pr-4 pt-2 text-on-surface-variant font-data-mono text-xs border-r border-outline-variant/30">11:00 AM</div>
+<div class="border-b border-l border-outline-variant/30 relative"></div>
+<div class="border-b border-l border-outline-variant/30 relative"></div>
+<div class="border-b border-l border-outline-variant/30 relative"></div>
+<div class="border-b border-l border-outline-variant/30 relative"></div>
+<div class="border-b border-l border-outline-variant/30 relative"></div>
+<div class="text-right pr-4 pt-2 text-on-surface-variant font-data-mono text-xs border-r border-outline-variant/30">12:00 PM</div>
+<div class="border-b border-l border-outline-variant/30 relative bg-surface-container-low/30"></div>
+<div class="border-b border-l border-outline-variant/30 relative bg-surface-container-low/30"></div>
+<div class="border-b border-l border-outline-variant/30 relative bg-surface-container-low/30"></div>
+<div class="border-b border-l border-outline-variant/30 relative bg-surface-container-low/30"></div>
+<div class="border-b border-l border-outline-variant/30 relative bg-surface-container-low/30"></div>
+<!-- ... more slots ... -->
+</div>
+</div>
+<!-- Right Sidebar: Requests & Availability -->
+<aside class="hidden xl:flex flex-col w-80 border-l border-outline-variant bg-surface-container-lowest overflow-y-auto">
+<!-- Pending Requests -->
+<div class="p-container-padding border-b border-outline-variant">
+<div class="flex items-center justify-between mb-4">
+<h3 class="font-label-md text-label-md text-on-surface uppercase tracking-wider">Pending Requests</h3>
+<span class="bg-error text-on-error text-[10px] font-bold px-2 py-0.5 rounded-full">3</span>
+</div>
+<div class="space-y-3">
+<div class="p-3 border border-outline-variant rounded-xl bg-white hover:shadow-md transition-shadow cursor-pointer">
+<div class="flex gap-3">
+<img alt="Patient 1" class="w-10 h-10 rounded-full bg-surface-container" data-alt="A detailed portrait of an elderly man with a kind smile, looking hopeful and patient. The style is clean vector art with soft gradients and clinical light-mode colors." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAhSA2zuiWm1wqhvYOAxpgSoykjYB0TodGT7l-izOlQyWBCdX2QQtJ6NA8e71J7iEYIO_w-Euy0ubnkvVi5zEdBc88_PtcRm0RL16MGMYCzGtadwv6EXjqN7jKbymkgbLdHGSvWYmPaq9oc_UDtgty4htOYJDkJH3o7cud2-fABRKkW2H6gBwboexwgJ692xiNGpP3o1su-ujhKDLqhxP9dlFGonJ376in-nyJATwXxeHDid8BFxUZ6WSXkeyM7ocjIFyhWEoRlXbk"/>
+<div class="flex-1 min-w-0">
+<p class="font-label-md text-label-md text-on-surface truncate">Robert Miller</p>
+<p class="text-[11px] text-on-surface-variant">Occupational Therapy</p>
+</div>
+</div>
+<div class="mt-3 flex gap-2">
+<button class="flex-1 py-1.5 bg-secondary-container text-on-secondary-container text-[11px] font-bold rounded-lg hover:opacity-90">Approve</button>
+<button class="px-2 py-1.5 text-on-surface-variant hover:bg-surface-container rounded-lg">
+<span class="material-symbols-outlined text-[18px]" data-icon="close">close</span>
+</button>
+</div>
+</div>
+<div class="p-3 border border-outline-variant rounded-xl bg-white hover:shadow-md transition-shadow cursor-pointer opacity-80">
+<div class="flex gap-3">
+<img alt="Patient 2" class="w-10 h-10 rounded-full bg-surface-container" data-alt="A portrait of a young woman with a focused, determined expression, representing a sports injury patient. The art is minimalist and professional, set against a sterile white background with teal accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDhLPPDeEbLa312WlowJNax3xkviVtPeEJhaKLSN0T_aZV3nyepwGdh6LVUM6dJKecbiGYoiPzt401EOWS1cd9Tgp258Aqh97ohdNtDGZbTP_--Caunk-lQi-h6QIFZjSkJrezO3pcZrL1NraEc7uo0dFYnnvD153G0L7HJtcNd7KvPRxAAEpN1rPg63cZh4Thhd0Th_GZCg6DUf0YSCj-HAo-oX6q8N6f-YXEPIFhrGogD1GE8_RhEfWFU1fW9t5LTnUmrX3lOrSQ"/>
+<div class="flex-1 min-w-0">
+<p class="font-label-md text-label-md text-on-surface truncate">Amanda Lee</p>
+<p class="text-[11px] text-on-surface-variant">Knee Recovery</p>
+</div>
+</div>
+<div class="mt-3 flex gap-2">
+<button class="flex-1 py-1.5 bg-secondary-container text-on-secondary-container text-[11px] font-bold rounded-lg">Approve</button>
+<button class="px-2 py-1.5 text-on-surface-variant hover:bg-surface-container rounded-lg">
+<span class="material-symbols-outlined text-[18px]" data-icon="close">close</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Therapist Availability -->
+<div class="p-container-padding">
+<h3 class="font-label-md text-label-md text-on-surface uppercase tracking-wider mb-4">Therapist Availability</h3>
+<div class="space-y-4">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+<span class="font-body-sm text-body-sm text-on-surface">Dr. Sarah Johnson</span>
+</div>
+<span class="text-[11px] font-data-mono text-on-surface-variant">Available</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-2 h-2 rounded-full bg-orange-400"></div>
+<span class="font-body-sm text-body-sm text-on-surface">Dr. Michael Chen</span>
+</div>
+<span class="text-[11px] font-data-mono text-on-surface-variant">In Session</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+<span class="font-body-sm text-body-sm text-on-surface">Dr. Emily Blunt</span>
+</div>
+<span class="text-[11px] font-data-mono text-on-surface-variant">Available</span>
+</div>
+</div>
+<div class="mt-8 p-4 bg-primary-container text-on-primary-fixed rounded-2xl">
+<p class="font-label-md text-label-md mb-2">Schedule Capacity</p>
+<div class="h-2 w-full bg-white/20 rounded-full overflow-hidden mb-2">
+<div class="h-full bg-secondary-fixed w-3/4"></div>
+</div>
+<p class="text-[11px] opacity-70">75% of slots filled for this week</p>
+</div>
+</div>
+</aside>
+</div>
+</main>
+<!-- Modal: Schedule Appointment (Hidden by default, shown here for representation) -->
+<div class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+<div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
+<div class="px-8 py-6 border-b border-outline-variant flex justify-between items-center">
+<h2 class="font-headline-md text-headline-md font-bold text-primary">Schedule Appointment</h2>
+<button class="text-on-surface-variant hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined" data-icon="close">close</span>
+</button>
+</div>
+<form class="p-8 space-y-6">
+<div class="grid grid-cols-2 gap-4">
+<div class="col-span-2">
+<label class="block font-label-md text-label-md text-on-surface-variant mb-2">Patient Name</label>
+<div class="relative">
+<span class="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant" data-icon="person">person</span>
+<input class="w-full pl-12 pr-4 py-3 bg-surface-container-low border border-outline-variant rounded-xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary outline-none transition-all" placeholder="Search patient database..." type="text"/>
+</div>
+</div>
+<div>
+<label class="block font-label-md text-label-md text-on-surface-variant mb-2">Date</label>
+<input class="w-full px-4 py-3 bg-surface-container-low border border-outline-variant rounded-xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary outline-none" type="date"/>
+</div>
+<div>
+<label class="block font-label-md text-label-md text-on-surface-variant mb-2">Time Slot</label>
+<select class="w-full px-4 py-3 bg-surface-container-low border border-outline-variant rounded-xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary outline-none">
+<option>09:00 AM</option>
+<option>10:00 AM</option>
+<option>11:00 AM</option>
+</select>
+</div>
+<div class="col-span-2">
+<label class="block font-label-md text-label-md text-on-surface-variant mb-2">Treatment Type</label>
+<div class="grid grid-cols-3 gap-2">
+<button class="py-2 border-2 border-secondary bg-secondary-container/20 text-on-secondary-container rounded-lg font-label-md text-sm" type="button">Physio</button>
+<button class="py-2 border-2 border-outline-variant text-on-surface-variant rounded-lg font-label-md text-sm hover:border-secondary transition-colors" type="button">Speech</button>
+<button class="py-2 border-2 border-outline-variant text-on-surface-variant rounded-lg font-label-md text-sm hover:border-secondary transition-colors" type="button">Cardiac</button>
+</div>
+</div>
+<div class="col-span-2">
+<label class="block font-label-md text-label-md text-on-surface-variant mb-2">Assigned Therapist</label>
+<select class="w-full px-4 py-3 bg-surface-container-low border border-outline-variant rounded-xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary outline-none">
+<option>Dr. Sarah Johnson</option>
+<option>Dr. Michael Chen</option>
+</select>
+</div>
+</div>
+<div class="flex gap-4 pt-4">
+<button class="flex-1 px-6 py-3 border border-outline-variant text-on-surface font-label-md text-label-md rounded-xl hover:bg-surface-container-low transition-colors" type="button">Discard</button>
+<button class="flex-1 px-6 py-3 bg-secondary text-on-secondary font-label-md text-label-md rounded-xl shadow-lg hover:shadow-secondary/20 transition-all" type="submit">Confirm Appointment</button>
+</div>
+</form>
+</div>
+</div>
+<!-- Mobile FAB -->
+<button class="md:hidden fixed bottom-8 right-8 w-14 h-14 bg-secondary text-on-secondary rounded-full shadow-2xl flex items-center justify-center z-[60]">
+<span class="material-symbols-outlined text-[32px]" data-icon="add">add</span>
+</button>
+</body></html>

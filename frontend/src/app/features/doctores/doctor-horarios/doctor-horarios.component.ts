@@ -10,52 +10,60 @@ import { Horario, HorarioRequest } from '../../../models/doctor.model';
   standalone: true,
   imports: [CommonModule, FormsModule, RouterLink],
   template: `
-    <div class="max-w-3xl mx-auto mt-6 p-8 bg-white rounded-xl shadow-md">
-      <div class="flex justify-between items-center mb-6">
-        <div>
-          <h2 class="text-2xl font-bold text-gray-800">Horarios del Doctor</h2>
-          <p class="text-gray-500 text-sm mt-1" *ngIf="doctorNombre">{{ doctorNombre }}</p>
-        </div>
-        <button routerLink="/doctores"
-          class="px-4 py-2 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition-colors">
-          Volver
-        </button>
-      </div>
-
-      <div class="space-y-4 mb-6">
-        <div *ngFor="let dia of dias; let i = index" class="border rounded-lg p-4">
-          <div class="flex items-center justify-between mb-3">
-            <label class="text-sm font-semibold text-gray-700 w-32">{{ dia.nombre }}</label>
-            <button (click)="agregarBloque(i)"
-              class="text-xs px-2 py-1 bg-primary-50 text-primary-700 rounded hover:bg-primary-100 transition-colors">
-              + Agregar bloque
-            </button>
+    <div class="p-6 animate-fade-in">
+      <div class="max-w-3xl mx-auto glass-card-strong rounded-2xl p-8">
+        <div class="flex justify-between items-center mb-8">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center text-white text-sm font-bold shadow-sm">
+              &#128197;
+            </div>
+            <div>
+              <h2 class="text-xl font-bold text-gray-800 font-heading">Horarios del Doctor</h2>
+              <p class="text-gray-400 text-sm" *ngIf="doctorNombre">{{ doctorNombre }}</p>
+            </div>
           </div>
-
-          <div *ngFor="let bloque of dia.bloques; let j = index" class="flex items-center gap-3 mb-2">
-            <input type="time" [(ngModel)]="bloque.horaInicio"
-              class="w-32 px-2 py-1.5 border rounded text-sm focus:ring-2 focus:ring-primary-500 outline-none" />
-            <span class="text-gray-400 text-sm">a</span>
-            <input type="time" [(ngModel)]="bloque.horaFin"
-              class="w-32 px-2 py-1.5 border rounded text-sm focus:ring-2 focus:ring-primary-500 outline-none" />
-            <button (click)="quitarBloque(i, j)"
-              class="text-red-500 hover:text-red-700 text-lg leading-none">&times;</button>
-          </div>
-
-          <p *ngIf="dia.bloques.length === 0" class="text-xs text-gray-400 italic">Sin horario este día</p>
+          <button routerLink="/doctores"
+            class="btn-secondary text-sm">
+            Volver
+          </button>
         </div>
-      </div>
 
-      <div class="flex gap-3">
-        <button (click)="guardar()" [disabled]="loading"
-          class="px-6 py-2.5 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700 disabled:opacity-50 transition-colors">
-          <span *ngIf="loading" class="inline-block animate-spin mr-2">&#9696;</span>
-          {{ loading ? 'Guardando...' : 'Guardar Horarios' }}
-        </button>
-      </div>
+        <div class="space-y-4 mb-8">
+          <div *ngFor="let dia of dias; let i = index" class="glass-card rounded-xl p-5">
+            <div class="flex items-center justify-between mb-3">
+              <label class="text-sm font-semibold text-gray-700 font-heading">{{ dia.nombre }}</label>
+              <button (click)="agregarBloque(i)"
+                class="text-xs px-3 py-1.5 bg-primary-50 text-primary-700 rounded-lg hover:bg-primary-100 transition-all duration-200 font-medium">
+                + Agregar bloque
+              </button>
+            </div>
 
-      <p *ngIf="mensaje" class="mt-4 text-sm font-medium text-center"
-         [class.text-green-600]="exito" [class.text-red-600]="!exito">{{ mensaje }}</p>
+            <div *ngFor="let bloque of dia.bloques; let j = index" class="flex items-center gap-3 mb-2 last:mb-0">
+              <input type="time" [(ngModel)]="bloque.horaInicio"
+                class="w-32 px-3 py-1.5 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none transition-all" />
+              <span class="text-gray-300 text-sm">—</span>
+              <input type="time" [(ngModel)]="bloque.horaFin"
+                class="w-32 px-3 py-1.5 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none transition-all" />
+              <button (click)="quitarBloque(i, j)"
+                class="w-7 h-7 flex items-center justify-center text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all text-lg">&times;</button>
+            </div>
+
+            <p *ngIf="dia.bloques.length === 0" class="text-xs text-gray-300 italic">Sin horario este día</p>
+          </div>
+        </div>
+
+        <div class="flex gap-3">
+          <button (click)="guardar()" [disabled]="loading"
+            class="btn-primary">
+            <span *ngIf="loading" class="inline-block mr-2 w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+            {{ loading ? 'Guardando...' : 'Guardar Horarios' }}
+          </button>
+          <button routerLink="/doctores" class="btn-secondary">Cancelar</button>
+        </div>
+
+        <p *ngIf="mensaje" class="mt-4 text-sm font-medium text-center animate-fade-in"
+           [class.text-green-600]="exito" [class.text-red-600]="!exito">{{ mensaje }}</p>
+      </div>
     </div>
   `
 })

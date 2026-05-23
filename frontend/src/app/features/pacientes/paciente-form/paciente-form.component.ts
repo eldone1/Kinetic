@@ -9,112 +9,122 @@ import { PacienteService } from '../../../core/services/paciente.service';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterLink],
   template: `
-    <div class="max-w-3xl mx-auto mt-6 p-8 bg-white rounded-xl shadow-md">
-      <h2 class="text-2xl font-bold text-gray-800 mb-6">{{ editando ? 'Editar Paciente' : 'Nuevo Paciente' }}</h2>
-
-      <form [formGroup]="form" (ngSubmit)="onSubmit()">
-        <div class="grid grid-cols-2 gap-4">
-          <div class="mb-1">
-            <label class="block text-sm font-medium text-gray-700 mb-1">Tipo Documento</label>
-            <select formControlName="tipoDocumento"
-              class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-primary-500 outline-none bg-white">
-              <option value="">Seleccione</option>
-              <option value="DNI">DNI</option>
-              <option value="CE">Carné de Extranjería</option>
-              <option value="PASAPORTE">Pasaporte</option>
-            </select>
+    <div class="p-6 animate-fade-in">
+      <div class="max-w-3xl mx-auto glass-card-strong rounded-2xl p-8">
+        <div class="flex items-center gap-3 mb-8">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center text-white text-sm font-bold shadow-sm">
+            &#128100;
           </div>
-
-          <div class="mb-1">
-            <label class="block text-sm font-medium text-gray-700 mb-1">N° Documento</label>
-            <input formControlName="numeroDocumento" maxlength="12"
-              class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-primary-500 outline-none"
-              [class.border-red-400]="form.get('numeroDocumento')?.invalid && form.get('numeroDocumento')?.touched" />
-            <span class="text-xs text-red-500" *ngIf="form.get('numeroDocumento')?.invalid && form.get('numeroDocumento')?.touched">
-              Documento obligatorio (máx. 12 caracteres)
-            </span>
-          </div>
-
-          <div class="mb-1">
-            <label class="block text-sm font-medium text-gray-700 mb-1">Nombres</label>
-            <input formControlName="nombres"
-              class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-primary-500 outline-none" />
-          </div>
-
-          <div class="mb-1">
-            <label class="block text-sm font-medium text-gray-700 mb-1">Apellidos</label>
-            <input formControlName="apellidos"
-              class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-primary-500 outline-none" />
-          </div>
-
-          <div class="mb-1">
-            <label class="block text-sm font-medium text-gray-700 mb-1">Fecha de Nacimiento</label>
-            <input type="date" formControlName="fechaNacimiento"
-              class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-primary-500 outline-none" />
-          </div>
-
-          <div class="mb-1">
-            <label class="block text-sm font-medium text-gray-700 mb-1">Sexo</label>
-            <select formControlName="sexo"
-              class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-primary-500 outline-none bg-white">
-              <option value="">Seleccione</option>
-              <option value="M">Masculino</option>
-              <option value="F">Femenino</option>
-            </select>
-          </div>
-
-          <div class="mb-1">
-            <label class="block text-sm font-medium text-gray-700 mb-1">Teléfono</label>
-            <input formControlName="telefono"
-              class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-primary-500 outline-none" />
-          </div>
-
-          <div class="mb-1">
-            <label class="block text-sm font-medium text-gray-700 mb-1">Correo</label>
-            <input type="email" formControlName="correo"
-              class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-primary-500 outline-none" />
-          </div>
-
-          <div class="col-span-2 mb-1">
-            <label class="block text-sm font-medium text-gray-700 mb-1">Dirección</label>
-            <input formControlName="direccion"
-              class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-primary-500 outline-none" />
-          </div>
-
-          <div class="mb-1">
-            <label class="block text-sm font-medium text-gray-700 mb-1">Ocupación</label>
-            <input formControlName="ocupacion"
-              class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-primary-500 outline-none" />
-          </div>
-
-          <div class="mb-1">
-            <label class="block text-sm font-medium text-gray-700 mb-1">Contacto de Emergencia</label>
-            <input formControlName="contactoEmergencia"
-              class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-primary-500 outline-none" />
-          </div>
-
-          <div class="col-span-2 mb-1">
-            <label class="block text-sm font-medium text-gray-700 mb-1">Observaciones</label>
-            <textarea formControlName="observaciones" rows="3"
-              class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-primary-500 outline-none resize-none"></textarea>
+          <div>
+            <h2 class="text-xl font-bold text-gray-800 font-heading">{{ editando ? 'Editar Paciente' : 'Nuevo Paciente' }}</h2>
+            <p class="text-gray-400 text-sm">{{ editando ? 'Modifica los datos del paciente' : 'Registra un nuevo paciente en el sistema' }}</p>
           </div>
         </div>
 
-        <div class="mt-6 flex gap-3">
-          <button type="submit" [disabled]="form.invalid || loading"
-            class="px-6 py-2.5 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700 disabled:opacity-50 transition-colors">
-            <span *ngIf="loading" class="inline-block animate-spin mr-2">&#9696;</span>
-            {{ loading ? 'Guardando...' : 'Guardar' }}
-          </button>
-          <button routerLink="/pacientes"
-            class="px-6 py-2.5 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition-colors">
-            Cancelar
-          </button>
-        </div>
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+          <div class="grid grid-cols-2 gap-5">
+            <div>
+              <label class="block text-sm font-medium text-gray-600 mb-1.5">Tipo Documento</label>
+              <select formControlName="tipoDocumento"
+                class="input-field bg-white">
+                <option value="">Seleccione</option>
+                <option value="DNI">DNI</option>
+                <option value="CE">Carné de Extranjería</option>
+                <option value="PASAPORTE">Pasaporte</option>
+              </select>
+            </div>
 
-        <p *ngIf="mensaje" class="mt-4 text-sm font-medium text-center"
-           [class.text-green-600]="exito" [class.text-red-600]="!exito">{{ mensaje }}</p>
-      </form>
+            <div>
+              <label class="block text-sm font-medium text-gray-600 mb-1.5">N° Documento</label>
+              <input formControlName="numeroDocumento" maxlength="12" placeholder="N° de documento"
+                class="input-field"
+                [class.input-field-error]="form.get('numeroDocumento')?.invalid && form.get('numeroDocumento')?.touched" />
+              <span class="text-xs text-red-500 mt-1 font-medium" *ngIf="form.get('numeroDocumento')?.invalid && form.get('numeroDocumento')?.touched">
+                Documento obligatorio (máx. 12 caracteres)
+              </span>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-600 mb-1.5">Nombres</label>
+              <input formControlName="nombres" placeholder="Nombres"
+                class="input-field" />
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-600 mb-1.5">Apellidos</label>
+              <input formControlName="apellidos" placeholder="Apellidos"
+                class="input-field" />
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-600 mb-1.5">Fecha de Nacimiento</label>
+              <input type="date" formControlName="fechaNacimiento"
+                class="input-field" />
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-600 mb-1.5">Sexo</label>
+              <select formControlName="sexo"
+                class="input-field bg-white">
+                <option value="">Seleccione</option>
+                <option value="M">Masculino</option>
+                <option value="F">Femenino</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-600 mb-1.5">Teléfono</label>
+              <input formControlName="telefono" placeholder="999 999 999"
+                class="input-field" />
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-600 mb-1.5">Correo</label>
+              <input type="email" formControlName="correo" placeholder="paciente@correo.com"
+                class="input-field" />
+            </div>
+
+            <div class="col-span-2">
+              <label class="block text-sm font-medium text-gray-600 mb-1.5">Dirección</label>
+              <input formControlName="direccion" placeholder="Dirección completa"
+                class="input-field" />
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-600 mb-1.5">Ocupación</label>
+              <input formControlName="ocupacion" placeholder="Ocupación"
+                class="input-field" />
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-600 mb-1.5">Contacto de Emergencia</label>
+              <input formControlName="contactoEmergencia" placeholder="Nombre y teléfono"
+                class="input-field" />
+            </div>
+
+            <div class="col-span-2">
+              <label class="block text-sm font-medium text-gray-600 mb-1.5">Observaciones</label>
+              <textarea formControlName="observaciones" rows="3" placeholder="Observaciones médicas..."
+                class="input-field resize-none"></textarea>
+            </div>
+          </div>
+
+          <div class="mt-8 flex gap-3">
+            <button type="submit" [disabled]="form.invalid || loading"
+              class="btn-primary">
+              <span *ngIf="loading" class="inline-block mr-2 w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+              {{ loading ? 'Guardando...' : 'Guardar' }}
+            </button>
+            <button routerLink="/pacientes"
+              class="btn-secondary">
+              Cancelar
+            </button>
+          </div>
+
+          <p *ngIf="mensaje" class="mt-4 text-sm font-medium text-center animate-fade-in"
+             [class.text-green-600]="exito" [class.text-red-600]="!exito">{{ mensaje }}</p>
+        </form>
+      </div>
     </div>
   `
 })

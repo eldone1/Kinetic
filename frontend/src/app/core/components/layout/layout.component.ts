@@ -17,56 +17,64 @@ interface MenuItem {
   standalone: true,
   imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive],
   template: `
-    <div class="flex h-screen overflow-hidden">
-      <aside class="w-64 bg-primary-900 text-white flex flex-col shrink-0">
-        <div class="p-5 border-b border-primary-700">
-          <h1 class="text-xl font-bold font-heading">Kinetic Rehab</h1>
-          <p class="text-primary-300 text-xs mt-0.5">Centro de Rehabilitaci&oacute;n</p>
+    <div class="flex h-screen overflow-hidden bg-gray-50">
+      <aside class="w-64 flex flex-col shrink-0 border-r border-gray-200/60"
+        style="background: linear-gradient(180deg, #0d9488 0%, #115e59 30%, #134e4a 70%, #0f172a 100%);">
+        <div class="p-5 border-b border-white/10">
+          <div class="flex items-center gap-3">
+            <img src="assets/images/logo.png" alt="Kinetic Rehab" class="w-9 h-9 rounded-xl" />
+            <div>
+              <h1 class="text-base font-bold font-heading text-white">Kinetic Rehab</h1>
+              <p class="text-white/50 text-[10px] leading-tight">Centro de Rehabilitaci&oacute;n</p>
+            </div>
+          </div>
         </div>
 
-        <nav class="flex-1 overflow-y-auto py-2">
+        <nav class="flex-1 overflow-y-auto py-3 px-3 scrollbar-thin">
           <div *ngFor="let item of menuItems">
             <a *ngIf="tieneRol(item.roles) && !item.children"
               [routerLink]="item.route"
-              routerLinkActive="bg-primary-700 text-white"
-              class="flex items-center gap-3 px-5 py-2.5 text-sm text-primary-200 hover:bg-primary-800 hover:text-white transition-colors">
-              <span class="text-lg w-5 text-center" [innerHTML]="item.icon"></span>
-              {{ item.label }}
+              routerLinkActive="bg-white/15 text-white shadow-sm"
+              [routerLinkActiveOptions]="{exact:true}"
+              class="flex items-center gap-3 px-3 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200 font-medium"
+              [class.rounded-xl]="true">
+              <span class="w-5 h-5 flex items-center justify-center text-base shrink-0" [innerHTML]="item.icon"></span>
+              <span>{{ item.label }}</span>
             </a>
 
-            <div *ngIf="tieneRol(item.roles) && item.children">
-              <div class="px-5 pt-4 pb-1 text-xs font-semibold text-primary-400 uppercase tracking-wider">
+            <div *ngIf="tieneRol(item.roles) && item.children" class="mb-2">
+              <div class="px-3 pt-4 pb-1.5 text-[10px] font-bold text-white/30 uppercase tracking-widest">
                 {{ item.label }}
               </div>
               <a *ngFor="let child of item.children"
                 [routerLink]="child.route"
-                routerLinkActive="bg-primary-700 text-white"
-                class="flex items-center gap-3 pl-10 pr-5 py-2 text-sm text-primary-200 hover:bg-primary-800 hover:text-white transition-colors">
-                <span class="text-base w-4 text-center" [innerHTML]="child.icon"></span>
-                {{ child.label }}
+                routerLinkActive="bg-white/15 text-white shadow-sm"
+                class="flex items-center gap-3 px-3 py-2 text-sm text-white/60 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200 font-medium">
+                <span class="w-5 h-5 flex items-center justify-center text-xs shrink-0" [innerHTML]="child.icon"></span>
+                <span>{{ child.label }}</span>
               </a>
             </div>
           </div>
         </nav>
 
-        <div class="p-4 border-t border-primary-700">
+        <div class="p-4 border-t border-white/10" style="background: rgba(0,0,0,0.2);">
           <div class="flex items-center gap-3 mb-3">
-            <div class="w-8 h-8 rounded-full bg-primary-600 flex items-center justify-center text-sm font-bold">
+            <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-teal-300 to-teal-600 flex items-center justify-center text-sm font-bold shadow-lg text-white">
               {{ usuarioInicial }}
             </div>
             <div class="flex-1 min-w-0">
-              <p class="text-sm font-medium truncate">{{ nombreUsuario }}</p>
-              <p class="text-xs text-primary-300 truncate">{{ rolUsuario }}</p>
+              <p class="text-sm font-medium truncate text-white/90">{{ nombreUsuario }}</p>
+              <p class="text-[11px] text-white/40 truncate">{{ rolUsuario }}</p>
             </div>
           </div>
           <button (click)="cerrarSesion()"
-            class="w-full py-2 text-sm text-primary-300 hover:text-white bg-primary-800 hover:bg-primary-700 rounded-lg transition-colors">
+            class="w-full py-2 text-sm text-white/50 hover:text-white bg-white/5 hover:bg-white/10 rounded-xl transition-all duration-200 font-medium">
             Cerrar Sesión
           </button>
         </div>
       </aside>
 
-      <main class="flex-1 overflow-y-auto bg-gray-50">
+      <main class="flex-1 overflow-y-auto bg-gray-50/80">
         <router-outlet></router-outlet>
       </main>
     </div>

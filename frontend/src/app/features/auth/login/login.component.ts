@@ -9,50 +9,55 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterLink],
   template: `
-    <div class="min-h-screen bg-primary-50 flex items-center justify-center p-4">
-      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="bg-white rounded-xl shadow-lg p-8 w-full max-w-md">
+    <div class="min-h-screen flex items-center justify-center p-4 relative overflow-hidden"
+      style="background-image: url('assets/images/referencia-login.png'); background-size: cover; background-position: center;">
+      <div class="absolute inset-0 bg-gradient-to-br from-primary-900/30 via-primary-800/10 to-gray-900/30"></div>
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()"
+        class="glass-login rounded-2xl p-8 w-full max-w-md relative animate-fade-in">
         <div class="text-center mb-8">
-          <h1 class="text-3xl font-bold text-primary-600 font-heading">Kinetic Rehab</h1>
-          <p class="text-gray-500 mt-1">Centro de Rehabilitación</p>
+          <img src="assets/images/logo.png" alt="Kinetic Rehab" class="h-16 mx-auto mb-4" />
+          <h1 class="text-3xl font-bold text-gray-800 font-heading">Kinetic Rehab</h1>
+          <p class="text-gray-500 mt-1 text-sm">Centro de Rehabilitación</p>
         </div>
 
         <div class="mb-5">
-          <label for="username" class="block text-sm font-medium text-gray-700 mb-1.5">Usuario</label>
+          <label for="username" class="block text-sm font-medium text-gray-600 mb-1.5">Usuario</label>
           <input
             id="username"
             type="text"
             formControlName="username"
             placeholder="Ingrese su usuario"
-            class="w-full px-3 py-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-colors"
-            [class.border-red-400]="isFieldInvalid('username')"
+            class="input-field"
+            [class.input-field-error]="isFieldInvalid('username')"
           />
-          <span class="text-xs text-red-500 mt-1 block" *ngIf="isFieldInvalid('username')">
+          <span class="text-xs text-red-500 mt-1.5 block font-medium" *ngIf="isFieldInvalid('username')">
             El usuario es obligatorio
           </span>
         </div>
 
         <div class="mb-6">
-          <label for="password" class="block text-sm font-medium text-gray-700 mb-1.5">Contraseña</label>
+          <label for="password" class="block text-sm font-medium text-gray-600 mb-1.5">Contraseña</label>
           <input
             id="password"
             type="password"
             formControlName="password"
             placeholder="Ingrese su contraseña"
-            class="w-full px-3 py-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-colors"
-            [class.border-red-400]="isFieldInvalid('password')"
+            class="input-field"
+            [class.input-field-error]="isFieldInvalid('password')"
           />
-          <span class="text-xs text-red-500 mt-1 block" *ngIf="isFieldInvalid('password')">
+          <span class="text-xs text-red-500 mt-1.5 block font-medium" *ngIf="isFieldInvalid('password')">
             La contraseña es obligatoria
           </span>
         </div>
 
         <button type="submit" [disabled]="loginForm.invalid || loading"
-          class="w-full py-2.5 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
-          <span *ngIf="loading" class="inline-block animate-spin mr-2">&#9696;</span>
+          class="btn-primary w-full py-3 text-sm">
+          <span *ngIf="loading" class="inline-block animate-spin mr-2 w-4 h-4 border-2 border-white/30 border-t-white rounded-full"></span>
           {{ loading ? 'Ingresando...' : 'Ingresar' }}
         </button>
 
-        <p class="text-center text-sm text-red-500 mt-4" *ngIf="errorMessage">{{ errorMessage }}</p>
+        <p class="text-center text-sm text-red-500 mt-4 font-medium" *ngIf="errorMessage">{{ errorMessage }}</p>
       </form>
     </div>
   `
