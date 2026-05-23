@@ -566,7 +566,7 @@ Cuando se te pida implementar un módulo, seguir este orden siempre:
 5. **Mapper** entidad ↔ DTO → `mapper/`
 6. **Service** (interfaz + implementación con lambdas/streams) → `service/`
 7. **Controller** REST con Swagger y `@PreAuthorize` → `controller/`
-8. **Componente Angular** (listado + formulario) → `features/[modulo]/`
+8. **Componente Angular** (listado + formulario + funcionalidades del modulo) → `features/[modulo]/`
 9. **Service Angular** con HttpClient → `features/[modulo]/services/`
 10. **Ruta** en el router → `app.routes.ts`
 

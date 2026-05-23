@@ -1,0 +1,144 @@
+# =============================================================
+#  KINETIC REHAB — DOCKER COMPOSE (PROD)
+# =============================================================
+
+services:
+
+  # ===========================================================
+  # MYSQL
+  # ===========================================================
+  mysql:
+
+    image: mysql:8.0
+
+    container_name: kinetic_mysql_prod
+
+    restart: unless-stopped
+
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+
+    volumes:
+      - kinetic_mysql_data_prod:/var/lib/mysql
+
+    networks:
+      - kinetic_net_prod
+
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 40s
+
+  # ===========================================================
+  # BACKEND
+  # ===========================================================
+  backend:
+
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+
+    container_name: kinetic_backend_prod
+
+    restart: unless-stopped
+
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+    environment:
+
+      TZ: America/Lima
+
+      SPRING_PROFILES_ACTIVE: prod
+
+      # =======================================================
+      # DATABASE
+      # =======================================================
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/${MYSQL_DATABASE}?useSSL=false&serverTimezone=America/Lima&allowPublicKeyRetrieval=true
+
+      SPRING_DATASOURCE_USERNAME: ${MYSQL_USER}
+
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD}
+
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
+
+      # =======================================================
+      # JPA
+      # =======================================================
+      SPRING_JPA_HIBERNATE_DDL_AUTO: validate
+
+      SPRING_JPA_SHOW_SQL: "false"
+
+      # =======================================================
+      # LOGGING
+      # =======================================================
+      LOGGING_LEVEL_COM_KINETICREHAB: INFO
+      LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY: WARN
+      LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_WEB: WARN
+      LOGGING_LEVEL_ORG_HIBERNATE_SQL: WARN
+
+      # =======================================================
+      # JWT
+      # =======================================================
+      JWT_SECRET: ${JWT_SECRET}
+
+      JWT_EXPIRATION: ${JWT_EXPIRATION}
+
+      JWT_REFRESH_EXPIRATION: ${JWT_REFRESH_EXPIRATION}
+
+    networks:
+      - kinetic_net_prod
+
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health >/dev/null 2>&1 || exit 1"]
+      timeout: 10s
+      interval: 20s
+      retries: 5
+      start_period: 3m
+
+  # ===========================================================
+  # FRONTEND
+  # ===========================================================
+  frontend:
+
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+
+    container_name: kinetic_frontend_prod
+
+    restart: unless-stopped
+
+    depends_on:
+      backend:
+        condition: service_healthy
+
+    ports:
+      - "80:80"
+
+    networks:
+      - kinetic_net_prod
+
+# =============================================================
+# NETWORKS
+# =============================================================
+networks:
+
+  kinetic_net_prod:
+    driver: bridge
+    name: kinetic_net_prod
+
+# =============================================================
+# VOLUMES
+# =============================================================
+volumes:
+
+  kinetic_mysql_data_prod:
+    name: kinetic_mysql_data_prod
+    

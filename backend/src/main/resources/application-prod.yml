@@ -1,0 +1,39 @@
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jackson:
+    time-zone: ${TIME_ZONE}
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+      show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+        jdbc:
+          time_zone: ${TIME_ZONE}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+
+server:
+  port: ${SPRING_PORT}
+
+app:
+  jwt:
+    secret: ${JWT_SECRET}
+    expiration: ${JWT_EXPIRATION}
+
+logging:
+  level:
+    com.kineticrehab: ${LOG_LEVEL_APP:INFO}
+    org.hibernate.SQL: ${LOG_LEVEL_SQL:WARN}

@@ -1,0 +1,160 @@
+# =============================================================
+#  KINETIC REHAB — DOCKER COMPOSE (DEV)
+#
+#  Comandos útiles:
+#
+#    docker compose -f docker-compose.dev.yml up -d
+#    docker compose -f docker-compose.dev.yml up -d --build
+#    docker compose -f docker-compose.dev.yml down
+#    docker compose -f docker-compose.dev.yml down -v
+#
+#    docker compose -f docker-compose.dev.yml logs -f backend
+#    docker compose -f docker-compose.dev.yml logs -f frontend
+#    docker compose -f docker-compose.dev.yml logs -f mysql
+#
+# =============================================================
+
+services:
+
+  # ===========================================================
+  # MYSQL
+  # ===========================================================
+  mysql:
+    image: mysql:8.0
+
+    container_name: kinetic_mysql_dev
+
+    restart: unless-stopped
+
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+
+    ports:
+      - "3307:3306"
+
+    volumes:
+      - kinetic_mysql_data_dev:/var/lib/mysql
+
+    networks:
+      - kinetic_net_dev
+
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 40s
+
+  # ===========================================================
+  # BACKEND - SPRING BOOT
+  # ===========================================================
+  backend:
+
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+
+    container_name: kinetic_backend_dev
+
+    restart: unless-stopped
+
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+    environment:
+
+      # =======================================================
+      # APP
+      # =======================================================
+      TIME_ZONE: "America/Lima"
+      SPRING_PORT: "8080"
+
+      SPRING_PROFILES_ACTIVE: dev
+
+      # =======================================================
+      # DATASOURCE
+      # =======================================================
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/${MYSQL_DATABASE}?useSSL=false&serverTimezone=America/Lima&allowPublicKeyRetrieval=true
+
+      SPRING_DATASOURCE_USERNAME: ${MYSQL_USER}
+
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD}
+
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
+
+      # =======================================================
+      # JPA
+      # =======================================================
+      SPRING_JPA_HIBERNATE_DDL_AUTO: validate
+
+      SPRING_JPA_SHOW_SQL: "true"
+
+      # =======================================================
+      # LOGGING
+      # =======================================================
+      LOG_LEVEL_APP: DEBUG
+      LOG_LEVEL_SQL: DEBUG
+
+      # =======================================================
+      # JWT
+      # =======================================================
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRATION: ${JWT_EXPIRATION}
+      JWT_REFRESH_EXPIRATION: ${JWT_REFRESH_EXPIRATION}
+
+    ports:
+      - "8080:8080"
+
+    networks:
+      - kinetic_net_dev
+
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health >/dev/null 2>&1 || exit 1"]
+      timeout: 10s
+      interval: 20s
+      retries: 5
+      start_period: 3m
+
+  # ===========================================================
+  # FRONTEND - ANGULAR + NGINX
+  # ===========================================================
+  frontend:
+
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+
+    container_name: kinetic_frontend_dev
+
+    restart: unless-stopped
+
+    depends_on:
+      backend:
+        condition: service_healthy
+
+    ports:
+      - "4200:80"
+
+    networks:
+      - kinetic_net_dev
+
+# =============================================================
+# NETWORKS
+# =============================================================
+networks:
+
+  kinetic_net_dev:
+    driver: bridge
+    name: kinetic_net_dev
+
+# =============================================================
+# VOLUMES
+# =============================================================
+volumes:
+
+  kinetic_mysql_data_dev:
+    name: kinetic_mysql_data_dev

@@ -15,7 +15,7 @@
 | Inicio | 2025-06-01 |
 | Entrega | 2025-09-01 |
 | Presupuesto | S/ 5,000.00 |
-| Estado actual | Módulo 1 completado |
+| Estado actual | Módulo 3 completado |
 
 **Descripción:**
 Sistema web completo para centro de rehabilitación física. Incluye gestión de pacientes, agenda de citas y sesiones, historia clínica, evaluaciones y tratamientos fisioterapéuticos, ventas de productos, inventario, caja y reportes. Funciona en red local (LAN) con acceso remoto por VPN para el dueño. Stack: Angular + Spring Boot + MySQL.
@@ -26,8 +26,8 @@ Sistema web completo para centro de rehabilitación física. Incluye gestión de
 
 ### Requisitos Funcionales
 - [ ] Registro y login de usuarios con roles (administrador(Solo adm puede registrar o inactivar), recepción, doctor)
-- [ ] Gestión de pacientes: ficha completa, búsqueda, historial
-- [ ] Gestión de doctores y personal médico: horarios, especialidades, disponibilidad
+- [x] Gestión de pacientes: ficha completa, búsqueda, historial
+- [x] Gestión de doctores y personal médico: horarios, especialidades, disponibilidad
 - [ ] Agenda, citas y sesiones: calendario diario/semanal/mensual, estados, sin cruces de horario
 - [ ] Historia clínica: evaluaciones, re-valoraciones, tratamientos, sesiones, evolución del paciente
 - [ ] Módulo de ventas y caja: cobros de servicios y productos, efectivo y billeteras digitales (Yape/Plin)
@@ -84,15 +84,16 @@ Arquitectura cliente-servidor en red local (LAN). Frontend SPA en Angular, Backe
 ## 4. Planificación de Fases
 
 | # | Fase | Inicio | Fin | Estado |
-|---|---|---|---|---|
+|---|---|---|---|---|---|
 | 1 | Setup y Auth | 2025-06-01 | 2025-06-14 | ✅ Completado |
-| 2 | Pacientes y Doctores | 2025-06-15 | 2025-06-30 | ⏳ Pendiente |
-| 3 | Agenda, Citas y Sesiones | 2025-07-01 | 2025-07-20 | ⏳ Pendiente |
-| 4 | Historia Clínica y Tratamientos | 2025-07-21 | 2025-08-05 | ⏳ Pendiente |
-| 5 | Ventas, Caja e Inventario | 2025-08-06 | 2025-08-20 | ⏳ Pendiente |
-| 6 | Reportes y Dashboard | 2025-08-21 | 2025-08-31 | ⏳ Pendiente |
-| 7 | Pruebas y Ajustes | 2025-09-01 | 2025-09-15 | ⏳ Pendiente |
-| 8 | Despliegue y Capacitación | 2025-09-16 | 2025-09-30 | ⏳ Pendiente |
+| 2 | Pacientes | 2025-06-15 | 2025-06-20 | ✅ Completado |
+| 3 | Doctores | 2025-06-21 | 2025-06-30 | ✅ Completado |
+| 4 | Agenda, Citas y Sesiones | 2025-07-01 | 2025-07-20 | ⏳ Pendiente |
+| 5 | Historia Clínica y Tratamientos | 2025-07-21 | 2025-08-05 | ⏳ Pendiente |
+| 6 | Ventas, Caja e Inventario | 2025-08-06 | 2025-08-20 | ⏳ Pendiente |
+| 7 | Reportes y Dashboard | 2025-08-21 | 2025-08-31 | ⏳ Pendiente |
+| 8 | Pruebas y Ajustes | 2025-09-01 | 2025-09-15 | ⏳ Pendiente |
+| 9 | Despliegue y Capacitación | 2025-09-16 | 2025-09-30 | ⏳ Pendiente |
 
 ---
 
@@ -101,8 +102,8 @@ Arquitectura cliente-servidor en red local (LAN). Frontend SPA en Angular, Backe
 | Módulo | Tecnologías | Estado | Notas |
 |---|---|---|---|
 | Autenticación y Roles | Spring Security + JWT + BCrypt | ✅ Completado | 3 roles: admin, recepción, doctor |
-| Gestión de Pacientes | Angular + Spring Boot + JPA | ⏳ Pendiente | Ficha completa, PDF exportable |
-| Gestión de Doctores | Angular + Spring Boot + JPA | ⏳ Pendiente | Horarios, especialidades, disponibilidad |
+| Gestión de Pacientes | Angular + Spring Boot + JPA | ✅ Completado | Ficha completa, búsqueda por nombre/doc/tel, soft delete |
+| Gestión de Doctores | Angular + Spring Boot + JPA | ✅ Completado | CRUD, horarios semanales, activar/desactivar, soft delete |
 | Agenda, Citas y Sesiones | FullCalendar + Spring Boot | ⏳ Pendiente | Vista diaria/semanal/mensual, sin cruces |
 | Historia Clínica y Tratamientos | Angular + Spring Boot + JPA | ⏳ Pendiente | Solo editable por doctores, sin eliminación |
 | Ventas, Caja y Pagos | Angular + Spring Boot | ⏳ Pendiente | Efectivo + Yape/Plin, ticket térmico |
