@@ -24,6 +24,10 @@ export const routes: Routes = [
         loadChildren: () => import('./features/doctores/doctores.routes').then(m => m.doctoresRoutes)
       },
       {
+        path: 'agenda',
+        loadChildren: () => import('./features/citas/citas.routes').then(m => m.citasRoutes)
+      },
+      {
         path: 'cambio-password',
         loadComponent: () => import('./features/auth/cambio-password/cambio-password.component').then(m => m.CambioPasswordComponent)
       },

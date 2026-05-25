@@ -15,7 +15,7 @@
 | Inicio | 2025-06-01 |
 | Entrega | 2025-09-01 |
 | Presupuesto | S/ 5,000.00 |
-| Estado actual | Módulo 3 completado |
+| Estado actual | Módulo 4 completado |
 
 **Descripción:**
 Sistema web completo para centro de rehabilitación física. Incluye gestión de pacientes, agenda de citas y sesiones, historia clínica, evaluaciones y tratamientos fisioterapéuticos, ventas de productos, inventario, caja y reportes. Funciona en red local (LAN) con acceso remoto por VPN para el dueño. Stack: Angular + Spring Boot + MySQL.
@@ -88,7 +88,7 @@ Arquitectura cliente-servidor en red local (LAN). Frontend SPA en Angular, Backe
 | 1 | Setup y Auth | 2025-06-01 | 2025-06-14 | ✅ Completado |
 | 2 | Pacientes | 2025-06-15 | 2025-06-20 | ✅ Completado |
 | 3 | Doctores | 2025-06-21 | 2025-06-30 | ✅ Completado |
-| 4 | Agenda, Citas y Sesiones | 2025-07-01 | 2025-07-20 | ⏳ Pendiente |
+| 4 | Agenda, Citas y Sesiones | 2025-07-01 | 2025-07-20 | ✅ Completado |
 | 5 | Historia Clínica y Tratamientos | 2025-07-21 | 2025-08-05 | ⏳ Pendiente |
 | 6 | Ventas, Caja e Inventario | 2025-08-06 | 2025-08-20 | ⏳ Pendiente |
 | 7 | Reportes y Dashboard | 2025-08-21 | 2025-08-31 | ⏳ Pendiente |
@@ -104,7 +104,7 @@ Arquitectura cliente-servidor en red local (LAN). Frontend SPA en Angular, Backe
 | Autenticación y Roles | Spring Security + JWT + BCrypt | ✅ Completado | 3 roles: admin, recepción, doctor |
 | Gestión de Pacientes | Angular + Spring Boot + JPA | ✅ Completado | Ficha completa, búsqueda por nombre/doc/tel, soft delete |
 | Gestión de Doctores | Angular + Spring Boot + JPA | ✅ Completado | CRUD, horarios semanales, activar/desactivar, soft delete |
-| Agenda, Citas y Sesiones | FullCalendar + Spring Boot | ⏳ Pendiente | Vista diaria/semanal/mensual, sin cruces |
+| Agenda, Citas y Sesiones | FullCalendar + Spring Boot | ✅ Completado | Vista diaria/semanal/mensual, sin cruces, modal crear/editar, cambio de estado |
 | Historia Clínica y Tratamientos | Angular + Spring Boot + JPA | ⏳ Pendiente | Solo editable por doctores, sin eliminación |
 | Ventas, Caja y Pagos | Angular + Spring Boot | ⏳ Pendiente | Efectivo + Yape/Plin, ticket térmico |
 | Inventario y Productos | Angular + Spring Boot + JPA | ⏳ Pendiente | Lotes, vencimiento, alertas por correo |
@@ -125,7 +125,7 @@ Arquitectura cliente-servidor en red local (LAN). Frontend SPA en Angular, Backe
 | Crear usuario con username duplicado | ✅ OK | 409 Conflict |
 | Admin lista usuarios | ✅ OK | Solo ADMIN puede acceder |
 | Recepción intenta acceder a /api/usuarios | ❌ Pendiente | Debe ser bloqueado (403) |
-| Agendar cita con horario ya ocupado | ⏳ Pendiente | Debe mostrar error |
+| Agendar cita con horario ya ocupado | ✅ OK | Validación backend: 400 BadRequest con mensaje |
 | Doctor crea historia clínica de paciente | ⏳ Pendiente | — |
 | Recepción intenta modificar diagnóstico | ⏳ Pendiente | Debe ser bloqueado |
 | Venta con stock insuficiente | ⏳ Pendiente | — |
