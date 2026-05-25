@@ -18,13 +18,17 @@ public class Doctor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "usuario_id")
+    private Usuario usuario;
+
     @Column(nullable = false, length = 100)
     private String nombres;
 
     @Column(nullable = false, length = 100)
     private String apellidos;
 
-    @Column(nullable = false, length = 8, unique = true)
+    @Column(length = 8, unique = true)
     private String dni;
 
     @Column(length = 100)

@@ -72,7 +72,8 @@ public class DoctorServiceImpl implements DoctorService {
         Doctor doctor = doctorRepository.findByIdAndDeletedAtIsNull(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Doctor no encontrado con id: " + id));
 
-        if (!doctor.getDni().equals(dto.getDni())
+        if (dto.getDni() != null
+                && !dto.getDni().equals(doctor.getDni())
                 && doctorRepository.existsByDni(dto.getDni())) {
             throw new DuplicateEntityException("El DNI '" + dto.getDni() + "' ya está registrado");
         }

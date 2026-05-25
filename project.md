@@ -15,7 +15,7 @@
 | Inicio | 2025-06-01 |
 | Entrega | 2025-09-01 |
 | Presupuesto | S/ 5,000.00 |
-| Estado actual | Módulo 4 completado |
+| Estado actual | Módulo 5 completado (v2 - campos expandidos) |
 
 **Descripción:**
 Sistema web completo para centro de rehabilitación física. Incluye gestión de pacientes, agenda de citas y sesiones, historia clínica, evaluaciones y tratamientos fisioterapéuticos, ventas de productos, inventario, caja y reportes. Funciona en red local (LAN) con acceso remoto por VPN para el dueño. Stack: Angular + Spring Boot + MySQL.
@@ -29,7 +29,7 @@ Sistema web completo para centro de rehabilitación física. Incluye gestión de
 - [x] Gestión de pacientes: ficha completa, búsqueda, historial
 - [x] Gestión de doctores y personal médico: horarios, especialidades, disponibilidad
 - [ ] Agenda, citas y sesiones: calendario diario/semanal/mensual, estados, sin cruces de horario
-- [ ] Historia clínica: evaluaciones, re-valoraciones, tratamientos, sesiones, evolución del paciente
+- [x] Historia clínica: evaluaciones, re-valoraciones, tratamientos, sesiones, evolución del paciente
 - [ ] Módulo de ventas y caja: cobros de servicios y productos, efectivo y billeteras digitales (Yape/Plin)
 - [ ] Gestión de inventario: stock, lotes, fechas de vencimiento, alertas de bajo stock
 - [ ] Reportes y dashboard: ventas, pacientes atendidos, sesiones, ingresos, exportación PDF y Excel
@@ -89,7 +89,7 @@ Arquitectura cliente-servidor en red local (LAN). Frontend SPA en Angular, Backe
 | 2 | Pacientes | 2025-06-15 | 2025-06-20 | ✅ Completado |
 | 3 | Doctores | 2025-06-21 | 2025-06-30 | ✅ Completado |
 | 4 | Agenda, Citas y Sesiones | 2025-07-01 | 2025-07-20 | ✅ Completado |
-| 5 | Historia Clínica y Tratamientos | 2025-07-21 | 2025-08-05 | ⏳ Pendiente |
+| 5 | Historia Clínica y Tratamientos | 2025-07-21 | 2025-08-05 | ✅ Completado |
 | 6 | Ventas, Caja e Inventario | 2025-08-06 | 2025-08-20 | ⏳ Pendiente |
 | 7 | Reportes y Dashboard | 2025-08-21 | 2025-08-31 | ⏳ Pendiente |
 | 8 | Pruebas y Ajustes | 2025-09-01 | 2025-09-15 | ⏳ Pendiente |
@@ -103,9 +103,9 @@ Arquitectura cliente-servidor en red local (LAN). Frontend SPA en Angular, Backe
 |---|---|---|---|
 | Autenticación y Roles | Spring Security + JWT + BCrypt | ✅ Completado | 3 roles: admin, recepción, doctor |
 | Gestión de Pacientes | Angular + Spring Boot + JPA | ✅ Completado | Ficha completa, búsqueda por nombre/doc/tel, soft delete |
-| Gestión de Doctores | Angular + Spring Boot + JPA | ✅ Completado | CRUD, horarios semanales, activar/desactivar, soft delete |
-| Agenda, Citas y Sesiones | FullCalendar + Spring Boot | ✅ Completado | Vista diaria/semanal/mensual, sin cruces, modal crear/editar, cambio de estado |
-| Historia Clínica y Tratamientos | Angular + Spring Boot + JPA | ⏳ Pendiente | Solo editable por doctores, sin eliminación |
+| Gestión de Doctores | Angular + Spring Boot + JPA | ✅ Completado | CRUD, horarios semanales, activar/desactivar, soft delete. Auto-creación desde Usuario ROLE_DOCTOR (V9). DNI nullable. |
+| Agenda, Citas y Sesiones | FullCalendar + Spring Boot | ✅ Completado | Vista diaria/semanal/mensual, sin cruces, modal crear/editar con autocomplete para paciente/doctor, cambio de estado |
+| Historia Clínica y Tratamientos | Angular + Spring Boot + JPA | ✅ Completado | HC expandida (secciones A-F: control adm, anamnesis, antecedentes, heredo-familiares, signos vitales). Evaluaciones: Valoración SOAP + escalas EVA/BORG/Daniels + ROM + pruebas especiales + plan camilla/gym. Re-valoración con control de evolución. IMC automático. Solo ADMIN/DOCTOR |
 | Ventas, Caja y Pagos | Angular + Spring Boot | ⏳ Pendiente | Efectivo + Yape/Plin, ticket térmico |
 | Inventario y Productos | Angular + Spring Boot + JPA | ⏳ Pendiente | Lotes, vencimiento, alertas por correo |
 | Reportes y Dashboard | Angular + Chart.js + iText/Apache POI | ⏳ Pendiente | PDF y Excel, solo para administrador |
@@ -126,8 +126,14 @@ Arquitectura cliente-servidor en red local (LAN). Frontend SPA en Angular, Backe
 | Admin lista usuarios | ✅ OK | Solo ADMIN puede acceder |
 | Recepción intenta acceder a /api/usuarios | ❌ Pendiente | Debe ser bloqueado (403) |
 | Agendar cita con horario ya ocupado | ✅ OK | Validación backend: 400 BadRequest con mensaje |
-| Doctor crea historia clínica de paciente | ⏳ Pendiente | — |
-| Recepción intenta modificar diagnóstico | ⏳ Pendiente | Debe ser bloqueado |
+| Doctor crea historia clínica de paciente | ✅ OK | HC creada con campos expandidos: control adm, antecedentes, heredo-familiares, signos vitales, IMC automático |
+| Recepción intenta acceder a /api/historias-clinicas | ✅ OK | 403 Forbidden (solo ADMIN/DOCTOR) |
+| Doctor crea valoración fisioterapéutica | ✅ OK | Evaluación guardada con tipo VALORACION, escalas EVA/BORG/Daniels, ROM table, pruebas especiales, plan camilla/gym, CIE-10 |
+| Doctor crea re-valoración (control evolución) | ✅ OK | Evaluación con tipo REVALORACION, motivo control, progreso, movilidad actualizada, objetivos modificados, planes actualizados |
+| Doctor crea tratamiento vinculado a evaluación | ✅ OK | Tratamiento creado con frecuencia, duración, plan camilla, plan gym, estado ACTIVO |
+| Registrar sesión de tratamiento | ✅ OK | Sesión creada con evaluación subjetiva/objetiva y tratamiento realizado |
+| Marcar sesión como REALIZADA/NO_ASISTIO | ✅ OK | Estado actualizado con flag de asistencia |
+| Cambiar estado de tratamiento a COMPLETADO | ✅ OK | Estado actualizado vía PATCH |
 | Venta con stock insuficiente | ⏳ Pendiente | — |
 | Alerta de stock bajo por correo | ⏳ Pendiente | — |
 | Cierre de caja diario | ⏳ Pendiente | — |
@@ -138,7 +144,8 @@ Arquitectura cliente-servidor en red local (LAN). Frontend SPA en Angular, Backe
 
 | Bug | Severidad | Estado |
 |---|---|---|
-| — | — | — |
+| Doctores registrados como usuarios (ROLE_DOCTOR) no aparecían en selector de citas | Alta | ✅ Fix: V9 migración + auto-creación Doctor desde Usuario |
+| NullPointerException al editar doctor sin DNI | Alta | ✅ Fix: validación null-safe en DoctorServiceImpl.actualizar() |
 
 ---
 

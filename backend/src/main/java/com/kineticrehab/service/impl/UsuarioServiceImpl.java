@@ -6,9 +6,12 @@ import com.kineticrehab.dto.response.UsuarioResponseDTO;
 import com.kineticrehab.exception.BadRequestException;
 import com.kineticrehab.exception.DuplicateEntityException;
 import com.kineticrehab.exception.ResourceNotFoundException;
+import com.kineticrehab.mapper.DoctorMapper;
 import com.kineticrehab.mapper.UsuarioMapper;
+import com.kineticrehab.model.Doctor;
 import com.kineticrehab.model.Rol;
 import com.kineticrehab.model.Usuario;
+import com.kineticrehab.repository.DoctorRepository;
 import com.kineticrehab.repository.UsuarioRepository;
 import com.kineticrehab.service.RolService;
 import com.kineticrehab.service.UsuarioService;
@@ -31,6 +34,8 @@ public class UsuarioServiceImpl implements UsuarioService {
     private final UsuarioMapper usuarioMapper;
     private final RolService rolService;
     private final PasswordEncoder passwordEncoder;
+    private final DoctorRepository doctorRepository;
+    private final DoctorMapper doctorMapper;
 
     @Override
     public List<UsuarioResponseDTO> listarTodos() {
@@ -68,6 +73,19 @@ public class UsuarioServiceImpl implements UsuarioService {
         usuario.setActivo(true);
 
         usuario = usuarioRepository.save(usuario);
+
+        if ("ROLE_DOCTOR".equals(rol.getNombre())) {
+            Doctor doctor = Doctor.builder()
+                    .usuario(usuario)
+                    .nombres(usuario.getNombre())
+                    .apellidos(usuario.getApellidos())
+                    .telefono(usuario.getTelefono())
+                    .correo(usuario.getEmail())
+                    .build();
+            doctorRepository.save(doctor);
+            log.info("Doctor creado automaticamente desde usuario: {}", usuario.getUsername());
+        }
+
         log.info("Usuario creado exitosamente: {}", usuario.getUsername());
         return usuarioMapper.toDTO(usuario);
     }

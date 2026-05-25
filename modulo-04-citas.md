@@ -109,7 +109,7 @@
 | Componente | Ruta | Descripción |
 |------------|------|-------------|
 | `CitaListComponent` | `/agenda` | Calendario FullCalendar con vistas mensual/semanal/diaria |
-| `CitaFormComponent` | Modal | Formulario modal para crear/editar citas |
+| `CitaFormComponent` | Modal | Formulario modal para crear/editar citas. **Paciente/Doctor:** autocomplete con búsqueda inline (filtra mientras escribes por nombres, apellidos, documento o especialidad). Navegación por teclado (↑↓→ Enter/Escape). |
 
 ### Servicios
 

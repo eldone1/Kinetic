@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Cita, CitaRequest } from '../../../models/cita.model';
@@ -27,21 +27,57 @@ import { Doctor } from '../../../models/doctor.model';
         <form [formGroup]="form" (ngSubmit)="onSubmit()" class="p-6">
           <div class="space-y-4">
             <div class="grid grid-cols-2 gap-4">
-              <div>
+              <div class="relative">
                 <label class="block text-sm font-medium text-gray-600 mb-1.5">Paciente</label>
-                <select formControlName="idPaciente"
-                  class="input-field bg-white">
-                  <option value="">Seleccione paciente</option>
-                  <option *ngFor="let p of pacientes" [value]="p.id">{{ p.nombres }} {{ p.apellidos }}</option>
-                </select>
+                <input #pacienteInput type="text"
+                  [value]="pacienteDisplay"
+                  (input)="onPacienteInput($event)"
+                  (focus)="onPacienteFocus()"
+                  (keydown)="onPacienteKeydown($event)"
+                  placeholder="Buscar paciente..."
+                  class="input-field"
+                  autocomplete="off" />
+                <input type="hidden" formControlName="idPaciente" />
+                <div *ngIf="showPacienteDropdown && filteredPacientes.length > 0"
+                  class="absolute z-50 mt-1 w-full bg-white border border-gray-200 rounded-xl shadow-lg max-h-48 overflow-y-auto">
+                  <button type="button" *ngFor="let p of filteredPacientes; let i = index"
+                    (click)="seleccionarPaciente(p)"
+                    class="w-full text-left px-3 py-2.5 text-sm hover:bg-primary-50 transition-colors"
+                    [class.bg-primary-50]="i === pacienteHighlightIndex">
+                    <span class="font-medium text-gray-800">{{ p.nombres }} {{ p.apellidos }}</span>
+                    <span class="text-gray-400 ml-2 text-xs">{{ p.numeroDocumento }}</span>
+                  </button>
+                </div>
+                <div *ngIf="showPacienteDropdown && filteredPacientes.length === 0 && pacienteSearchText"
+                  class="absolute z-50 mt-1 w-full bg-white border border-gray-200 rounded-xl shadow-lg p-3 text-sm text-gray-400">
+                  Sin resultados
+                </div>
               </div>
-              <div>
+              <div class="relative">
                 <label class="block text-sm font-medium text-gray-600 mb-1.5">Doctor</label>
-                <select formControlName="idDoctor"
-                  class="input-field bg-white">
-                  <option value="">Seleccione doctor</option>
-                  <option *ngFor="let d of doctores" [value]="d.id">{{ d.nombres }} {{ d.apellidos }}</option>
-                </select>
+                <input #doctorInput type="text"
+                  [value]="doctorDisplay"
+                  (input)="onDoctorInput($event)"
+                  (focus)="onDoctorFocus()"
+                  (keydown)="onDoctorKeydown($event)"
+                  placeholder="Buscar doctor..."
+                  class="input-field"
+                  autocomplete="off" />
+                <input type="hidden" formControlName="idDoctor" />
+                <div *ngIf="showDoctorDropdown && filteredDoctores.length > 0"
+                  class="absolute z-50 mt-1 w-full bg-white border border-gray-200 rounded-xl shadow-lg max-h-48 overflow-y-auto">
+                  <button type="button" *ngFor="let d of filteredDoctores; let i = index"
+                    (click)="seleccionarDoctor(d)"
+                    class="w-full text-left px-3 py-2.5 text-sm hover:bg-primary-50 transition-colors"
+                    [class.bg-primary-50]="i === doctorHighlightIndex">
+                    <span class="font-medium text-gray-800">{{ d.nombres }} {{ d.apellidos }}</span>
+                    <span class="text-gray-400 ml-2 text-xs">{{ d.especialidad || 'Sin especialidad' }}</span>
+                  </button>
+                </div>
+                <div *ngIf="showDoctorDropdown && filteredDoctores.length === 0 && doctorSearchText"
+                  class="absolute z-50 mt-1 w-full bg-white border border-gray-200 rounded-xl shadow-lg p-3 text-sm text-gray-400">
+                  Sin resultados
+                </div>
               </div>
             </div>
 
@@ -109,6 +145,17 @@ export class CitaFormComponent implements OnInit {
   form: FormGroup;
   editando = false;
 
+  pacienteSearchText = '';
+  doctorSearchText = '';
+  pacienteDisplay = '';
+  doctorDisplay = '';
+  showPacienteDropdown = false;
+  showDoctorDropdown = false;
+  pacienteHighlightIndex = -1;
+  doctorHighlightIndex = -1;
+  selectedPaciente: Paciente | null = null;
+  selectedDoctor: Doctor | null = null;
+
   constructor(private fb: FormBuilder) {
     this.form = this.fb.group({
       idPaciente: ['', Validators.required],
@@ -133,7 +180,127 @@ export class CitaFormComponent implements OnInit {
         tipo: this.cita.tipo,
         observaciones: this.cita.observaciones
       });
+      const p = this.pacientes.find(x => x.id === this.cita!.idPaciente);
+      if (p) {
+        this.selectedPaciente = p;
+        this.pacienteDisplay = `${p.nombres} ${p.apellidos}`;
+      }
+      const d = this.doctores.find(x => x.id === this.cita!.idDoctor);
+      if (d) {
+        this.selectedDoctor = d;
+        this.doctorDisplay = `${d.nombres} ${d.apellidos}`;
+      }
     }
+  }
+
+  @HostListener('document:click')
+  cerrarDropdowns(): void {
+    this.showPacienteDropdown = false;
+    this.showDoctorDropdown = false;
+  }
+
+  get filteredPacientes(): Paciente[] {
+    const t = this.pacienteSearchText.toLowerCase().trim();
+    if (!t) return this.pacientes;
+    return this.pacientes.filter(p =>
+      p.nombres.toLowerCase().includes(t) ||
+      p.apellidos.toLowerCase().includes(t) ||
+      p.numeroDocumento.includes(t)
+    );
+  }
+
+  get filteredDoctores(): Doctor[] {
+    const t = this.doctorSearchText.toLowerCase().trim();
+    if (!t) return this.doctores;
+    return this.doctores.filter(d =>
+      d.nombres.toLowerCase().includes(t) ||
+      d.apellidos.toLowerCase().includes(t) ||
+      (d.especialidad && d.especialidad.toLowerCase().includes(t))
+    );
+  }
+
+  onPacienteInput(e: Event): void {
+    const v = (e.target as HTMLInputElement).value;
+    this.pacienteSearchText = v;
+    this.selectedPaciente = null;
+    this.form.patchValue({ idPaciente: '' });
+    this.pacienteDisplay = v;
+    this.showPacienteDropdown = true;
+    this.pacienteHighlightIndex = -1;
+  }
+
+  onPacienteFocus(): void {
+    if (!this.selectedPaciente) {
+      this.showPacienteDropdown = true;
+    }
+  }
+
+  onPacienteKeydown(e: KeyboardEvent): void {
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      this.pacienteHighlightIndex = Math.min(this.pacienteHighlightIndex + 1, this.filteredPacientes.length - 1);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      this.pacienteHighlightIndex = Math.max(this.pacienteHighlightIndex - 1, -1);
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      if (this.pacienteHighlightIndex >= 0 && this.filteredPacientes[this.pacienteHighlightIndex]) {
+        this.seleccionarPaciente(this.filteredPacientes[this.pacienteHighlightIndex]);
+      }
+    } else if (e.key === 'Escape') {
+      this.showPacienteDropdown = false;
+    }
+  }
+
+  seleccionarPaciente(p: Paciente): void {
+    this.selectedPaciente = p;
+    this.pacienteDisplay = `${p.nombres} ${p.apellidos}`;
+    this.pacienteSearchText = '';
+    this.form.patchValue({ idPaciente: p.id });
+    this.showPacienteDropdown = false;
+    this.pacienteHighlightIndex = -1;
+  }
+
+  onDoctorInput(e: Event): void {
+    const v = (e.target as HTMLInputElement).value;
+    this.doctorSearchText = v;
+    this.selectedDoctor = null;
+    this.form.patchValue({ idDoctor: '' });
+    this.doctorDisplay = v;
+    this.showDoctorDropdown = true;
+    this.doctorHighlightIndex = -1;
+  }
+
+  onDoctorFocus(): void {
+    if (!this.selectedDoctor) {
+      this.showDoctorDropdown = true;
+    }
+  }
+
+  onDoctorKeydown(e: KeyboardEvent): void {
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      this.doctorHighlightIndex = Math.min(this.doctorHighlightIndex + 1, this.filteredDoctores.length - 1);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      this.doctorHighlightIndex = Math.max(this.doctorHighlightIndex - 1, -1);
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      if (this.doctorHighlightIndex >= 0 && this.filteredDoctores[this.doctorHighlightIndex]) {
+        this.seleccionarDoctor(this.filteredDoctores[this.doctorHighlightIndex]);
+      }
+    } else if (e.key === 'Escape') {
+      this.showDoctorDropdown = false;
+    }
+  }
+
+  seleccionarDoctor(d: Doctor): void {
+    this.selectedDoctor = d;
+    this.doctorDisplay = `${d.nombres} ${d.apellidos}`;
+    this.doctorSearchText = '';
+    this.form.patchValue({ idDoctor: d.id });
+    this.showDoctorDropdown = false;
+    this.doctorHighlightIndex = -1;
   }
 
   onSubmit(): void {

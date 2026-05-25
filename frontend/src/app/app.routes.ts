@@ -28,6 +28,10 @@ export const routes: Routes = [
         loadChildren: () => import('./features/citas/citas.routes').then(m => m.citasRoutes)
       },
       {
+        path: 'historias-clinicas',
+        loadChildren: () => import('./features/historias-clinicas/historias-clinicas.routes').then(m => m.historiasClinicasRoutes)
+      },
+      {
         path: 'cambio-password',
         loadComponent: () => import('./features/auth/cambio-password/cambio-password.component').then(m => m.CambioPasswordComponent)
       },

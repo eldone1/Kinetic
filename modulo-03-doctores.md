@@ -11,9 +11,10 @@
 | Columna | Tipo | Restricciones | Descripción |
 |---------|------|---------------|-------------|
 | `id` | `BIGINT UNSIGNED` | PK, AUTO_INCREMENT | |
+| `usuario_id` | `BIGINT UNSIGNED` | NULL, UNIQUE, FK → usuarios(id) | Vinculación opcional con usuario del sistema |
 | `nombres` | `VARCHAR(100)` | NOT NULL | |
 | `apellidos` | `VARCHAR(100)` | NOT NULL | |
-| `dni` | `VARCHAR(8)` | NOT NULL, UNIQUE | |
+| `dni` | `VARCHAR(8)` | NULL, UNIQUE | NULL para doctores auto-creados desde usuario |
 | `especialidad` | `VARCHAR(100)` | NULL | |
 | `cmp` | `VARCHAR(20)` | NULL | Colegiatura |
 | `telefono` | `VARCHAR(15)` | NULL | |
@@ -25,6 +26,7 @@
 
 **Índices:**
 - `idx_doctores_dni` UNIQUE sobre `dni`
+- `idx_doctores_usuario_id` UNIQUE sobre `usuario_id`
 - `idx_doctores_nombres_apellidos` sobre `(nombres, apellidos)`
 - `idx_doctores_especialidad` sobre `especialidad`
 
@@ -55,6 +57,7 @@
 |--------|-----------|
 | `V5__crear_tabla_doctores.sql` | CREATE TABLE doctores |
 | `V6__crear_tabla_horarios_doctor.sql` | CREATE TABLE horarios_doctor |
+| `V9__add_usuario_id_to_doctores.sql` | ALTER: agrega `usuario_id` FK, hace `dni` nullable, backfill ROLE_DOCTOR existentes |
 
 ---
 
@@ -63,9 +66,10 @@
 ### `Doctor`
 
 - `Long id`
+- `Usuario usuario` (ManyToOne, nullable — vincula con usuario del sistema)
 - `String nombres`
 - `String apellidos`
-- `String dni`
+- `String dni` (nullable — puede ser null si se auto-creó desde un usuario)
 - `String especialidad`
 - `String cmp`
 - `String telefono`
@@ -128,6 +132,8 @@
 - Un doctor con citas/sesiones futuras no puede desactivarse sin confirmación
 - Solo ADMIN puede crear, editar o desactivar doctores
 - RECEPCION solo visualiza horarios y disponibilidad
+- **Auto-creación desde Usuario:** Al crear un `Usuario` con rol `ROLE_DOCTOR`, se genera automáticamente un registro en `doctores` vinculado por `usuario_id`. El DNI queda `NULL` hasta que se edite manualmente desde el formulario de doctores.
+- **Migración V9:** Los usuarios existentes con `ROLE_DOCTOR` se backfillean a la tabla `doctores` al ejecutar la migración Flyway.
 
 ---
 
@@ -186,7 +192,8 @@ backend/src/main/java/com/kineticrehab/
 
 backend/src/main/resources/db/migration/
 ├── V5__crear_tabla_doctores.sql
-└── V6__crear_tabla_horarios_doctor.sql
+├── V6__crear_tabla_horarios_doctor.sql
+└── V9__add_usuario_id_to_doctores.sql
 
 frontend/src/app/
 ├── core/
