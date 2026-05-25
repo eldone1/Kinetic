@@ -146,6 +146,7 @@ Arquitectura cliente-servidor en red local (LAN). Frontend SPA en Angular, Backe
 |---|---|---|
 | Doctores registrados como usuarios (ROLE_DOCTOR) no aparecían en selector de citas | Alta | ✅ Fix: V9 migración + auto-creación Doctor desde Usuario |
 | NullPointerException al editar doctor sin DNI | Alta | ✅ Fix: validación null-safe en DoctorServiceImpl.actualizar() |
+| Calendario no se inicializa (DOM oculto por *ngIf al momento de ngAfterViewInit) | Alta | ✅ Fix: inicializar Calendar tras cargar datos, cuando el DOM existe |
 
 ---
 

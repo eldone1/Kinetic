@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild, NgZone } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild, NgZone, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Calendar, EventClickArg } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -93,19 +93,14 @@ export class CitaListComponent implements OnInit, OnDestroy {
     private pacienteService: PacienteService,
     private doctorService: DoctorService,
     private authService: AuthService,
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
     const role = this.authService.getUserRole();
     this.puedeEditar = role === 'ROLE_ADMIN' || role === 'ROLE_RECEPCION';
     this.cargarDatos();
-  }
-
-  ngAfterViewInit(): void {
-    this.ngZone.runOutsideAngular(() => {
-      setTimeout(() => this.inicializarCalendar(), 100);
-    });
   }
 
   ngOnDestroy(): void {
@@ -120,14 +115,19 @@ export class CitaListComponent implements OnInit, OnDestroy {
       next: (data) => {
         this.citas = data;
         this.cargando = false;
-        setTimeout(() => this.actualizarEventos(), 50);
+        this.cdr.detectChanges();
+        this.inicializarCalendar();
       },
-      error: () => this.cargando = false
+      error: () => {
+        this.cargando = false;
+        this.cdr.detectChanges();
+      }
     });
   }
 
   private inicializarCalendar(): void {
     if (!this.calendarEl?.nativeElement) return;
+    this.calendar?.destroy();
 
     this.calendar = new Calendar(this.calendarEl.nativeElement, {
       plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],

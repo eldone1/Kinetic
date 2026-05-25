@@ -140,6 +140,7 @@
   - NO_ASISTIO: gris (#6b7280)
 - Click en fecha/slot → abre modal crear cita
 - Click en evento → abre modal editar cita
+- **Inicialización:** El contenedor `#calendarEl` está dentro de un `*ngIf="!cargando"`. El Calendar se crea en `inicializarCalendar()` llamada desde el subscribe de `cargarDatos()`. Se usa `ChangeDetectorRef.detectChanges()` **antes** de iniciar el Calendar para forzar la evaluación del `*ngIf` y la actualización de `@ViewChild`, garantizando que el nodo DOM exista. Al recargar datos (ej. tras guardar), se destruye y recrea limpiamente.
 
 ---
 
