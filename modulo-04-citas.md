@@ -108,7 +108,7 @@
 
 | Componente | Ruta | Descripción |
 |------------|------|-------------|
-| `CitaListComponent` | `/agenda` | Calendario FullCalendar con vistas mensual/semanal/diaria |
+| `CitaListComponent` | `/agenda` | Dos vistas toggleables: **Calendario** (FullCalendar mes/semana/día) y **Lista** (tabla agrupada por fecha con filtros y cambio de estado inline) |
 | `CitaFormComponent` | Modal | Formulario modal para crear/editar citas. **Paciente/Doctor:** autocomplete con búsqueda inline (filtra mientras escribes por nombres, apellidos, documento o especialidad). Navegación por teclado (↑↓→ Enter/Escape). |
 
 ### Servicios
@@ -141,6 +141,49 @@
 - Click en fecha/slot → abre modal crear cita
 - Click en evento → abre modal editar cita
 - **Inicialización:** El contenedor `#calendarEl` está dentro de un `*ngIf="!cargando"`. El Calendar se crea en `inicializarCalendar()` llamada desde el subscribe de `cargarDatos()`. Se usa `ChangeDetectorRef.detectChanges()` **antes** de iniciar el Calendar para forzar la evaluación del `*ngIf` y la actualización de `@ViewChild`, garantizando que el nodo DOM exista. Al recargar datos (ej. tras guardar), se destruye y recrea limpiamente.
+
+---
+
+## Vista Lista (Agregada en v2)
+
+Toggle **Calendario / Lista** en la cabecera del componente.
+
+### Filtros
+| Filtro | Tipo | Descripción |
+|--------|------|-------------|
+| Doctor | `select` | Filtra por doctor (todos los activos) |
+| Estado | `select` | PROGRAMADA, CONFIRMADA, EN_PROGRESO, COMPLETADA, CANCELADA, NO_ASISTIO |
+| Desde | `date` | Fecha de inicio del rango |
+| Hasta | `date` | Fecha de fin del rango |
+
+Botones de acceso rápido: **Hoy**, **Mañana**, **Esta semana**, **Limpiar filtros**.
+
+### Agrupación por día
+- Las citas se agrupan por fecha con headers: **Hoy** (destacado primary), **Mañana** (destacado ámbar), o **dd Mon yyyy** para el resto.
+- Cada grupo muestra su fecha y el contador de citas.
+
+### Columnas de la tabla
+| Columna | Descripción |
+|---------|-------------|
+| Hora | `horaInicio - horaFin` |
+| Paciente | Avatar inicial + nombre + documento |
+| Doctor | Nombre del doctor |
+| Tipo | Badge del tipo (CITA, EVALUACION, etc.) |
+| Estado | **Select inline** con color dinámico según estado. ADMIN/RECEPCION pueden cambiarlo directamente. Las opciones se colorean del mismo tono que el estado. |
+| Observaciones | Texto truncado o "—" |
+| Acciones | ✏️ Editar (abre modal) — ❌ Eliminar (solo ADMIN, con confirmación) |
+
+### Cambio de estado
+- Select desplegable inline con fondo coloreado según el estado actual.
+- Al seleccionar un nuevo estado, se llama al endpoint `PATCH /api/citas/{id}/estado`.
+- Mientras se procesa, el select se deshabilita con spinner loading.
+- Tras el cambio, se refrescan tanto la lista como el calendario (si está visible).
+- **Doctor** solo puede ver el estado como badge de solo lectura (no puede cambiarlo).
+
+### Eliminación
+- Solo ADMIN ve el botón ❌.
+- Confirmación con `confirm()` nativo antes de eliminar.
+- Soft delete vía `DELETE /api/citas/{id}`.
 
 ---
 

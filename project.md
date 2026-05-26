@@ -104,7 +104,7 @@ Arquitectura cliente-servidor en red local (LAN). Frontend SPA en Angular, Backe
 | Autenticación y Roles | Spring Security + JWT + BCrypt | ✅ Completado | 3 roles: admin, recepción, doctor |
 | Gestión de Pacientes | Angular + Spring Boot + JPA | ✅ Completado | Ficha completa, búsqueda por nombre/doc/tel, soft delete |
 | Gestión de Doctores | Angular + Spring Boot + JPA | ✅ Completado | CRUD, horarios semanales, activar/desactivar, soft delete. Auto-creación desde Usuario ROLE_DOCTOR (V9). DNI nullable. |
-| Agenda, Citas y Sesiones | FullCalendar + Spring Boot | ✅ Completado | Vista diaria/semanal/mensual, sin cruces, modal crear/editar con autocomplete para paciente/doctor, cambio de estado |
+| Agenda, Citas y Sesiones | FullCalendar + Spring Boot | ✅ Completado | Vista diaria/semanal/mensual, sin cruces, modal crear/editar con autocomplete para paciente/doctor, cambio de estado. **Vista Lista v2:** tabla agrupada por fecha, filtros por doctor/estado/rango, cambio de estado inline |
 | Historia Clínica y Tratamientos | Angular + Spring Boot + JPA | ✅ Completado | HC expandida (secciones A-F: control adm, anamnesis, antecedentes, heredo-familiares, signos vitales). Evaluaciones: Valoración SOAP + escalas EVA/BORG/Daniels + ROM + pruebas especiales + plan camilla/gym. Re-valoración con control de evolución. IMC automático. Solo ADMIN/DOCTOR |
 | Ventas, Caja y Pagos | Angular + Spring Boot | ⏳ Pendiente | Efectivo + Yape/Plin, ticket térmico |
 | Inventario y Productos | Angular + Spring Boot + JPA | ⏳ Pendiente | Lotes, vencimiento, alertas por correo |
@@ -127,6 +127,9 @@ Arquitectura cliente-servidor en red local (LAN). Frontend SPA en Angular, Backe
 | Recepción intenta acceder a /api/usuarios | ❌ Pendiente | Debe ser bloqueado (403) |
 | Agendar cita con horario ya ocupado | ✅ OK | Validación backend: 400 BadRequest con mensaje |
 | Doctor crea historia clínica de paciente | ✅ OK | HC creada con campos expandidos: control adm, antecedentes, heredo-familiares, signos vitales, IMC automático |
+| Vista Lista de citas con filtros (toggle Calendario/Lista) | ✅ OK | Vista lista con filtros por doctor, estado, rango de fechas |
+| Cambio de estado inline desde la lista (select) | ✅ OK | Select coloreado, PATCH /estado, refresh automático |
+| Eliminar cita desde la lista (solo ADMIN) | ✅ OK | Confirmación + soft delete |
 | Recepción intenta acceder a /api/historias-clinicas | ✅ OK | 403 Forbidden (solo ADMIN/DOCTOR) |
 | Doctor crea valoración fisioterapéutica | ✅ OK | Evaluación guardada con tipo VALORACION, escalas EVA/BORG/Daniels, ROM table, pruebas especiales, plan camilla/gym, CIE-10 |
 | Doctor crea re-valoración (control evolución) | ✅ OK | Evaluación con tipo REVALORACION, motivo control, progreso, movilidad actualizada, objetivos modificados, planes actualizados |
@@ -147,6 +150,7 @@ Arquitectura cliente-servidor en red local (LAN). Frontend SPA en Angular, Backe
 | Doctores registrados como usuarios (ROLE_DOCTOR) no aparecían en selector de citas | Alta | ✅ Fix: V9 migración + auto-creación Doctor desde Usuario |
 | NullPointerException al editar doctor sin DNI | Alta | ✅ Fix: validación null-safe en DoctorServiceImpl.actualizar() |
 | Calendario no se inicializa (DOM oculto por *ngIf al momento de ngAfterViewInit) | Alta | ✅ Fix: inicializar Calendar tras cargar datos, cuando el DOM existe |
+| Falta vista de lista de citas con filtros y cambio de estado inline | Media | ✅ Fix: agregada vista Lista con toggle Calendario/Lista en cita-list.component.ts |
 
 ---
 
