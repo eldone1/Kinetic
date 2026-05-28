@@ -12,8 +12,10 @@ import com.kineticrehab.exception.ResourceNotFoundException;
 import com.kineticrehab.mapper.DoctorMapper;
 import com.kineticrehab.model.Doctor;
 import com.kineticrehab.model.HorarioDoctor;
+import com.kineticrehab.model.Usuario;
 import com.kineticrehab.repository.DoctorRepository;
 import com.kineticrehab.repository.HorarioDoctorRepository;
+import com.kineticrehab.repository.UsuarioRepository;
 import com.kineticrehab.service.DoctorService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +34,7 @@ public class DoctorServiceImpl implements DoctorService {
 
     private final DoctorRepository doctorRepository;
     private final HorarioDoctorRepository horarioDoctorRepository;
+    private final UsuarioRepository usuarioRepository;
     private final DoctorMapper doctorMapper;
 
     @Override
@@ -147,6 +150,17 @@ public class DoctorServiceImpl implements DoctorService {
         return doctorRepository.findByActivoTrueAndDeletedAtIsNullOrderByApellidosAsc().stream()
                 .map(doctorMapper::toDTO)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public DoctorResponseDTO buscarPorUsernameUsuario(String username) {
+        log.info("Buscando perfil de doctor para el usuario: {}", username);
+        Usuario usuario = usuarioRepository.findByUsernameAndDeletedAtIsNull(username)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado: " + username));
+        return doctorRepository.findByUsuarioIdAndDeletedAtIsNull(usuario.getId())
+                .map(doctorMapper::toDTO)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "No se encontró un perfil de doctor para el usuario: " + username));
     }
 
     @Override

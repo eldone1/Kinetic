@@ -99,6 +99,7 @@
 - Solo ADMIN y RECEPCION pueden crear, editar o eliminar citas
 - DOCTOR solo puede cambiar el estado de las citas
 - Soft delete en lugar de borrado físico
+- **Filtro Doctor por rol:** ADMIN/RECEPCION ven todos los doctores registrados (`listarTodos`). DOCTOR ve solo doctores activos (`listarDisponibles`) y su perfil se preselecciona automáticamente en el filtro vía endpoint `/api/doctores/yo`.
 
 ---
 

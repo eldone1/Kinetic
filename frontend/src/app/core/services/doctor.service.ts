@@ -26,6 +26,10 @@ export class DoctorService {
     return this.http.get<Doctor[]>(`${this.API_URL}/disponibles`);
   }
 
+  obtenerMiPerfil(): Observable<Doctor> {
+    return this.http.get<Doctor>(`${this.API_URL}/yo`);
+  }
+
   crear(dto: DoctorRequest): Observable<Doctor> {
     return this.http.post<Doctor>(this.API_URL, dto);
   }

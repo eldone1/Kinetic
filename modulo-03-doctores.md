@@ -115,7 +115,8 @@
 | `GET` | `/api/doctores` | ADMIN, RECEPCION, DOCTOR | Listar doctores activos |
 | `GET` | `/api/doctores/{id}` | ADMIN, RECEPCION, DOCTOR | Buscar doctor por ID |
 | `GET` | `/api/doctores/buscar?q=` | ADMIN, RECEPCION | Buscar por nombre, DNI o especialidad |
-| `GET` | `/api/doctores/disponibles` | ADMIN, RECEPCION | Listar solo doctores activos (para combos) |
+| `GET` | `/api/doctores/disponibles` | ADMIN, RECEPCION, DOCTOR | Listar solo doctores activos (para combos) |
+| `GET` | `/api/doctores/yo` | DOCTOR | Obtener perfil del doctor del usuario autenticado |
 | `POST` | `/api/doctores` | ADMIN | Crear doctor |
 | `PUT` | `/api/doctores/{id}` | ADMIN | Actualizar doctor |
 | `PATCH` | `/api/doctores/{id}/estado` | ADMIN | Activar/desactivar doctor |

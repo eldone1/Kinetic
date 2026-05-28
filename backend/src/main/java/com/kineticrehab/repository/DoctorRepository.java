@@ -20,6 +20,8 @@ public interface DoctorRepository extends JpaRepository<Doctor, Long> {
 
     List<Doctor> findByActivoTrueAndDeletedAtIsNullOrderByApellidosAsc();
 
+    Optional<Doctor> findByUsuarioIdAndDeletedAtIsNull(Long usuarioId);
+
     List<Doctor> findByNombresContainingIgnoreCaseAndDeletedAtIsNullOrApellidosContainingIgnoreCaseAndDeletedAtIsNull(
             String nombres, String apellidos);
 

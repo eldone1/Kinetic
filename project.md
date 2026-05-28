@@ -151,6 +151,8 @@ Arquitectura cliente-servidor en red local (LAN). Frontend SPA en Angular, Backe
 | NullPointerException al editar doctor sin DNI | Alta | ✅ Fix: validación null-safe en DoctorServiceImpl.actualizar() |
 | Calendario no se inicializa (DOM oculto por *ngIf al momento de ngAfterViewInit) | Alta | ✅ Fix: inicializar Calendar tras cargar datos, cuando el DOM existe |
 | Falta vista de lista de citas con filtros y cambio de estado inline | Media | ✅ Fix: agregada vista Lista con toggle Calendario/Lista en cita-list.component.ts |
+| Doctor (ROLE_DOCTOR) no podía cargar lista de doctores (403 en `/disponibles`) ni preseleccionar su perfil | Alta | ✅ Fix: agregado DOCTOR a `@PreAuthorize` de `/disponibles`, nuevo endpoint `GET /api/doctores/yo`, frontend preselecciona doctor logueado |
+| Recepción usaba `listarDisponibles` (solo activos) en vez de `listarTodos` (todos los registrados) | Baja | ✅ Fix: cambiado a `listarTodos()` para ADMIN/RECEPCION en cita-list.component.ts |
 
 ---
 

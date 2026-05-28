@@ -27,6 +27,8 @@ public interface DoctorService {
 
     List<DoctorResponseDTO> listarDisponibles();
 
+    DoctorResponseDTO buscarPorUsernameUsuario(String username);
+
     DoctorHorariosResponseDTO obtenerHorarios(Long doctorId);
 
     List<HorarioResponseDTO> actualizarHorarios(Long doctorId, List<HorarioRequestDTO> horarios);

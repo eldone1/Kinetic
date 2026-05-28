@@ -253,6 +253,8 @@ export class CitaListComponent implements OnInit, OnDestroy {
   citaSeleccionada?: Cita;
   puedeEditar = false;
   esAdmin = false;
+  esDoctor = false;
+  doctorActualId: number | null = null;
   vista: 'calendario' | 'lista' = 'calendario';
   cambiandoEstadoId: number | null = null;
   citasFiltradas: Cita[] = [];
@@ -288,6 +290,7 @@ export class CitaListComponent implements OnInit, OnDestroy {
     const role = this.authService.getUserRole();
     this.puedeEditar = role === 'ROLE_ADMIN' || role === 'ROLE_RECEPCION';
     this.esAdmin = role === 'ROLE_ADMIN';
+    this.esDoctor = role === 'ROLE_DOCTOR';
     this.cargarDatos();
   }
 
@@ -297,14 +300,32 @@ export class CitaListComponent implements OnInit, OnDestroy {
 
   private cargarDatos(): void {
     this.cargando = true;
+
     this.pacienteService.listarTodos().subscribe({
       next: p => this.pacientes = p,
       error: () => this.pacientes = []
     });
-    this.doctorService.listarDisponibles().subscribe({
-      next: d => this.doctores = d,
-      error: () => this.doctores = []
-    });
+
+    if (this.esDoctor) {
+      this.doctorService.listarDisponibles().subscribe({
+        next: d => this.doctores = d,
+        error: () => this.doctores = []
+      });
+      this.doctorService.obtenerMiPerfil().subscribe({
+        next: d => {
+          this.doctorActualId = d.id;
+          this.filtroDoctorId = d.id;
+          this.aplicarFiltros();
+        },
+        error: () => {}
+      });
+    } else {
+      this.doctorService.listarTodos().subscribe({
+        next: d => this.doctores = d,
+        error: () => this.doctores = []
+      });
+    }
+
     this.citaService.listarTodas().subscribe({
       next: (data) => {
         this.citas = data;

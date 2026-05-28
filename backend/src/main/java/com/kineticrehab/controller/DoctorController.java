@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -50,9 +51,16 @@ public class DoctorController {
 
     @GetMapping("/disponibles")
     @Operation(summary = "Listar doctores activos (para combos/selectores)")
-    @PreAuthorize("hasAnyRole('ADMIN', 'RECEPCION')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'RECEPCION', 'DOCTOR')")
     public ResponseEntity<List<DoctorResponseDTO>> listarDisponibles() {
         return ResponseEntity.ok(doctorService.listarDisponibles());
+    }
+
+    @GetMapping("/yo")
+    @Operation(summary = "Obtener perfil del doctor del usuario autenticado")
+    @PreAuthorize("hasRole('DOCTOR')")
+    public ResponseEntity<DoctorResponseDTO> miPerfil(Authentication authentication) {
+        return ResponseEntity.ok(doctorService.buscarPorUsernameUsuario(authentication.getName()));
     }
 
     @PostMapping
