@@ -12,6 +12,7 @@ import com.kineticrehab.model.Paciente;
 import com.kineticrehab.repository.CitaRepository;
 import com.kineticrehab.repository.DoctorRepository;
 import com.kineticrehab.repository.PacienteRepository;
+import com.kineticrehab.repository.VentaRepository;
 import com.kineticrehab.service.CitaService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +33,7 @@ public class CitaServiceImpl implements CitaService {
     private final CitaRepository citaRepository;
     private final DoctorRepository doctorRepository;
     private final PacienteRepository pacienteRepository;
+    private final VentaRepository ventaRepository;
     private final CitaMapper citaMapper;
 
     @Override
@@ -134,6 +136,7 @@ public class CitaServiceImpl implements CitaService {
         cita.setHoraFin(dto.getHoraFin());
         cita.setTipo(dto.getTipo());
         cita.setObservaciones(dto.getObservaciones());
+        cita.setPrecio(dto.getPrecio());
 
         cita = citaRepository.save(cita);
         log.info("Cita actualizada exitosamente con id: {}", cita.getId());
@@ -164,6 +167,16 @@ public class CitaServiceImpl implements CitaService {
         cita.setDeletedAt(LocalDateTime.now());
         citaRepository.save(cita);
         log.info("Cita eliminada con id: {}", id);
+    }
+
+    @Override
+    public List<CitaResponseDTO> listarPendientesPago(Long pacienteId) {
+        log.info("Listando citas pendientes de pago del paciente: {}", pacienteId);
+        return citaRepository.findByPacienteIdAndDeletedAtIsNullOrderByFechaDescHoraInicioDesc(pacienteId).stream()
+                .filter(c -> "COMPLETADA".equals(c.getEstado()))
+                .filter(c -> ventaRepository.findByCitaIdAndDeletedAtIsNull(c.getId()).isEmpty())
+                .map(citaMapper::toDTO)
+                .collect(Collectors.toList());
     }
 
     private void validarHorario(LocalTime horaInicio, LocalTime horaFin) {

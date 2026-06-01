@@ -12,6 +12,7 @@ export interface Cita {
   tipo: string;
   estado: string;
   observaciones: string;
+  precio: number | null;
   createdAt: string;
 }
 
@@ -23,6 +24,7 @@ export interface CitaRequest {
   horaFin: string;
   tipo: string;
   observaciones?: string;
+  precio?: number | null;
 }
 
 export interface CitaEstadoRequest {

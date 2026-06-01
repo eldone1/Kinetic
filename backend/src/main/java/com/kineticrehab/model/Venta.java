@@ -4,51 +4,55 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 @Entity
-@Table(name = "citas")
+@Table(name = "ventas")
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Cita {
+public class Venta {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_caja", nullable = false)
+    private Caja caja;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_paciente", nullable = false)
     private Paciente paciente;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_doctor", nullable = false)
-    private Doctor doctor;
+    @JoinColumn(name = "id_cita", nullable = false)
+    private Cita cita;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_usuario", nullable = false)
+    private Usuario usuario;
+
+    @Column(name = "fecha_venta", nullable = false)
+    private LocalDateTime fechaVenta;
 
     @Column(nullable = false)
-    private LocalDate fecha;
+    private BigDecimal total;
 
-    @Column(name = "hora_inicio", nullable = false)
-    private LocalTime horaInicio;
+    @Column(name = "metodo_pago", nullable = false, length = 20)
+    private String metodoPago;
 
-    @Column(name = "hora_fin", nullable = false)
-    private LocalTime horaFin;
+    @Column(name = "monto_recibido")
+    private BigDecimal montoRecibido;
+
+    @Column
+    private BigDecimal cambio;
 
     @Column(nullable = false, length = 20)
-    private String tipo;
-
-    @Column(nullable = false, length = 20)
-    private String estado;
-
-    @Column(columnDefinition = "TEXT")
-    private String observaciones;
-
-    @Column(precision = 10, scale = 2)
-    private BigDecimal precio;
+    @Builder.Default
+    private String estado = "COMPLETADA";
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -63,8 +67,6 @@ public class Cita {
     protected void onCreate() {
         createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
-        if (tipo == null) tipo = "CITA";
-        if (estado == null) estado = "PROGRAMADA";
     }
 
     @PreUpdate

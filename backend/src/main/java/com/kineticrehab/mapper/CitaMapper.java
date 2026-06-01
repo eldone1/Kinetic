@@ -25,6 +25,7 @@ public class CitaMapper {
                 .tipo(cita.getTipo())
                 .estado(cita.getEstado())
                 .observaciones(cita.getObservaciones())
+                .precio(cita.getPrecio())
                 .createdAt(cita.getCreatedAt())
                 .build();
     }
@@ -38,6 +39,7 @@ public class CitaMapper {
                 .horaFin(dto.getHoraFin())
                 .tipo(dto.getTipo())
                 .observaciones(dto.getObservaciones())
+                .precio(dto.getPrecio())
                 .build();
     }
 }

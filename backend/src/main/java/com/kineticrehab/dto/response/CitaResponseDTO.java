@@ -2,6 +2,7 @@ package com.kineticrehab.dto.response;
 
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -25,5 +26,6 @@ public class CitaResponseDTO {
     private String tipo;
     private String estado;
     private String observaciones;
+    private BigDecimal precio;
     private LocalDateTime createdAt;
 }

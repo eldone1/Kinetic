@@ -71,6 +71,13 @@ public class CitaController {
         return ResponseEntity.ok(citaService.listarPorRangoFechas(fechaInicio, fechaFin));
     }
 
+    @GetMapping("/pendientes-pago/{pacienteId}")
+    @Operation(summary = "Listar citas COMPLETADA no facturadas de un paciente")
+    @PreAuthorize("hasAnyRole('ADMIN', 'RECEPCION')")
+    public ResponseEntity<List<CitaResponseDTO>> listarPendientesPago(@PathVariable Long pacienteId) {
+        return ResponseEntity.ok(citaService.listarPendientesPago(pacienteId));
+    }
+
     @GetMapping("/estado/{estado}")
     @Operation(summary = "Listar citas por estado")
     @PreAuthorize("hasAnyRole('ADMIN', 'RECEPCION')")

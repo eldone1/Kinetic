@@ -53,4 +53,8 @@ export class CitaService {
   eliminar(id: number): Observable<void> {
     return this.http.delete<void>(`${this.API_URL}/${id}`);
   }
+
+  listarPendientesPago(pacienteId: number): Observable<Cita[]> {
+    return this.http.get<Cita[]>(`${this.API_URL}/pendientes-pago/${pacienteId}`);
+  }
 }

@@ -30,4 +30,6 @@ public interface CitaService {
     void cambiarEstado(Long id, CitaEstadoRequestDTO dto);
 
     void eliminar(Long id);
+
+    List<CitaResponseDTO> listarPendientesPago(Long pacienteId);
 }

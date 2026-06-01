@@ -30,8 +30,8 @@ Sistema web completo para centro de rehabilitación física. Incluye gestión de
 - [x] Gestión de doctores y personal médico: horarios, especialidades, disponibilidad
 - [ ] Agenda, citas y sesiones: calendario diario/semanal/mensual, estados, sin cruces de horario
 - [x] Historia clínica: evaluaciones, re-valoraciones, tratamientos, sesiones, evolución del paciente
-- [ ] Módulo de ventas y caja: cobros de servicios y productos, efectivo y billeteras digitales (Yape/Plin)
-- [ ] Gestión de inventario: stock, lotes, fechas de vencimiento, alertas de bajo stock
+- [x] Módulo de ventas y caja (MVP): apertura/cierre de caja, cobro de servicios (citas COMPLETADA), efectivo + Yape/Plin
+- [ ] Gestión de inventario: stock, lotes, fechas de vencimiento, alertas de bajo stock (escala futura)
 - [ ] Reportes y dashboard: ventas, pacientes atendidos, sesiones, ingresos, exportación PDF y Excel
 
 ### Requisitos No Funcionales
@@ -90,7 +90,7 @@ Arquitectura cliente-servidor en red local (LAN). Frontend SPA en Angular, Backe
 | 3 | Doctores | 2025-06-21 | 2025-06-30 | ✅ Completado |
 | 4 | Agenda, Citas y Sesiones | 2025-07-01 | 2025-07-20 | ✅ Completado |
 | 5 | Historia Clínica y Tratamientos | 2025-07-21 | 2025-08-05 | ✅ Completado |
-| 6 | Ventas, Caja e Inventario | 2025-08-06 | 2025-08-20 | ⏳ Pendiente |
+| 6 | Ventas, Caja e Inventario — MVP Servicios | 2025-08-06 | 2025-08-20 | ⏳ Pendiente (diseñado) |
 | 7 | Reportes y Dashboard | 2025-08-21 | 2025-08-31 | ⏳ Pendiente |
 | 8 | Pruebas y Ajustes | 2025-09-01 | 2025-09-15 | ⏳ Pendiente |
 | 9 | Despliegue y Capacitación | 2025-09-16 | 2025-09-30 | ⏳ Pendiente |
@@ -106,8 +106,8 @@ Arquitectura cliente-servidor en red local (LAN). Frontend SPA en Angular, Backe
 | Gestión de Doctores | Angular + Spring Boot + JPA | ✅ Completado | CRUD, horarios semanales, activar/desactivar, soft delete. Auto-creación desde Usuario ROLE_DOCTOR (V9). DNI nullable. |
 | Agenda, Citas y Sesiones | FullCalendar + Spring Boot | ✅ Completado | Vista diaria/semanal/mensual, sin cruces, modal crear/editar con autocomplete para paciente/doctor, cambio de estado. **Vista Lista v2:** tabla agrupada por fecha, filtros por doctor/estado/rango, cambio de estado inline |
 | Historia Clínica y Tratamientos | Angular + Spring Boot + JPA | ✅ Completado | HC expandida (secciones A-F: control adm, anamnesis, antecedentes, heredo-familiares, signos vitales). Evaluaciones: Valoración SOAP + escalas EVA/BORG/Daniels + ROM + pruebas especiales + plan camilla/gym. Re-valoración con control de evolución. IMC automático. Solo ADMIN/DOCTOR |
-| Ventas, Caja y Pagos | Angular + Spring Boot | ⏳ Pendiente | Efectivo + Yape/Plin, ticket térmico |
-| Inventario y Productos | Angular + Spring Boot + JPA | ⏳ Pendiente | Lotes, vencimiento, alertas por correo |
+| Ventas y Caja (MVP Servicios) | Angular + Spring Boot + JPA | ⏳ Pendiente (diseñado) | MVP: apertura/cierre caja, cobro citas COMPLETADA, Efectivo+Yape/Plin. Escala futura: venta productos |
+| Inventario y Productos | Angular + Spring Boot + JPA | ⏳ Pendiente | Lotes, vencimiento, alertas por correo (escala futura) |
 | Reportes y Dashboard | Angular + Chart.js + iText/Apache POI | ⏳ Pendiente | PDF y Excel, solo para administrador |
 | Auditoría y Logs | Spring Boot AOP / Interceptors | ⏳ Pendiente | Registro de usuario, fecha y hora |
 
@@ -137,9 +137,18 @@ Arquitectura cliente-servidor en red local (LAN). Frontend SPA en Angular, Backe
 | Registrar sesión de tratamiento | ✅ OK | Sesión creada con evaluación subjetiva/objetiva y tratamiento realizado |
 | Marcar sesión como REALIZADA/NO_ASISTIO | ✅ OK | Estado actualizado con flag de asistencia |
 | Cambiar estado de tratamiento a COMPLETADO | ✅ OK | Estado actualizado vía PATCH |
+| Aperturar caja con monto inicial | ⏳ Pendiente M6 | — |
+| Cobrar cita completada con efectivo (mostrar vuelto) | ⏳ Pendiente M6 | — |
+| Cobrar cita completada con Yape/Plin (sin vuelto) | ⏳ Pendiente M6 | — |
+| Buscar paciente por nombre/DNI en cobro | ⏳ Pendiente M6 | — |
+| Intentar cobrar cita ya facturada | ⏳ Pendiente M6 | Debe dar error (409) |
+| Intentar cobrar sin caja activa | ⏳ Pendiente M6 | Debe dar error (400) |
+| Cerrar caja con resumen de ventas | ⏳ Pendiente M6 | — |
+| Admin ve lista de cajas (activas/cerradas) con ventas | ⏳ Pendiente M6 | — |
+| Intentar cobrar cita en estado no COMPLETADA | ⏳ Pendiente M6 | Debe filtrarse |
+| Recepción ve solo sus propias cajas | ⏳ Pendiente M6 | — |
 | Venta con stock insuficiente | ⏳ Pendiente | — |
 | Alerta de stock bajo por correo | ⏳ Pendiente | — |
-| Cierre de caja diario | ⏳ Pendiente | — |
 | Exportar reporte de ventas mensual en PDF | ⏳ Pendiente | — |
 | Backup automático a las 11pm | ⏳ Pendiente | — |
 
