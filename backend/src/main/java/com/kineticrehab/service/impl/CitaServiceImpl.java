@@ -8,10 +8,12 @@ import com.kineticrehab.exception.ResourceNotFoundException;
 import com.kineticrehab.mapper.CitaMapper;
 import com.kineticrehab.model.Cita;
 import com.kineticrehab.model.Doctor;
+import com.kineticrehab.model.HorarioDoctor;
 import com.kineticrehab.model.Paciente;
 import com.kineticrehab.model.Servicio;
 import com.kineticrehab.repository.CitaRepository;
 import com.kineticrehab.repository.DoctorRepository;
+import com.kineticrehab.repository.HorarioDoctorRepository;
 import com.kineticrehab.repository.PacienteRepository;
 import com.kineticrehab.repository.ServicioRepository;
 import com.kineticrehab.repository.VentaRepository;
@@ -21,10 +23,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,10 +38,21 @@ public class CitaServiceImpl implements CitaService {
 
     private final CitaRepository citaRepository;
     private final DoctorRepository doctorRepository;
+    private final HorarioDoctorRepository horarioDoctorRepository;
     private final PacienteRepository pacienteRepository;
     private final ServicioRepository servicioRepository;
     private final VentaRepository ventaRepository;
     private final CitaMapper citaMapper;
+
+    private static final Map<DayOfWeek, String> DIAS = Map.of(
+            DayOfWeek.MONDAY, "LUNES",
+            DayOfWeek.TUESDAY, "MARTES",
+            DayOfWeek.WEDNESDAY, "MIERCOLES",
+            DayOfWeek.THURSDAY, "JUEVES",
+            DayOfWeek.FRIDAY, "VIERNES",
+            DayOfWeek.SATURDAY, "SABADO",
+            DayOfWeek.SUNDAY, "DOMINGO"
+    );
 
     @Override
     public List<CitaResponseDTO> listarTodas() {
@@ -110,6 +125,7 @@ public class CitaServiceImpl implements CitaService {
                 .orElseThrow(() -> new ResourceNotFoundException("Servicio no encontrado con id: " + dto.getIdServicio()));
 
         validarHorario(dto.getHoraInicio(), dto.getHoraFin());
+        validarHorarioDoctor(dto.getIdDoctor(), dto.getFecha(), dto.getHoraInicio(), dto.getHoraFin());
         validarSinCruces(null, dto.getIdDoctor(), dto.getFecha(), dto.getHoraInicio(), dto.getHoraFin());
 
         Cita cita = citaMapper.toEntity(dto, paciente, doctor, servicio);
@@ -136,6 +152,7 @@ public class CitaServiceImpl implements CitaService {
                 .orElseThrow(() -> new ResourceNotFoundException("Servicio no encontrado con id: " + dto.getIdServicio()));
 
         validarHorario(dto.getHoraInicio(), dto.getHoraFin());
+        validarHorarioDoctor(dto.getIdDoctor(), dto.getFecha(), dto.getHoraInicio(), dto.getHoraFin());
         validarSinCruces(id, dto.getIdDoctor(), dto.getFecha(), dto.getHoraInicio(), dto.getHoraFin());
 
         cita.setPaciente(paciente);
@@ -191,6 +208,32 @@ public class CitaServiceImpl implements CitaService {
     private void validarHorario(LocalTime horaInicio, LocalTime horaFin) {
         if (horaInicio != null && horaFin != null && !horaInicio.isBefore(horaFin)) {
             throw new BadRequestException("La hora de inicio debe ser anterior a la hora de fin");
+        }
+    }
+
+    private void validarHorarioDoctor(Long doctorId, LocalDate fecha,
+                                       LocalTime horaInicio, LocalTime horaFin) {
+        String diaSemana = DIAS.get(fecha.getDayOfWeek());
+
+        List<HorarioDoctor> horarios = horarioDoctorRepository
+                .findByDoctorIdAndDeletedAtIsNullOrderByDiaSemanaAscHoraInicioAsc(doctorId).stream()
+                .filter(h -> h.getDiaSemana().equals(diaSemana))
+                .toList();
+
+        if (horarios.isEmpty()) {
+            String nombreDia = diaSemana.charAt(0) + diaSemana.substring(1).toLowerCase();
+            throw new BadRequestException("El doctor no atiende los " + nombreDia);
+        }
+
+        boolean dentroDeHorario = horarios.stream().anyMatch(h ->
+                !horaInicio.isBefore(h.getHoraInicio()) && !horaFin.isAfter(h.getHoraFin()));
+
+        if (!dentroDeHorario) {
+            String bloques = horarios.stream()
+                    .map(h -> h.getHoraInicio() + " - " + h.getHoraFin())
+                    .collect(Collectors.joining(", "));
+            throw new BadRequestException(
+                    "La cita debe estar dentro del horario del doctor (" + bloques + ")");
         }
     }
 

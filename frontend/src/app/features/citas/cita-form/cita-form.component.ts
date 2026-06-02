@@ -119,7 +119,12 @@ import { Servicio } from '../../../models/servicio.model';
             </div>
           </div>
 
-          <div class="mt-6 flex gap-3">
+          <div *ngIf="errorMessage"
+            class="mt-4 p-3 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm">
+            {{ errorMessage }}
+          </div>
+
+          <div class="mt-4 flex gap-3">
             <button type="submit" [disabled]="form.invalid || enviando"
               class="btn-primary">
               <span *ngIf="enviando" class="inline-block mr-2 w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
@@ -141,6 +146,7 @@ export class CitaFormComponent implements OnInit {
   @Input() doctores: Doctor[] = [];
   @Input() servicios: Servicio[] = [];
   @Input() enviando = false;
+  @Input() errorMessage: string | null = null;
   @Output() cerrar = new EventEmitter<void>();
   @Output() guardar = new EventEmitter<CitaRequest>();
 

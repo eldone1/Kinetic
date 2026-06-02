@@ -232,6 +232,7 @@ const ETIQUETAS_ESTADO: Record<string, string> = {
       [doctores]="doctores"
       [servicios]="servicios"
       [enviando]="enviando"
+      [errorMessage]="errorMessage"
       (cerrar)="cerrarFormulario()"
       (guardar)="onGuardar($event)">
     </app-cita-form>
@@ -247,6 +248,7 @@ export class CitaListComponent implements OnInit, OnDestroy {
   servicios: Servicio[] = [];
   cargando = true;
   showForm = false;
+  errorMessage: string | null = null;
   enviando = false;
   citaSeleccionada?: Cita;
   puedeEditar = false;
@@ -584,6 +586,7 @@ export class CitaListComponent implements OnInit, OnDestroy {
   cerrarFormulario(): void {
     this.showForm = false;
     this.citaSeleccionada = undefined;
+    this.errorMessage = null;
   }
 
   onGuardar(dto: CitaRequest): void {
@@ -598,8 +601,9 @@ export class CitaListComponent implements OnInit, OnDestroy {
         this.cerrarFormulario();
         this.cargarDatos();
       },
-      error: () => {
+      error: (err) => {
         this.enviando = false;
+        this.errorMessage = err.error?.mensaje || 'Error al guardar la cita';
       }
     });
   }
