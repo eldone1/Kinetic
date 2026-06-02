@@ -1,6 +1,6 @@
-# Módulo 6: Ventas, Caja e Inventario — MVP (Solo Servicios)
+# Módulo 6: Ventas, Caja e Inventario — MVP (Solo Servicios) ✅ COMPLETADO
 
-> MVP enfocado en cobro de servicios (citas completadas).  
+> MVP enfocado en cobro de servicios (citas completadas) con catálogo de precios fijos y validación de horarios del doctor.  
 > *Escala futura: venta de productos con inventario, lotes, alertas.*
 
 ---
@@ -15,6 +15,10 @@
 - [x] Cálculo de vuelto para pagos en efectivo
 - [x] Validación: solo citas `COMPLETADA` y no facturadas
 - [x] Admin puede ver cajas activas/cerradas y sus cobros
+- [x] Catálogo de servicios con precios fijos (solo ADMIN gestiona)
+- [x] Al crear cita, se selecciona servicio del catálogo y el precio se auto-asigna (snapshot)
+- [x] Validación de horario del doctor al crear/editar cita (día laboral + bloque horario)
+- [x] Mensajes de error visibles en frontend para validaciones de horario
 
 ### Excluye (escala futura)
 - ❌ Venta de productos físicos con stock
@@ -425,3 +429,15 @@ Siguiendo el orden definido en OPENCODE.md:
 23. **Nuevos componentes**: CajaApertura, Cobro, Cierre, AdminCajas
 24. **Rutas**: `ventas.routes.ts`
 25. **Actualizar**: `app.routes.ts` (agregar rutas de ventas)
+
+---
+
+## 9. Última Sesión — Mensajes de Error en Frontend
+
+Al final de la implementación se agregó:
+
+- **Backend**: `GlobalExceptionHandler` retorna `ErrorResponseDTO { status, mensaje, timestamp }` para `BadRequestException`
+- **Frontend `cita-form.component.ts`**: nuevo `@Input() errorMessage: string | null` + banner rojo (`bg-red-50 border-red-200`) entre campos y botones
+- **Frontend `cita-list.component.ts`**: extrae `err.error.mensaje` del error HTTP y lo pasa al form; se limpia al cerrar o guardar exitosamente
+
+### Próximo módulo sugerido: Módulo 7 — Reportes y Dashboard

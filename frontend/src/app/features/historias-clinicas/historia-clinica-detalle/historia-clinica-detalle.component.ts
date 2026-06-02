@@ -389,6 +389,7 @@ type Tab = 'general' | 'evaluaciones' | 'tratamientos' | 'sesiones';
             <p class="text-xs text-gray-400">Dr. {{ t.nombreDoctor }}</p>
           </div>
           <div class="flex gap-1">
+            <button (click)="verTratamiento(t)" class="btn-ghost text-xs">Ver</button>
             <button (click)="abrirSesiones(t)" class="btn-ghost text-xs">Sesiones</button>
             <button (click)="editarTratamiento(t)" class="btn-ghost text-xs">Editar</button>
             <button (click)="cambiarEstadoTratamiento(t)" class="btn-ghost text-xs">{{ t.estado === 'ACTIVO' ? 'Completar' : 'Reactivar' }}</button>
@@ -426,6 +427,7 @@ type Tab = 'general' | 'evaluaciones' | 'tratamientos' | 'sesiones';
             <p class="text-xs text-gray-400">{{ s.nombreTratamiento }}</p>
           </div>
           <div class="flex gap-1">
+            <button (click)="verSesion(s)" class="btn-ghost text-xs">Ver</button>
             <button (click)="editarSesion(s)" class="btn-ghost text-xs">Editar</button>
             <button (click)="cambiarEstadoSesion(s)" class="btn-ghost text-xs">{{ s.estado === 'PROGRAMADA' ? 'Realizar' : s.estado === 'REALIZADA' ? 'Reprogramar' : 'Reabrir' }}</button>
             <button (click)="eliminarSesion(s)" class="btn-danger text-xs">Eliminar</button>
@@ -439,8 +441,9 @@ type Tab = 'general' | 'evaluaciones' | 'tratamientos' | 'sesiones';
 <!-- ========== MODAL EVALUACIÓN (Valoración / Re-valoración) ========== -->
 <div *ngIf="showModalEvaluacion" class="fixed inset-0 bg-black/30 flex items-start justify-center pt-6 z-50 overflow-y-auto" (click.self)="cerrarModalEvaluacion()">
   <div class="bg-white rounded-2xl shadow-xl w-full max-w-3xl mx-4 p-6 animate-fade-in mb-6">
-    <h3 class="text-lg font-bold text-gray-800 font-heading mb-4">{{ evalEditando ? 'Editar Evaluación' : evalForm.tipo === 'VALORACION' ? 'Nueva Valoración Fisioterapéutica' : 'Nueva Re-valoración' }}</h3>
+    <h3 class="text-lg font-bold text-gray-800 font-heading mb-4">{{ evaluacionVer ? 'Ver Evaluación' : evalEditando ? 'Editar Evaluación' : evalForm.tipo === 'VALORACION' ? 'Nueva Valoración Fisioterapéutica' : 'Nueva Re-valoración' }}</h3>
 
+    <fieldset [disabled]="evaluacionVer">
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
       <div>
         <label class="block text-sm font-medium text-gray-600 mb-1">Fecha *</label>
@@ -609,9 +612,11 @@ type Tab = 'general' | 'evaluaciones' | 'tratamientos' | 'sesiones';
       </div>
     </div>
 
+    </fieldset>
+
     <div class="flex gap-2 justify-end mt-4">
-      <button (click)="cerrarModalEvaluacion()" class="btn-ghost">Cancelar</button>
-      <button (click)="guardarEvaluacion()" [disabled]="!evalForm.fecha || !evalForm.tipo || guardando" class="btn-primary">{{ guardando ? 'Guardando...' : 'Guardar' }}</button>
+      <button (click)="cerrarModalEvaluacion()" class="btn-ghost">{{ evaluacionVer ? 'Cerrar' : 'Cancelar' }}</button>
+      <button *ngIf="!evaluacionVer" (click)="guardarEvaluacion()" [disabled]="!evalForm.fecha || !evalForm.tipo || guardando" class="btn-primary">{{ guardando ? 'Guardando...' : 'Guardar' }}</button>
     </div>
   </div>
 </div>
@@ -619,8 +624,9 @@ type Tab = 'general' | 'evaluaciones' | 'tratamientos' | 'sesiones';
 <!-- Modal Tratamiento -->
 <div *ngIf="showModalTratamiento" class="fixed inset-0 bg-black/30 flex items-start justify-center pt-10 z-50 overflow-y-auto" (click.self)="cerrarModalTratamiento()">
   <div class="bg-white rounded-2xl shadow-xl w-full max-w-2xl mx-4 p-6 animate-fade-in">
-    <h3 class="text-lg font-bold text-gray-800 font-heading mb-4">{{ tratEditando ? 'Editar Tratamiento' : 'Nuevo Tratamiento' }}</h3>
+    <h3 class="text-lg font-bold text-gray-800 font-heading mb-4">{{ tratamientoVer ? 'Ver Tratamiento' : tratEditando ? 'Editar Tratamiento' : 'Nuevo Tratamiento' }}</h3>
 
+    <fieldset [disabled]="tratamientoVer">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
       <div class="md:col-span-2">
         <label class="block text-sm font-medium text-gray-600 mb-1">Nombre del Tratamiento *</label>
@@ -680,9 +686,11 @@ type Tab = 'general' | 'evaluaciones' | 'tratamientos' | 'sesiones';
         <option value="SUSPENDIDO">Suspendido</option>
       </select>
     </div>
+    </fieldset>
+
     <div class="flex gap-2 justify-end">
-      <button (click)="cerrarModalTratamiento()" class="btn-ghost">Cancelar</button>
-      <button (click)="guardarTratamiento()" [disabled]="!tratForm.nombre || !tratForm.fechaInicio || guardando" class="btn-primary">{{ guardando ? 'Guardando...' : 'Guardar' }}</button>
+      <button (click)="cerrarModalTratamiento()" class="btn-ghost">{{ tratamientoVer ? 'Cerrar' : 'Cancelar' }}</button>
+      <button *ngIf="!tratamientoVer" (click)="guardarTratamiento()" [disabled]="!tratForm.nombre || !tratForm.fechaInicio || guardando" class="btn-primary">{{ guardando ? 'Guardando...' : 'Guardar' }}</button>
     </div>
   </div>
 </div>
@@ -690,7 +698,8 @@ type Tab = 'general' | 'evaluaciones' | 'tratamientos' | 'sesiones';
 <!-- Modal Sesión -->
 <div *ngIf="showModalSesion" class="fixed inset-0 bg-black/30 flex items-start justify-center pt-10 z-50 overflow-y-auto" (click.self)="cerrarModalSesion()">
   <div class="bg-white rounded-2xl shadow-xl w-full max-w-2xl mx-4 p-6 animate-fade-in">
-    <h3 class="text-lg font-bold text-gray-800 font-heading mb-4">{{ sesEditando ? 'Editar Sesión' : 'Nueva Sesión' }}</h3>
+    <h3 class="text-lg font-bold text-gray-800 font-heading mb-4">{{ sesionVer ? 'Ver Sesión' : sesEditando ? 'Editar Sesión' : 'Nueva Sesión' }}</h3>
+    <fieldset [disabled]="sesionVer">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
       <div>
         <label class="block text-sm font-medium text-gray-600 mb-1">Tratamiento *</label>
@@ -744,9 +753,11 @@ type Tab = 'general' | 'evaluaciones' | 'tratamientos' | 'sesiones';
         </select>
       </div>
     </div>
+    </fieldset>
+
     <div class="flex gap-2 justify-end">
-      <button (click)="cerrarModalSesion()" class="btn-ghost">Cancelar</button>
-      <button (click)="guardarSesion()" [disabled]="!sesForm.idTratamiento || !sesForm.numeroSesion || !sesForm.fecha || guardando" class="btn-primary">{{ guardando ? 'Guardando...' : 'Guardar' }}</button>
+      <button (click)="cerrarModalSesion()" class="btn-ghost">{{ sesionVer ? 'Cerrar' : 'Cancelar' }}</button>
+      <button *ngIf="!sesionVer" (click)="guardarSesion()" [disabled]="!sesForm.idTratamiento || !sesForm.numeroSesion || !sesForm.fecha || guardando" class="btn-primary">{{ guardando ? 'Guardando...' : 'Guardar' }}</button>
     </div>
   </div>
 </div>
@@ -812,6 +823,7 @@ export class HistoriaClinicaDetalleComponent implements OnInit, OnDestroy {
   // Tratamientos
   tratamientos: Tratamiento[] = [];
   showModalTratamiento = false;
+  tratamientoVer = false;
   tratEditando = false;
   tratEditId?: number;
   tratForm: TratamientoRequest = {
@@ -826,6 +838,7 @@ export class HistoriaClinicaDetalleComponent implements OnInit, OnDestroy {
   sesiones: Sesion[] = [];
   sesionFiltroTratamientoId = 0;
   showModalSesion = false;
+  sesionVer = false;
   sesEditando = false;
   sesEditId?: number;
   sesForm: SesionRequest = {
@@ -1096,6 +1109,7 @@ export class HistoriaClinicaDetalleComponent implements OnInit, OnDestroy {
 
   abrirModalTratamiento(t?: Tratamiento): void {
     if (!this.hc) return;
+    this.tratamientoVer = false;
     const doctor = this.doctores[0];
     if (t) {
       this.tratEditando = true;
@@ -1162,6 +1176,28 @@ export class HistoriaClinicaDetalleComponent implements OnInit, OnDestroy {
     this.hcService.cambiarEstadoTratamiento(t.id, { estado: nuevoEstado }).subscribe(() => this.cargarTratamientos());
   }
 
+  verTratamiento(t: Tratamiento): void {
+    this.tratamientoVer = true;
+    this.tratEditando = false;
+    this.tratEditId = t.id;
+    this.tratForm = {
+      idHistoriaClinica: t.idHistoriaClinica,
+      idEvaluacion: t.idEvaluacion,
+      idDoctor: t.idDoctor,
+      nombre: t.nombre,
+      descripcion: t.descripcion || '',
+      objetivo: t.objetivo || '',
+      frecuencia: t.frecuencia || '',
+      duracionSemanas: t.duracionSemanas,
+      planCamilla: t.planCamilla || '',
+      planGym: t.planGym || '',
+      fechaInicio: t.fechaInicio,
+      fechaFin: t.fechaFin || undefined,
+      estado: t.estado,
+    };
+    this.showModalTratamiento = true;
+  }
+
   editarTratamiento(t: Tratamiento): void {
     this.abrirModalTratamiento(t);
   }
@@ -1204,6 +1240,7 @@ export class HistoriaClinicaDetalleComponent implements OnInit, OnDestroy {
   }
 
   abrirModalSesion(s?: Sesion): void {
+    this.sesionVer = false;
     const doctor = this.doctores[0];
     if (s) {
       this.sesEditando = true;
@@ -1268,6 +1305,27 @@ export class HistoriaClinicaDetalleComponent implements OnInit, OnDestroy {
     } else if (s.estado === 'REALIZADA' || s.estado === 'NO_ASISTIO') {
       this.hcService.cambiarEstadoSesion(s.id, { estado: 'PROGRAMADA', asistio: undefined }).subscribe(() => this.cargarSesiones());
     }
+  }
+
+  verSesion(s: Sesion): void {
+    this.sesionVer = true;
+    this.sesEditando = false;
+    this.sesEditId = s.id;
+    this.sesForm = {
+      idTratamiento: s.idTratamiento,
+      idCita: s.idCita,
+      numeroSesion: s.numeroSesion,
+      fecha: s.fecha,
+      hora: s.hora || '',
+      evaluacionSubjetiva: s.evaluacionSubjetiva || '',
+      evaluacionObjetiva: s.evaluacionObjetiva || '',
+      tratamientoRealizado: s.tratamientoRealizado || '',
+      indicaciones: s.indicaciones || '',
+      proximaSesionPlan: s.proximaSesionPlan || '',
+      asistio: s.asistio,
+      estado: s.estado,
+    };
+    this.showModalSesion = true;
   }
 
   editarSesion(s: Sesion): void {
