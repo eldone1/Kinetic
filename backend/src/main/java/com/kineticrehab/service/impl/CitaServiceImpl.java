@@ -9,9 +9,11 @@ import com.kineticrehab.mapper.CitaMapper;
 import com.kineticrehab.model.Cita;
 import com.kineticrehab.model.Doctor;
 import com.kineticrehab.model.Paciente;
+import com.kineticrehab.model.Servicio;
 import com.kineticrehab.repository.CitaRepository;
 import com.kineticrehab.repository.DoctorRepository;
 import com.kineticrehab.repository.PacienteRepository;
+import com.kineticrehab.repository.ServicioRepository;
 import com.kineticrehab.repository.VentaRepository;
 import com.kineticrehab.service.CitaService;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +35,7 @@ public class CitaServiceImpl implements CitaService {
     private final CitaRepository citaRepository;
     private final DoctorRepository doctorRepository;
     private final PacienteRepository pacienteRepository;
+    private final ServicioRepository servicioRepository;
     private final VentaRepository ventaRepository;
     private final CitaMapper citaMapper;
 
@@ -103,10 +106,13 @@ public class CitaServiceImpl implements CitaService {
         Doctor doctor = doctorRepository.findByIdAndDeletedAtIsNull(dto.getIdDoctor())
                 .orElseThrow(() -> new ResourceNotFoundException("Doctor no encontrado con id: " + dto.getIdDoctor()));
 
+        Servicio servicio = servicioRepository.findByIdAndDeletedAtIsNull(dto.getIdServicio())
+                .orElseThrow(() -> new ResourceNotFoundException("Servicio no encontrado con id: " + dto.getIdServicio()));
+
         validarHorario(dto.getHoraInicio(), dto.getHoraFin());
         validarSinCruces(null, dto.getIdDoctor(), dto.getFecha(), dto.getHoraInicio(), dto.getHoraFin());
 
-        Cita cita = citaMapper.toEntity(dto, paciente, doctor);
+        Cita cita = citaMapper.toEntity(dto, paciente, doctor, servicio);
         cita = citaRepository.save(cita);
         log.info("Cita creada exitosamente con id: {}", cita.getId());
         return citaMapper.toDTO(cita);
@@ -126,17 +132,20 @@ public class CitaServiceImpl implements CitaService {
         Doctor doctor = doctorRepository.findByIdAndDeletedAtIsNull(dto.getIdDoctor())
                 .orElseThrow(() -> new ResourceNotFoundException("Doctor no encontrado con id: " + dto.getIdDoctor()));
 
+        Servicio servicio = servicioRepository.findByIdAndDeletedAtIsNull(dto.getIdServicio())
+                .orElseThrow(() -> new ResourceNotFoundException("Servicio no encontrado con id: " + dto.getIdServicio()));
+
         validarHorario(dto.getHoraInicio(), dto.getHoraFin());
         validarSinCruces(id, dto.getIdDoctor(), dto.getFecha(), dto.getHoraInicio(), dto.getHoraFin());
 
         cita.setPaciente(paciente);
         cita.setDoctor(doctor);
+        cita.setServicio(servicio);
+        cita.setPrecio(servicio.getPrecio());
         cita.setFecha(dto.getFecha());
         cita.setHoraInicio(dto.getHoraInicio());
         cita.setHoraFin(dto.getHoraFin());
-        cita.setTipo(dto.getTipo());
         cita.setObservaciones(dto.getObservaciones());
-        cita.setPrecio(dto.getPrecio());
 
         cita = citaRepository.save(cita);
         log.info("Cita actualizada exitosamente con id: {}", cita.getId());

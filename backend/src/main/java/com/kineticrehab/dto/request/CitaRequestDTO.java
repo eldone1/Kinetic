@@ -1,10 +1,8 @@
 package com.kineticrehab.dto.request;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -29,10 +27,8 @@ public class CitaRequestDTO {
     @NotNull(message = "La hora de fin es obligatoria")
     private LocalTime horaFin;
 
-    @NotBlank(message = "El tipo es obligatorio")
-    private String tipo;
-
     private String observaciones;
 
-    private BigDecimal precio;
+    @NotNull(message = "El servicio es obligatorio")
+    private Long idServicio;
 }

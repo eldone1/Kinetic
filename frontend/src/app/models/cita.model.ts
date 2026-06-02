@@ -9,9 +9,10 @@ export interface Cita {
   fecha: string;
   horaInicio: string;
   horaFin: string;
-  tipo: string;
   estado: string;
   observaciones: string;
+  idServicio: number | null;
+  nombreServicio: string | null;
   precio: number | null;
   createdAt: string;
 }
@@ -22,9 +23,8 @@ export interface CitaRequest {
   fecha: string;
   horaInicio: string;
   horaFin: string;
-  tipo: string;
   observaciones?: string;
-  precio?: number | null;
+  idServicio: number;
 }
 
 export interface CitaEstadoRequest {

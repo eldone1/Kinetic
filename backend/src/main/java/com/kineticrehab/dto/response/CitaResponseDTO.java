@@ -23,9 +23,10 @@ public class CitaResponseDTO {
     private LocalDate fecha;
     private LocalTime horaInicio;
     private LocalTime horaFin;
-    private String tipo;
     private String estado;
     private String observaciones;
+    private Long idServicio;
+    private String nombreServicio;
     private BigDecimal precio;
     private LocalDateTime createdAt;
 }

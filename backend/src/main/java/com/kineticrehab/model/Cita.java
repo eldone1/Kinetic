@@ -39,13 +39,14 @@ public class Cita {
     private LocalTime horaFin;
 
     @Column(nullable = false, length = 20)
-    private String tipo;
-
-    @Column(nullable = false, length = 20)
     private String estado;
 
     @Column(columnDefinition = "TEXT")
     private String observaciones;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_servicio")
+    private Servicio servicio;
 
     @Column(precision = 10, scale = 2)
     private BigDecimal precio;
@@ -63,7 +64,6 @@ public class Cita {
     protected void onCreate() {
         createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
-        if (tipo == null) tipo = "CITA";
         if (estado == null) estado = "PROGRAMADA";
     }
 

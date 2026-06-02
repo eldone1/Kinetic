@@ -86,7 +86,7 @@ import { Paciente } from '../../../models/paciente.model';
             <div class="flex justify-between items-start">
               <div>
                 <p class="text-sm font-medium text-gray-800">{{ cita.fecha }} &middot; {{ cita.horaInicio }} - {{ cita.horaFin }}</p>
-                <p class="text-xs text-gray-400 mt-0.5">{{ cita.tipo }} &middot; Dr. {{ cita.nombreDoctor }}</p>
+                <p class="text-xs text-gray-400 mt-0.5">{{ cita.nombreServicio }} &middot; Dr. {{ cita.nombreDoctor }}</p>
               </div>
               <div class="text-right">
                 <p class="text-sm font-bold text-gray-800">S/ {{ cita.precio || 0 | number:'1.2-2' }}</p>
@@ -102,7 +102,7 @@ import { Paciente } from '../../../models/paciente.model';
             <div class="space-y-4">
               <div class="flex justify-between items-center py-2 border-b border-gray-50">
                 <span class="text-sm text-gray-600">Servicio</span>
-                <span class="text-sm text-gray-900">{{ citaSeleccionada.tipo }}</span>
+                <span class="text-sm text-gray-900">{{ citaSeleccionada.nombreServicio }}</span>
               </div>
               <div class="flex justify-between items-center py-2 border-b border-gray-50">
                 <span class="text-sm text-gray-600">Total a Cobrar</span>

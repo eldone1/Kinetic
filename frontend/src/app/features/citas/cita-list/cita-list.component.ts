@@ -13,6 +13,8 @@ import { CitaService } from '../../../core/services/cita.service';
 import { PacienteService } from '../../../core/services/paciente.service';
 import { DoctorService } from '../../../core/services/doctor.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { ServicioService } from '../../../core/services/servicio.service';
+import { Servicio } from '../../../models/servicio.model';
 import { CitaFormComponent } from '../cita-form/cita-form.component';
 
 const COLORES_ESTADO: Record<string, string> = {
@@ -160,7 +162,6 @@ const ETIQUETAS_ESTADO: Record<string, string> = {
                   <th class="px-5 py-3 font-semibold">Hora</th>
                   <th class="px-5 py-3 font-semibold">Paciente</th>
                   <th class="px-5 py-3 font-semibold">Doctor</th>
-                  <th class="px-5 py-3 font-semibold">Tipo</th>
                   <th class="px-5 py-3 font-semibold">Estado</th>
                   <th class="px-5 py-3 font-semibold">Observaciones</th>
                   <th class="px-5 py-3 font-semibold text-right">Acciones</th>
@@ -183,11 +184,6 @@ const ETIQUETAS_ESTADO: Record<string, string> = {
                     </div>
                   </td>
                   <td class="px-5 py-3 whitespace-nowrap text-gray-600">{{ c.nombreDoctor }}</td>
-                  <td class="px-5 py-3 whitespace-nowrap">
-                    <span class="inline-block px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
-                      {{ c.tipo }}
-                    </span>
-                  </td>
                   <td class="px-5 py-3 whitespace-nowrap">
                     <select *ngIf="puedeEditar"
                       [ngModel]="c.estado"
@@ -234,6 +230,7 @@ const ETIQUETAS_ESTADO: Record<string, string> = {
       [cita]="citaSeleccionada"
       [pacientes]="pacientes"
       [doctores]="doctores"
+      [servicios]="servicios"
       [enviando]="enviando"
       (cerrar)="cerrarFormulario()"
       (guardar)="onGuardar($event)">
@@ -247,6 +244,7 @@ export class CitaListComponent implements OnInit, OnDestroy {
   citas: Cita[] = [];
   pacientes: Paciente[] = [];
   doctores: Doctor[] = [];
+  servicios: Servicio[] = [];
   cargando = true;
   showForm = false;
   enviando = false;
@@ -282,6 +280,7 @@ export class CitaListComponent implements OnInit, OnDestroy {
     private pacienteService: PacienteService,
     private doctorService: DoctorService,
     private authService: AuthService,
+    private servicioService: ServicioService,
     private ngZone: NgZone,
     private cdr: ChangeDetectorRef
   ) {}
@@ -304,6 +303,11 @@ export class CitaListComponent implements OnInit, OnDestroy {
     this.pacienteService.listarTodos().subscribe({
       next: p => this.pacientes = p,
       error: () => this.pacientes = []
+    });
+
+    this.servicioService.listarActivos().subscribe({
+      next: s => this.servicios = s,
+      error: () => this.servicios = []
     });
 
     if (this.esDoctor) {
@@ -415,7 +419,7 @@ export class CitaListComponent implements OnInit, OnDestroy {
       eventDidMount: (info) => {
         const cita = info.event.extendedProps['cita'] as Cita;
         if (cita) {
-          info.el.setAttribute('title', `${cita.nombrePaciente} - ${cita.tipo} (${cita.estado})`);
+          info.el.setAttribute('title', `${cita.nombrePaciente} - ${cita.nombreServicio || 'Sin servicio'} (${cita.estado})`);
           info.el.style.cursor = 'pointer';
         }
       }
@@ -432,7 +436,7 @@ export class CitaListComponent implements OnInit, OnDestroy {
     this.citas.forEach(cita => {
       this.calendar?.addEvent({
         id: String(cita.id),
-        title: `${cita.nombrePaciente} [${cita.tipo}]`,
+        title: `${cita.nombrePaciente} [${cita.nombreServicio || 'Sin servicio'}]`,
         start: `${cita.fecha}T${cita.horaInicio}`,
         end: `${cita.fecha}T${cita.horaFin}`,
         backgroundColor: COLORES_ESTADO[cita.estado] || '#3b82f6',

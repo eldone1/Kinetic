@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { Cita, CitaRequest } from '../../../models/cita.model';
 import { Paciente } from '../../../models/paciente.model';
 import { Doctor } from '../../../models/doctor.model';
+import { Servicio } from '../../../models/servicio.model';
 
 @Component({
   selector: 'app-cita-form',
@@ -101,13 +102,13 @@ import { Doctor } from '../../../models/doctor.model';
             </div>
 
             <div>
-              <label class="block text-sm font-medium text-gray-600 mb-1.5">Tipo</label>
-              <select formControlName="tipo"
+              <label class="block text-sm font-medium text-gray-600 mb-1.5">Servicio</label>
+              <select formControlName="idServicio"
                 class="input-field bg-white">
-                <option value="CITA">Cita</option>
-                <option value="EVALUACION">Evaluaci&oacute;n</option>
-                <option value="REVALORACION">Revaloraci&oacute;n</option>
-                <option value="SESION">Sesi&oacute;n</option>
+                <option [ngValue]="null" disabled>Seleccionar servicio...</option>
+                <option *ngFor="let s of servicios" [ngValue]="s.id">
+                  {{ s.nombre }} — S/ {{ s.precio }}
+                </option>
               </select>
             </div>
 
@@ -138,6 +139,7 @@ export class CitaFormComponent implements OnInit {
   @Input() cita?: Cita;
   @Input() pacientes: Paciente[] = [];
   @Input() doctores: Doctor[] = [];
+  @Input() servicios: Servicio[] = [];
   @Input() enviando = false;
   @Output() cerrar = new EventEmitter<void>();
   @Output() guardar = new EventEmitter<CitaRequest>();
@@ -163,7 +165,7 @@ export class CitaFormComponent implements OnInit {
       fecha: ['', Validators.required],
       horaInicio: ['', Validators.required],
       horaFin: ['', Validators.required],
-      tipo: ['CITA', Validators.required],
+      idServicio: [null, Validators.required],
       observaciones: ['']
     });
   }
@@ -177,7 +179,7 @@ export class CitaFormComponent implements OnInit {
         fecha: this.cita.fecha,
         horaInicio: this.cita.horaInicio.substring(0, 5),
         horaFin: this.cita.horaFin.substring(0, 5),
-        tipo: this.cita.tipo,
+        idServicio: this.cita.idServicio,
         observaciones: this.cita.observaciones
       });
       const p = this.pacientes.find(x => x.id === this.cita!.idPaciente);
@@ -306,14 +308,15 @@ export class CitaFormComponent implements OnInit {
   onSubmit(): void {
     if (this.form.invalid) return;
 
+    const v = this.form.value;
     const dto: CitaRequest = {
-      idPaciente: +this.form.value.idPaciente,
-      idDoctor: +this.form.value.idDoctor,
-      fecha: this.form.value.fecha,
-      horaInicio: this.form.value.horaInicio + ':00',
-      horaFin: this.form.value.horaFin + ':00',
-      tipo: this.form.value.tipo,
-      observaciones: this.form.value.observaciones || undefined
+      idPaciente: +v.idPaciente,
+      idDoctor: +v.idDoctor,
+      fecha: v.fecha,
+      horaInicio: v.horaInicio + ':00',
+      horaFin: v.horaFin + ':00',
+      idServicio: +v.idServicio,
+      observaciones: v.observaciones || undefined
     };
 
     this.guardar.emit(dto);
