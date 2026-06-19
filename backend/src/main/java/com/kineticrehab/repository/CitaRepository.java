@@ -28,4 +28,12 @@ public interface CitaRepository extends JpaRepository<Cita, Long> {
     List<Cita> findByEstadoAndDeletedAtIsNull(String estado);
 
     long countByEstadoAndDeletedAtIsNull(String estado);
+
+    long countByFechaAndDeletedAtIsNull(LocalDate fecha);
+
+    long countByFechaAndEstadoAndDeletedAtIsNull(LocalDate fecha, String estado);
+
+    long countByDoctorIdAndFechaAndEstadoAndDeletedAtIsNull(Long doctorId, LocalDate fecha, String estado);
+
+    long countByFechaBetweenAndDeletedAtIsNull(LocalDate inicio, LocalDate fin);
 }

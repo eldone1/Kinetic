@@ -4,6 +4,7 @@ import com.kineticrehab.model.Venta;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,4 +22,7 @@ public interface VentaRepository extends JpaRepository<Venta, Long> {
     Optional<Venta> findByCitaIdAndDeletedAtIsNull(Long citaId);
 
     List<Venta> findByMetodoPagoAndDeletedAtIsNull(String metodoPago);
+
+    List<Venta> findByFechaVentaBetweenAndDeletedAtIsNull(LocalDateTime inicio, LocalDateTime fin);
+
 }

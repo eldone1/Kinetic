@@ -91,7 +91,7 @@ Arquitectura cliente-servidor en red local (LAN). Frontend SPA en Angular, Backe
 | 4 | Agenda, Citas y Sesiones | 2025-07-01 | 2025-07-20 | ✅ Completado |
 | 5 | Historia Clínica y Tratamientos | 2025-07-21 | 2025-08-05 | ✅ Completado |
 | 6 | Ventas, Caja e Inventario — MVP Servicios | 2025-08-06 | 2025-08-20 | ✅ Completado |
-| 7 | Reportes y Dashboard | 2025-08-21 | 2025-08-31 | ⏳ Pendiente |
+| 7 | Reportes y Dashboard | 2025-08-21 | 2025-08-31 | 🔄 50% — Dashboard implementado, reportes pendientes |
 | 8 | Pruebas y Ajustes | 2025-09-01 | 2025-09-15 | ⏳ Pendiente |
 | 9 | Despliegue y Capacitación | 2025-09-16 | 2025-09-30 | ⏳ Pendiente |
 
@@ -108,7 +108,7 @@ Arquitectura cliente-servidor en red local (LAN). Frontend SPA en Angular, Backe
 | Historia Clínica y Tratamientos | Angular + Spring Boot + JPA | ✅ Completado | HC expandida (secciones A-F: control adm, anamnesis, antecedentes, heredo-familiares, signos vitales). Evaluaciones: Valoración SOAP + escalas EVA/BORG/Daniels + ROM + pruebas especiales + plan camilla/gym. Re-valoración con control de evolución. IMC automático. Solo ADMIN/DOCTOR |
 | Ventas y Caja (MVP Servicios) | Angular + Spring Boot + JPA | ✅ Completado | MVP: apertura/cierre caja, cobro citas COMPLETADA, Efectivo+Yape/Plin, catálogo servicios con precios fijos, validación horario doctor. Escala futura: venta productos |
 | Inventario y Productos | Angular + Spring Boot + JPA | ⏳ Pendiente | Lotes, vencimiento, alertas por correo (escala futura) |
-| Reportes y Dashboard | Angular + Chart.js + iText/Apache POI | ⏳ Pendiente | PDF y Excel, solo para administrador |
+| Reportes y Dashboard | Angular + Chart.js + iText/Apache POI | 🔄 50% | Dashboard por rol implementado. Reportes PDF/Excel pendientes. |
 | Auditoría y Logs | Spring Boot AOP / Interceptors | ⏳ Pendiente | Registro de usuario, fecha y hora |
 
 ---

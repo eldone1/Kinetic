@@ -1,3 +1,30 @@
+# Dashboard — Estado del Módulo
+
+> Progreso: **50%** — Dashboard implementado (frontend + backend APIs). Reportes (PDF/Excel) pendientes.
+
+## Backend
+- ✅ `DashboardController` — 3 endpoints: `/api/dashboard/admin`, `/api/dashboard/doctor`, `/api/dashboard/recepcion`
+- ✅ `DashboardService` + `DashboardServiceImpl` — agregación de KPIs por rol
+- ✅ DTOs: `DashboardAdminDTO`, `DashboardDoctorDTO`, `DashboardRecepcionDTO`, `ChartDataPoint`
+- ✅ Métodos de conteo agregados a repositorios existentes
+
+## Frontend
+- ✅ `chart.js` + `ng2-charts` instalados
+- ✅ `DashboardService` — consume los 3 endpoints
+- ✅ `DashboardAdminComponent` — KPIs financieros/operativos + gráficos (ventas mensuales, pacientes/día, servicios, doctores)
+- ✅ `DashboardDoctorComponent` — KPIs clínicos + agenda del día + atenciones/día + distribución tratamientos
+- ✅ `DashboardRecepcionComponent` — KPIs agenda/caja + agenda del día + cobros pendientes + últimas ventas + resumen caja + gráficos
+- ✅ `DashboardWrapperComponent` — renderiza el componente según el rol
+- ✅ Ruta `/dashboard` registrada y redirección por defecto cambiada a `/dashboard`
+- ✅ `provideCharts(withDefaultRegisterables())` en app.config.ts
+
+## Pendiente (50% restante)
+- ⏳ Reportes PDF exportables
+- ⏳ Reportes Excel exportables
+- ⏳ Filtros avanzados por fechas, doctores, etc.
+
+---
+
 Necesito diseñar dashboards modernos, profesionales y funcionales para un sistema web de gestión de una clínica de rehabilitación física.
 
 La interfaz debe estar pensada para uso diario, con gran cantidad de información, navegación rápida y enfoque en productividad. Debe ser responsive, limpia y con jerarquía visual clara.

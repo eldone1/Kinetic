@@ -19,4 +19,6 @@ public interface CajaRepository extends JpaRepository<Caja, Long> {
     List<Caja> findByUsuarioIdAndDeletedAtIsNullOrderByFechaAperturaDesc(Long usuarioId);
 
     List<Caja> findByEstadoAndDeletedAtIsNullOrderByFechaAperturaDesc(String estado);
+
+    long countByEstadoAndDeletedAtIsNull(String estado);
 }

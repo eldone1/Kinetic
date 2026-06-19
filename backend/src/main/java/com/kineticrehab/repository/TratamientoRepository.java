@@ -13,4 +13,10 @@ public interface TratamientoRepository extends JpaRepository<Tratamiento, Long> 
     List<Tratamiento> findByHistoriaClinicaIdAndDeletedAtIsNullOrderByFechaInicioDesc(Long historiaClinicaId);
 
     Optional<Tratamiento> findByIdAndDeletedAtIsNull(Long id);
+
+    long countByDoctorIdAndEstadoAndDeletedAtIsNull(Long doctorId, String estado);
+
+    List<Tratamiento> findByEstadoAndDeletedAtIsNull(String estado);
+
+    List<Tratamiento> findByDoctorIdAndDeletedAtIsNull(Long doctorId);
 }

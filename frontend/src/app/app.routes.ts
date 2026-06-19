@@ -36,10 +36,14 @@ export const routes: Routes = [
         loadChildren: () => import('./features/ventas/ventas.routes').then(m => m.ventasRoutes)
       },
       {
+        path: 'dashboard',
+        loadChildren: () => import('./features/dashboard/dashboard.routes').then(m => m.dashboardRoutes)
+      },
+      {
         path: 'cambio-password',
         loadComponent: () => import('./features/auth/cambio-password/cambio-password.component').then(m => m.CambioPasswordComponent)
       },
-      { path: '', redirectTo: '/pacientes', pathMatch: 'full' },
+      { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
     ]
   },
   { path: '**', redirectTo: '/login' }
