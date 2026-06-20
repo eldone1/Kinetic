@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
@@ -46,19 +46,21 @@ interface MenuItem {
               <div class="px-3 pt-4 pb-1.5 text-[10px] font-bold text-white/30 uppercase tracking-widest">
                 {{ item.label }}
               </div>
-              <a *ngFor="let child of item.children"
-                [routerLink]="child.route"
-                routerLinkActive="bg-white/15 text-white shadow-sm"
-                class="flex items-center gap-3 px-3 py-2 text-sm text-white/60 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200 font-medium">
-                <span class="w-5 h-5 flex items-center justify-center text-xs shrink-0" [innerHTML]="child.icon"></span>
-                <span>{{ child.label }}</span>
-              </a>
+              <ng-container *ngFor="let child of item.children">
+                <a *ngIf="tieneRol(child.roles)"
+                  [routerLink]="child.route"
+                  routerLinkActive="bg-white/15 text-white shadow-sm"
+                  class="flex items-center gap-3 px-3 py-2 text-sm text-white/60 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200 font-medium">
+                  <span class="w-5 h-5 flex items-center justify-center text-xs shrink-0" [innerHTML]="child.icon"></span>
+                  <span>{{ child.label }}</span>
+                </a>
+              </ng-container>
             </div>
           </div>
         </nav>
 
         <div class="p-4 border-t border-white/10" style="background: rgba(0,0,0,0.2);">
-          <div class="flex items-center gap-3 mb-3">
+          <div class="flex items-center gap-3">
             <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-teal-300 to-teal-600 flex items-center justify-center text-sm font-bold shadow-lg text-white">
               {{ usuarioInicial }}
             </div>
@@ -67,16 +69,49 @@ interface MenuItem {
               <p class="text-[11px] text-white/40 truncate">{{ rolUsuario }}</p>
             </div>
           </div>
-          <button (click)="cerrarSesion()"
-            class="w-full py-2 text-sm text-white/50 hover:text-white bg-white/5 hover:bg-white/10 rounded-xl transition-all duration-200 font-medium">
-            Cerrar Sesión
-          </button>
         </div>
       </aside>
 
-      <main class="flex-1 overflow-y-auto bg-gray-50/80">
-        <router-outlet></router-outlet>
-      </main>
+      <div class="flex-1 flex flex-col overflow-hidden">
+        <header class="h-14 shrink-0 bg-white border-b border-gray-200/60 flex items-center justify-end px-6 gap-3">
+          <span class="text-xs text-gray-400 font-medium">{{ rolUsuario }}</span>
+          <div class="relative">
+            <button (click)="toggleDropdown()" class="flex items-center gap-2 focus:outline-none">
+              <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-teal-400 to-teal-600 flex items-center justify-center text-white text-xs font-bold shadow-sm cursor-pointer hover:shadow-md transition-shadow">
+                {{ usuarioInicial }}
+              </div>
+            </button>
+
+            <div *ngIf="dropdownOpen"
+              class="absolute right-0 top-10 w-52 bg-white rounded-xl shadow-lg border border-gray-100 py-2 z-50 animate-fade-in">
+              <div class="px-4 py-2 border-b border-gray-50">
+                <p class="text-sm font-medium text-gray-800 truncate">{{ nombreUsuario }}</p>
+                <p class="text-xs text-gray-400">{{ rolUsuario }}</p>
+              </div>
+              <a *ngIf="esDoctor" routerLink="/doctores/mi-perfil" (click)="dropdownOpen = false"
+                class="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
+                <span class="text-teal-600">&#128100;</span>
+                Mi Perfil
+              </a>
+              <a routerLink="/cambio-password" (click)="dropdownOpen = false"
+                class="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
+                <span class="text-teal-600">&#128274;</span>
+                Cambiar Contraseña
+              </a>
+              <div class="border-t border-gray-50 my-1"></div>
+              <button (click)="cerrarSesion()"
+                class="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors">
+                <span>&#10140;</span>
+                Cerrar Sesión
+              </button>
+            </div>
+          </div>
+        </header>
+
+        <main class="flex-1 overflow-y-auto bg-gray-50/80">
+          <router-outlet></router-outlet>
+        </main>
+      </div>
     </div>
   `
 })
@@ -84,6 +119,8 @@ export class LayoutComponent {
   nombreUsuario = '';
   rolUsuario = '';
   usuarioInicial = '';
+  dropdownOpen = false;
+  esDoctor = false;
 
   menuItems: MenuItem[] = [
     {
@@ -133,12 +170,6 @@ export class LayoutComponent {
       icon: '&#9632;',
       route: '/usuarios',
       roles: ['ROLE_ADMIN']
-    },
-    {
-      label: 'Cambiar Contraseña',
-      icon: '&#9632;',
-      route: '/cambio-password',
-      roles: ['ROLE_ADMIN', 'ROLE_RECEPCION', 'ROLE_DOCTOR']
     }
   ];
 
@@ -151,6 +182,19 @@ export class LayoutComponent {
     this.nombreUsuario = name;
     this.usuarioInicial = name.charAt(0).toUpperCase();
     this.rolUsuario = this.formatearRol(role);
+    this.esDoctor = role === 'ROLE_DOCTOR';
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.relative') && this.dropdownOpen) {
+      this.dropdownOpen = false;
+    }
+  }
+
+  toggleDropdown(): void {
+    this.dropdownOpen = !this.dropdownOpen;
   }
 
   formatearRol(rol: string): string {

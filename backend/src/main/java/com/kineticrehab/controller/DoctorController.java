@@ -63,6 +63,13 @@ public class DoctorController {
         return ResponseEntity.ok(doctorService.buscarPorUsernameUsuario(authentication.getName()));
     }
 
+    @GetMapping("/yo/perfil")
+    @Operation(summary = "Obtener perfil completo del doctor autenticado con horarios incluidos")
+    @PreAuthorize("hasRole('DOCTOR')")
+    public ResponseEntity<DoctorHorariosResponseDTO> miPerfilCompleto(Authentication authentication) {
+        return ResponseEntity.ok(doctorService.obtenerMiPerfilCompleto(authentication.getName()));
+    }
+
     @PostMapping
     @Operation(summary = "Crear un nuevo doctor")
     @ApiResponse(responseCode = "201", description = "Doctor creado correctamente")

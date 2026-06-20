@@ -6,7 +6,7 @@ export const doctoresRoutes: Routes = [
   {
     path: '',
     loadComponent: () => import('./doctor-list/doctor-list.component').then(m => m.DoctorListComponent),
-    canActivate: [authGuard, () => roleGuard(['ROLE_ADMIN', 'ROLE_RECEPCION'])]
+    canActivate: [authGuard, () => roleGuard(['ROLE_ADMIN', 'ROLE_RECEPCION', 'ROLE_DOCTOR'])]
   },
   {
     path: 'nuevo',
@@ -22,5 +22,10 @@ export const doctoresRoutes: Routes = [
     path: ':id/horarios',
     loadComponent: () => import('./doctor-horarios/doctor-horarios.component').then(m => m.DoctorHorariosComponent),
     canActivate: [authGuard, () => roleGuard(['ROLE_ADMIN'])]
+  },
+  {
+    path: 'mi-perfil',
+    loadComponent: () => import('./doctor-perfil/doctor-perfil.component').then(m => m.DoctorPerfilComponent),
+    canActivate: [authGuard, () => roleGuard(['ROLE_DOCTOR'])]
   }
 ];

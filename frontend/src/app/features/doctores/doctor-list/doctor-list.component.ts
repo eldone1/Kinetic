@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Doctor } from '../../../models/doctor.model';
 import { DoctorService } from '../../../core/services/doctor.service';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-doctor-list',
@@ -113,10 +114,15 @@ export class DoctorListComponent implements OnInit {
 
   constructor(
     private doctorService: DoctorService,
+    private authService: AuthService,
     private router: Router
   ) {}
 
   ngOnInit(): void {
+    if (this.authService.getUserRole() === 'ROLE_DOCTOR') {
+      this.router.navigate(['/doctores/mi-perfil']);
+      return;
+    }
     this.cargarDoctores();
   }
 

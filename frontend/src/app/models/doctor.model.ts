@@ -42,7 +42,11 @@ export interface DoctorHorarios {
   id: number;
   nombres: string;
   apellidos: string;
+  dni: string;
   especialidad: string;
+  cmp: string;
+  telefono: string;
+  correo: string;
   activo: boolean;
   horarios: Horario[];
 }

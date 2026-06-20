@@ -31,5 +31,7 @@ public interface DoctorService {
 
     DoctorHorariosResponseDTO obtenerHorarios(Long doctorId);
 
+    DoctorHorariosResponseDTO obtenerMiPerfilCompleto(String username);
+
     List<HorarioResponseDTO> actualizarHorarios(Long doctorId, List<HorarioRequestDTO> horarios);
 }

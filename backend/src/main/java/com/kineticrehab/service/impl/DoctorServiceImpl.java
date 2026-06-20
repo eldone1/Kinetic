@@ -175,6 +175,13 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
+    public DoctorHorariosResponseDTO obtenerMiPerfilCompleto(String username) {
+        log.info("Obteniendo perfil completo del doctor para usuario: {}", username);
+        DoctorResponseDTO perfil = buscarPorUsernameUsuario(username);
+        return obtenerHorarios(perfil.getId());
+    }
+
+    @Override
     @Transactional
     public List<HorarioResponseDTO> actualizarHorarios(Long doctorId, List<HorarioRequestDTO> horariosDTO) {
         log.info("Actualizando horarios del doctor con id: {}", doctorId);

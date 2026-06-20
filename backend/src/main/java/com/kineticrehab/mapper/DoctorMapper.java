@@ -60,7 +60,11 @@ public class DoctorMapper {
                 .id(doctor.getId())
                 .nombres(doctor.getNombres())
                 .apellidos(doctor.getApellidos())
+                .dni(doctor.getDni())
                 .especialidad(doctor.getEspecialidad())
+                .cmp(doctor.getCmp())
+                .telefono(doctor.getTelefono())
+                .correo(doctor.getCorreo())
                 .activo(doctor.getActivo())
                 .horarios(horariosDTO)
                 .build();

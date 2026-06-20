@@ -30,6 +30,10 @@ export class DoctorService {
     return this.http.get<Doctor>(`${this.API_URL}/yo`);
   }
 
+  obtenerMiPerfilCompleto(): Observable<DoctorHorarios> {
+    return this.http.get<DoctorHorarios>(`${this.API_URL}/yo/perfil`);
+  }
+
   crear(dto: DoctorRequest): Observable<Doctor> {
     return this.http.post<Doctor>(this.API_URL, dto);
   }
