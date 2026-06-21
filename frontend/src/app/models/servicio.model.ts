@@ -5,3 +5,10 @@ export interface Servicio {
   precio: number;
   activo: boolean;
 }
+
+export interface ServicioRequest {
+  nombre: string;
+  descripcion?: string;
+  precio: number;
+  activo?: boolean;
+}

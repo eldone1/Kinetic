@@ -1,21 +1,27 @@
-# Módulo 7: Reportes y Dashboard ✅ COMPLETADO
+# Módulo 7: Reportes y Dashboard
 
-> Dashboard por rol + 7 reportes analíticos con exportación PDF (iText 7) y Excel (Apache POI).  
+> Dashboard por rol + 5 reportes analíticos (consolidados de 7) con exportación PDF (iText 7) y Excel (Apache POI).  
 > Solo ADMIN tiene acceso a reportes.
 
 ---
 
-## 1. Alcance
+## 1. Estado Actual
 
-### Incluye
+### Completado
 - [x] Dashboard con cards, gráficos y tablas adaptado por rol (ADMIN/RECEPCION/DOCTOR)
-- [x] 7 tipos de reportes analíticos con filtros (fecha inicio, fecha fin, doctor opcional)
+- [x] 5 reportes analíticos (Ventas, Servicios, Doctores+Ocupación, Caja, Pacientes) — consolidado de 7 originales
 - [x] Exportación a **PDF** con iText 7 (tablas formateadas con fuente bold, encabezados teal)
 - [x] Exportación a **Excel** con Apache POI (encabezados con estilo teal + negrita, columnas auto-size)
-- [x] Carga automática de datos al entrar al módulo
-- [x] Tabs con selector visual para cambiar entre reportes
-- [x] Botones de período rápido: Hoy, Esta Semana, Este Mes
+- [x] Carga automática de datos (`ngModelChange` en filtros + `onTabChange`)
+- [x] Tabs con selector visual para cambiar entre reportes (5 tabs)
+- [x] Botón **Limpiar** (reemplaza "Generar Reporte") — resetea fechas a hoy y doctor a null
+- [x] Botones de período rápido: Hoy, Esta Semana, Este Mes (con auto-carga)
+- [x] Filas expandibles (▼/▶) con sub-tabla de detalle en todos los tabs
 - [x] Indicador de carga y estado vacío ("Sin datos para el período seleccionado")
+- [x] Login: overlay `bg-black/50` sobre imagen de fondo para mejor contraste con el formulario
+
+### Pendiente
+- [ ] Correcciones menores post-deploy si aplica
 
 ### Excluye
 - ❌ Reportes programados (envío automático por correo)
@@ -24,20 +30,17 @@
 
 ---
 
-## 2. Tipos de Reporte
+## 2. Tipos de Reporte (5 tabs)
 
 | Reporte | Endpoint (JSON) | Endpoint PDF | Endpoint XLSX | Descripción |
 |---|---|---|---|---|
-| Ventas por Período | `GET /api/reportes/ventas-periodo` | `GET /api/reportes/ventas-periodo/pdf` | `GET /api/reportes/ventas-periodo/xlsx` | Ventas agrupadas por día |
-| Total Ventas Período | `GET /api/reportes/total-ventas` | — | — | Suma total ventas (efectivo + yape/plin) |
-| Ingresos por Servicio | `GET /api/reportes/ingresos-servicio` | `GET /api/reportes/ingresos-servicio/pdf` | `GET /api/reportes/ingresos-servicio/xlsx` | Ingresos agrupados por servicio |
-| Atenciones por Doctor | `GET /api/reportes/atenciones-doctor` | `GET /api/reportes/atenciones-doctor/pdf` | `GET /api/reportes/atenciones-doctor/xlsx` | Citas completadas/canceladas/no asistió por doctor |
-| Estado de Citas | `GET /api/reportes/estado-citas` | `GET /api/reportes/estado-citas/pdf` | `GET /api/reportes/estado-citas/xlsx` | Distribución de citas por estado |
-| Cierres de Caja | `GET /api/reportes/cierres-caja` | — | — | Historial de cierres con diferencias |
+| Ventas por Período | `GET /api/reportes/ventas-periodo` | `GET /api/reportes/ventas-periodo/pdf` | `GET /api/reportes/ventas-periodo/xlsx` | Ventas agrupadas por día con detalle |
+| Ingresos por Servicio | `GET /api/reportes/ingresos-servicio` | `GET /api/reportes/ingresos-servicio/pdf` | `GET /api/reportes/ingresos-servicio/xlsx` | Ingresos agrupados por servicio con detalle |
+| Atenciones por Doctor | `GET /api/reportes/atenciones-doctor` | `GET /api/reportes/atenciones-doctor/pdf` | `GET /api/reportes/atenciones-doctor/xlsx` | Citas completadas/canceladas/no asistió + capacidad/ocupación |
+| Cierres de Caja | `GET /api/reportes/cierres-caja` | — | — | Historial de cierres con detalle de ventas |
 | Pacientes Atendidos | `GET /api/reportes/pacientes-atendidos` | `GET /api/reportes/pacientes-atendidos/pdf` | `GET /api/reportes/pacientes-atendidos/xlsx` | Nuevos, recurrentes, total, desglose por día |
-| Ocupación de Agenda | `GET /api/reportes/ocupacion-agenda` | `GET /api/reportes/ocupacion-agenda/pdf` | `GET /api/reportes/ocupacion-agenda/xlsx` | % ocupación general + por doctor |
 
-**Nota:** Los reportes de "Total Ventas Período" y "Cierres de Caja" solo tienen endpoint JSON (sin PDF/Excel).
+**Nota:** Estado de Citas y Ocupación de Agenda se eliminaron como tabs independientes. Ocupación se fusionó en el tab Doctores (capacidad/porcentaje). Solo Caja no tiene exportación PDF/Excel.
 
 ---
 
@@ -49,8 +52,8 @@
 4. La exportación PDF se genera server-side con iText 7 (no jsPDF en frontend)
 5. La exportación Excel se genera server-side con Apache POI (no librerías JS)
 6. El frontend descarga el archivo como blob y dispara la descarga nativa del navegador
-7. Los datos se cargan automáticamente al entrar al módulo (sin esperar click en "Generar Reporte")
-8. Al cambiar de tab, se recarga el reporte correspondiente
+7. Los datos se cargan automáticamente al cambiar filtros (`ngModelChange`) o tabs (`onTabChange`)
+8. Cada fila es expandible (▼) con sub-tabla de detalle
 
 ---
 
@@ -84,33 +87,40 @@
 
 ---
 
-## 5. Archivos Creados
+## 5. Archivos
 
 ### Backend
 
 | Archivo | Propósito |
 |---|---|
 | `dto/request/ReporteFiltrosDTO.java` | DTO de filtros (fechaInicio, fechaFin, idDoctor) |
-| `dto/response/ReporteVentasPeriodoDTO.java` | DTO ventas por día |
-| `dto/response/ReporteIngresosServicioDTO.java` | DTO ingresos por servicio |
-| `dto/response/ReporteAtencionesDoctorDTO.java` | DTO atenciones por doctor |
-| `dto/response/ReporteEstadoCitasDTO.java` | DTO distribución estados |
-| `dto/response/ReportePacientesDTO.java` | DTO pacientes (nuevos/recurrentes/por día) |
-| `dto/response/ReporteOcupacionDTO.java` | DTO ocupación de agenda |
-| `service/ReporteService.java` | Interfaz del servicio |
-| `service/impl/ReporteServiceImpl.java` | Implementación con 8 métodos de consulta |
+| `dto/response/ReporteVentasPeriodoDTO.java` | DTO ventas por día + `List<VentaDetalleDTO>` |
+| `dto/response/ReporteIngresosServicioDTO.java` | DTO ingresos por servicio + `List<IngresoServicioDetalleDTO>` |
+| `dto/response/ReporteAtencionesDoctorDTO.java` | DTO atenciones por doctor (con capacidadTotal, porcentajeOcupacion, slots) |
+| `dto/response/ReporteEstadoCitasDTO.java` | (sin uso actual) |
+| `dto/response/ReportePacientesDTO.java` | DTO pacientes (nuevos/recurrentes/por día + detalle) |
+| `dto/response/ReporteOcupacionDTO.java` | (sin uso actual) |
+| `dto/response/CajaResponseDTO.java` | DTO cierre caja + `List<VentaDetalleDTO>` |
+| `dto/response/VentaDetalleDTO.java` | Detalle de venta individual |
+| `dto/response/IngresoServicioDetalleDTO.java` | Detalle de ingreso por servicio |
+| `dto/response/AtencionDoctorDetalleDTO.java` | Detalle de atención por doctor |
+| `dto/response/EstadoCitaDetalleDTO.java` | Detalle de estado de cita |
+| `dto/response/PacienteDetalleDTO.java` | Detalle de paciente |
+| `dto/response/OcupacionDetalleDTO.java` | Detalle de slot ocupado |
+| `service/ReporteService.java` | Interfaz con 5 métodos |
+| `service/impl/ReporteServiceImpl.java` | Implementación con 5 métodos |
 | `util/ReportePdfGenerator.java` | Generador PDF con iText 7 |
 | `util/ReporteExcelGenerator.java` | Generador Excel con Apache POI |
-| `controller/ReporteController.java` | 20 endpoints REST |
+| `controller/ReporteController.java` | 14 endpoints REST |
 
 ### Frontend
 
 | Archivo | Propósito |
 |---|---|
-| `features/reportes/reportes.models.ts` | Interfaces TypeScript (8 DTOs) |
-| `core/services/reporte.service.ts` | 14 métodos (datos + descarga + downloadBlob) |
-| `features/reportes/reportes.component.ts` | Componente con 7 tabs, filtros, descargas |
-| `features/reportes/reportes.routes.ts` | Ruta protegida con guards |
+| `features/reportes/reportes.models.ts` | Interfaces TypeScript (5 tabs) |
+| `core/services/reporte.service.ts` | 12 métodos (datos + descarga + downloadBlob) |
+| `features/reportes/reportes.component.ts` | Componente con 5 tabs, filtros, descargas, filas expandibles |
+| `features/reportes/reportes.routes.ts` | Ruta protegida con `() => roleGuard(['ROLE_ADMIN'])` |
 
 ---
 
@@ -132,30 +142,7 @@
 
 ---
 
-## 7. Pruebas Manuales
-
-### Backend
-1. `GET /api/reportes/ventas-periodo?fechaInicio=2025-08-01&fechaFin=2025-08-31` → JSON con array de ventas
-2. `GET /api/reportes/ventas-periodo/pdf?fechaInicio=2025-08-01&fechaFin=2025-08-31` → descarga PDF
-3. `GET /api/reportes/ventas-periodo/xlsx?fechaInicio=2025-08-01&fechaFin=2025-08-31` → descarga XLSX
-4. `GET /api/reportes/atenciones-doctor?fechaInicio=2025-08-01&fechaFin=2025-08-31&idDoctor=1` → filtrado por doctor
-5. `GET /api/reportes/ventas-periodo?fechaInicio=2025-01-01&fechaFin=2025-01-01` → array vacío (sin datos)
-6. `GET /api/reportes/ventas-periodo?fechaInicio=2025-08-01` → 400 Bad Request (falta fechaFin)
-7. Verificar que recepción/doctor reciban 403 Forbidden
-
-### Frontend
-1. Navegar a `/reportes` → ver tabs y filtros cargados
-2. Hacer clic en tabs → cambia contenido (Ventas → Servicios → Doctores → etc.)
-3. Click "Generar Reporte" → carga datos
-4. Click "PDF" → descarga archivo PDF
-5. Click "Excel" → descarga archivo XLSX
-6. Click "Hoy" / "Esta Semana" / "Este Mes" → cambia fechas y recarga
-7. Seleccionar un doctor en el filtro → aplicar
-8. Verificar que recepción/doctor no vean el enlace en sidebar
-
----
-
-## 8. Bugs Conocidos / Fixes
+## 7. Bugs Conocidos / Fixes
 
 | Bug | Severidad | Estado |
 |---|---|---|
@@ -166,3 +153,34 @@
 | `roleGuard` en `reportes.routes.ts` sin arrow function (no pasaba roles al guard) | Alta | ✅ Fix: `roleGuard` → `() => roleGuard(['ROLE_ADMIN'])` |
 | Template: `Object is possibly 'null'` en Angular strict mode | Media | ✅ Fix: `pacientesData` y `ocupacionData` inicializados con objeto vacío en vez de `null` |
 | No auto-carga de datos al iniciar el componente | Baja | ✅ Fix: `ngOnInit` ahora llama `this.cargarReporte()` |
+
+---
+
+## 8. Cambios Recientes
+
+### Login — Overlay de fondo
+- **Archivo:** `frontend/src/app/features/auth/login/login.component.ts:14`
+- Reemplazado `bg-gradient-to-br from-primary-900/30 via-primary-800/10 to-gray-900/30` por `bg-black/50`
+- Efecto: la imagen de fondo se ve más suave/transparente, dando contraste con el formulario glass blanco
+- El formulario (`.glass-login`) se mantiene sin cambios
+
+### Consolidación 7 → 5 Reportes
+- Eliminados tabs: Estado de Citas (operativo, no gerencial) y Ocupación (fusionada con Doctores)
+- Doctores ahora incluye capacidad total y % ocupación
+- Eliminados endpoints: `total-ventas`, `estado-citas`, `ocupacion-agenda` (y sus PDF/Excel)
+- 14 endpoints activos (antes 20)
+
+### Auto-carga y Limpiar
+- `(ngModelChange)="cargarReporte()"` en fechaInicio, fechaFin, idDoctor
+- `onTabChange(tabId)` recarga al cambiar tab
+- Botón "Limpiar" reemplaza "Generar Reporte": resetea fechas a hoy, doctor a null, recarga
+
+### Filas Expandibles
+- Cada fila de tabla con ▶/▼ toggle
+- `expandedRows: { [tab: string]: Set<number> }` estado por tab
+- `toggleRow(tab, index)` / `isRowExpanded(tab, index)` métodos
+- Doctores tab: expande en "Citas" y "Slots Ocupados" (sub-secciones)
+
+### Detail DTOs (6 nuevos)
+- `VentaDetalleDTO`, `IngresoServicioDetalleDTO`, `AtencionDoctorDetalleDTO`
+- `EstadoCitaDetalleDTO`, `PacienteDetalleDTO`, `OcupacionDetalleDTO`

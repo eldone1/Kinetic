@@ -11,7 +11,7 @@ import { CommonModule } from '@angular/common';
   template: `
     <div class="min-h-screen flex items-center justify-center p-4 relative overflow-hidden"
       style="background-image: url('assets/images/referencia-login.png'); background-size: cover; background-position: center;">
-      <div class="absolute inset-0 bg-gradient-to-br from-primary-900/30 via-primary-800/10 to-gray-900/30"></div>
+      <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-black/60"></div>
 
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()"
         class="glass-login rounded-2xl p-8 w-full max-w-md relative animate-fade-in">

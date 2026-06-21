@@ -138,6 +138,7 @@ export class LayoutComponent {
         { label: 'Pacientes', icon: '&#9632;', route: '/pacientes', roles: ['ROLE_ADMIN', 'ROLE_RECEPCION', 'ROLE_DOCTOR'] },
         { label: 'Doctores', icon: '&#9632;', route: '/doctores', roles: ['ROLE_ADMIN', 'ROLE_RECEPCION'] },
         { label: 'Agenda y Citas', icon: '&#9632;', route: '/agenda', roles: ['ROLE_ADMIN', 'ROLE_RECEPCION', 'ROLE_DOCTOR'] },
+        { label: 'Servicios', icon: '&#9632;', route: '/servicios', roles: ['ROLE_ADMIN'] },
       ]
     },
     {
