@@ -52,8 +52,10 @@ services:
         condition: service_healthy
 
     environment:
-
-      TZ: America/Lima
+      TIME_ZONE: "America/Lima"
+      SPRING_PORT: "8081"
+      LOG_LEVEL_APP: INFO
+      LOG_LEVEL_SQL: DEBUG
 
       SPRING_PROFILES_ACTIVE: prod
 
@@ -96,7 +98,7 @@ services:
       - kinetic_net_prod
 
     healthcheck:
-      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health >/dev/null 2>&1 || exit 1"]
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8081/actuator/health >/dev/null 2>&1 || exit 1"]
       timeout: 10s
       interval: 20s
       retries: 5
