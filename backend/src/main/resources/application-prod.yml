@@ -32,6 +32,15 @@ app:
   jwt:
     secret: ${JWT_SECRET}
     expiration: ${JWT_EXPIRATION}
+  seed:
+    admin:
+      enabled: ${ADMIN_SEED_ENABLED}
+      username: ${ADMIN_USERNAME}
+      email: ${ADMIN_EMAIL}
+      password: ${ADMIN_PASSWORD}
+      nombre: ${ADMIN_NAME}
+      apellidos: ${ADMIN_LASTNAME}
+      telefono: ${ADMIN_PHONE}
 
 logging:
   level:

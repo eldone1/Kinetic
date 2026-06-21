@@ -27,6 +27,15 @@ app:
     secret: ${JWT_SECRET}
     expiration: ${JWT_EXPIRATION}
     refresh-expiration: ${JWT_REFRESH_EXPIRATION}
+  seed:
+    admin:
+      enabled: ${ADMIN_SEED_ENABLED:true}
+      username: ${ADMIN_USERNAME:admin}
+      email: ${ADMIN_EMAIL:admin@kineticrehab.local}
+      password: ${ADMIN_PASSWORD:admin12345}
+      nombre: ${ADMIN_NAME:Administrador}
+      apellidos: ${ADMIN_LASTNAME:Sistema}
+      telefono: ${ADMIN_PHONE:}
 
 logging:
   level:

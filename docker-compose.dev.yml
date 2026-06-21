@@ -106,6 +106,17 @@ services:
       JWT_EXPIRATION: ${JWT_EXPIRATION}
       JWT_REFRESH_EXPIRATION: ${JWT_REFRESH_EXPIRATION}
 
+      # =======================================================
+      # ADMIN SEED
+      # =======================================================
+      ADMIN_SEED_ENABLED: ${ADMIN_SEED_ENABLED}
+      ADMIN_USERNAME: ${ADMIN_USERNAME}
+      ADMIN_EMAIL: ${ADMIN_EMAIL}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+      ADMIN_NAME: ${ADMIN_NAME}
+      ADMIN_LASTNAME: ${ADMIN_LASTNAME}
+      ADMIN_PHONE: ${ADMIN_PHONE}
+
     ports:
       - "8080:8080"
 
