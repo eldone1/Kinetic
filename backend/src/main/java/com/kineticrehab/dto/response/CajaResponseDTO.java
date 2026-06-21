@@ -4,6 +4,7 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -28,4 +29,5 @@ public class CajaResponseDTO {
     private BigDecimal esperadoYapePlin;
     private BigDecimal diferenciaEfectivo;
     private BigDecimal diferenciaYapePlin;
+    private List<VentaDetalleDTO> ventasDetalle;
 }

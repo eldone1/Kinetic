@@ -15,7 +15,7 @@
 | Inicio | 2025-06-01 |
 | Entrega | 2025-09-01 |
 | Presupuesto | S/ 5,000.00 |
-| Estado actual | Módulo 6 completado — Ventas, Caja, Catálogo Servicios, Validación Horario Doctor |
+| Estado actual | Módulo 7 completado — Reportes con exportación PDF/Excel |
 
 **Descripción:**
 Sistema web completo para centro de rehabilitación física. Incluye gestión de pacientes, agenda de citas y sesiones, historia clínica, evaluaciones y tratamientos fisioterapéuticos, ventas de productos, inventario, caja y reportes. Funciona en red local (LAN) con acceso remoto por VPN para el dueño. Stack: Angular + Spring Boot + MySQL.
@@ -32,7 +32,7 @@ Sistema web completo para centro de rehabilitación física. Incluye gestión de
 - [x] Historia clínica: evaluaciones, re-valoraciones, tratamientos, sesiones, evolución del paciente
 - [x] Módulo de ventas y caja (MVP): apertura/cierre de caja, cobro de servicios (citas COMPLETADA), efectivo + Yape/Plin
 - [ ] Gestión de inventario: stock, lotes, fechas de vencimiento, alertas de bajo stock (escala futura)
-- [ ] Reportes y dashboard: ventas, pacientes atendidos, sesiones, ingresos, exportación PDF y Excel
+- [x] Reportes y dashboard: ventas, pacientes atendidos, sesiones, ingresos, exportación PDF y Excel
 
 ### Requisitos No Funcionales
 - [ ] Respuesta del sistema menor a 2 segundos en agendado y registro de sesiones
@@ -91,7 +91,7 @@ Arquitectura cliente-servidor en red local (LAN). Frontend SPA en Angular, Backe
 | 4 | Agenda, Citas y Sesiones | 2025-07-01 | 2025-07-20 | ✅ Completado |
 | 5 | Historia Clínica y Tratamientos | 2025-07-21 | 2025-08-05 | ✅ Completado |
 | 6 | Ventas, Caja e Inventario — MVP Servicios | 2025-08-06 | 2025-08-20 | ✅ Completado |
-| 7 | Reportes y Dashboard | 2025-08-21 | 2025-08-31 | 🔄 50% — Dashboard implementado, reportes pendientes |
+| 7 | Reportes y Dashboard | 2025-08-21 | 2025-08-31 | ✅ Completado — Dashboard por rol + 7 reportes con PDF/Excel |
 | 8 | Pruebas y Ajustes | 2025-09-01 | 2025-09-15 | ⏳ Pendiente |
 | 9 | Despliegue y Capacitación | 2025-09-16 | 2025-09-30 | ⏳ Pendiente |
 
@@ -108,7 +108,7 @@ Arquitectura cliente-servidor en red local (LAN). Frontend SPA en Angular, Backe
 | Historia Clínica y Tratamientos | Angular + Spring Boot + JPA | ✅ Completado | HC expandida (secciones A-F: control adm, anamnesis, antecedentes, heredo-familiares, signos vitales). Evaluaciones: Valoración SOAP + escalas EVA/BORG/Daniels + ROM + pruebas especiales + plan camilla/gym. Re-valoración con control de evolución. IMC automático. Solo ADMIN/DOCTOR |
 | Ventas y Caja (MVP Servicios) | Angular + Spring Boot + JPA | ✅ Completado | MVP: apertura/cierre caja, cobro citas COMPLETADA, Efectivo+Yape/Plin, catálogo servicios con precios fijos, validación horario doctor. Escala futura: venta productos |
 | Inventario y Productos | Angular + Spring Boot + JPA | ⏳ Pendiente | Lotes, vencimiento, alertas por correo (escala futura) |
-| Reportes y Dashboard | Angular + Chart.js + iText/Apache POI | 🔄 50% | Dashboard por rol implementado. Reportes PDF/Excel pendientes. |
+| Reportes y Dashboard | Angular + Chart.js + iText/Apache POI | ✅ Completado | Dashboard por rol. 7 reportes (Ventas, Servicios, Doctores, Estados, Caja, Pacientes, Ocupación) con filtros fecha/doctor y exportación PDF/Excel. Solo ADMIN. |
 | Auditoría y Logs | Spring Boot AOP / Interceptors | ⏳ Pendiente | Registro de usuario, fecha y hora |
 
 ---
@@ -156,7 +156,7 @@ Arquitectura cliente-servidor en red local (LAN). Frontend SPA en Angular, Backe
 | Mensaje de error de horario se muestra en el formulario | ✅ OK | Banner rojo en modal de cita |
 | Venta con stock insuficiente | ⏳ Pendiente | — |
 | Alerta de stock bajo por correo | ⏳ Pendiente | — |
-| Exportar reporte de ventas mensual en PDF | ⏳ Pendiente | — |
+| Exportar reporte de ventas mensual en PDF | ✅ OK | iText 7.2.6 + Apache POI 5.2.6 |
 | Backup automático a las 11pm | ⏳ Pendiente | — |
 
 ### Bugs registrados
