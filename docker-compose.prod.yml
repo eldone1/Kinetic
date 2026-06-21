@@ -98,7 +98,7 @@ services:
       # =======================================================
       # ADMIN SEED
       # =======================================================
-      ADMIN_SEED_ENABLED: ${ADMIN_SEED_ENABLED}
+      ADMIN_SEED_ENABLED: "true"
       ADMIN_USERNAME: ${ADMIN_USERNAME}
       ADMIN_EMAIL: ${ADMIN_EMAIL}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD}
