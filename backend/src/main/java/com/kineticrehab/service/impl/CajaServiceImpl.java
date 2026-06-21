@@ -75,30 +75,33 @@ public class CajaServiceImpl implements CajaService {
             throw new BadRequestException("La caja ya está cerrada");
         }
 
-        List<Venta> ventas = ventaRepository.findByCajaIdAndDeletedAtIsNullOrderByFechaVentaDesc(id);
+        TotalesEsperados esperados = calcularEsperados(id);
 
-        BigDecimal totalEfectivo = ventas.stream()
-                .filter(v -> "EFECTIVO".equals(v.getMetodoPago()))
-                .map(Venta::getTotal)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        BigDecimal totalYapePlin = ventas.stream()
-                .filter(v -> "YAPE_PLIN".equals(v.getMetodoPago()))
-                .map(Venta::getTotal)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        long cantidadVentas = ventas.size();
+        long cantidadVentas = ventaRepository.findByCajaIdAndDeletedAtIsNullOrderByFechaVentaDesc(id).size();
 
         caja.setFechaCierre(LocalDateTime.now());
         caja.setMontoFinalEfectivo(dto.getMontoFinalEfectivo());
         caja.setMontoFinalYapePlin(dto.getMontoFinalYapePlin());
-        caja.setTotalVentas(totalEfectivo.add(totalYapePlin));
+        caja.setTotalVentas(esperados.efectivo.add(esperados.yapePlin));
         caja.setObservaciones(dto.getObservaciones());
         caja.setEstado("CERRADO");
 
         caja = cajaRepository.save(caja);
         log.info("Caja {} cerrada exitosamente. Total ventas: {}", id, caja.getTotalVentas());
-        return cajaMapper.toDTOConVentas(caja, (int) cantidadVentas);
+
+        CajaResponseDTO response = cajaMapper.toDTOConEsperados(caja, (int) cantidadVentas,
+                esperados.efectivo, esperados.yapePlin);
+
+        BigDecimal difEfectivo = response.getDiferenciaEfectivo();
+        BigDecimal difYapePlin = response.getDiferenciaYapePlin();
+        if (difEfectivo != null && difEfectivo.compareTo(BigDecimal.ZERO) != 0) {
+            log.warn("Caja {}: diferencia en efectivo de {}", id, difEfectivo);
+        }
+        if (difYapePlin != null && difYapePlin.compareTo(BigDecimal.ZERO) != 0) {
+            log.warn("Caja {}: diferencia en Yape/Plin de {}", id, difYapePlin);
+        }
+
+        return response;
     }
 
     @Override
@@ -108,8 +111,9 @@ public class CajaServiceImpl implements CajaService {
 
         return cajaRepository.findByUsuarioIdAndEstadoAndDeletedAtIsNull(usuario.getId(), "ABIERTO")
                 .map(caja -> {
+                    TotalesEsperados esperados = calcularEsperados(caja.getId());
                     long cantidadVentas = ventaRepository.findByCajaIdAndDeletedAtIsNullOrderByFechaVentaDesc(caja.getId()).size();
-                    return cajaMapper.toDTOConVentas(caja, (int) cantidadVentas);
+                    return cajaMapper.toDTOConEsperados(caja, (int) cantidadVentas, esperados.efectivo, esperados.yapePlin);
                 })
                 .orElse(null);
     }
@@ -121,8 +125,9 @@ public class CajaServiceImpl implements CajaService {
 
         return cajaRepository.findByUsuarioIdAndDeletedAtIsNullOrderByFechaAperturaDesc(usuario.getId()).stream()
                 .map(caja -> {
+                    TotalesEsperados esperados = calcularEsperados(caja.getId());
                     long cantidadVentas = ventaRepository.findByCajaIdAndDeletedAtIsNullOrderByFechaVentaDesc(caja.getId()).size();
-                    return cajaMapper.toDTOConVentas(caja, (int) cantidadVentas);
+                    return cajaMapper.toDTOConEsperados(caja, (int) cantidadVentas, esperados.efectivo, esperados.yapePlin);
                 })
                 .collect(Collectors.toList());
     }
@@ -133,8 +138,9 @@ public class CajaServiceImpl implements CajaService {
 
         return cajaRepository.findAllByDeletedAtIsNullOrderByFechaAperturaDesc().stream()
                 .map(caja -> {
+                    TotalesEsperados esperados = calcularEsperados(caja.getId());
                     long cantidadVentas = ventaRepository.findByCajaIdAndDeletedAtIsNullOrderByFechaVentaDesc(caja.getId()).size();
-                    return cajaMapper.toDTOConVentas(caja, (int) cantidadVentas);
+                    return cajaMapper.toDTOConEsperados(caja, (int) cantidadVentas, esperados.efectivo, esperados.yapePlin);
                 })
                 .collect(Collectors.toList());
     }
@@ -146,8 +152,9 @@ public class CajaServiceImpl implements CajaService {
         Caja caja = cajaRepository.findByIdAndDeletedAtIsNull(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Caja no encontrada con id: " + id));
 
+        TotalesEsperados esperados = calcularEsperados(id);
         long cantidadVentas = ventaRepository.findByCajaIdAndDeletedAtIsNullOrderByFechaVentaDesc(id).size();
-        return cajaMapper.toDTOConVentas(caja, (int) cantidadVentas);
+        return cajaMapper.toDTOConEsperados(caja, (int) cantidadVentas, esperados.efectivo, esperados.yapePlin);
     }
 
     @Override
@@ -166,5 +173,20 @@ public class CajaServiceImpl implements CajaService {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         return usuarioRepository.findByUsernameAndDeletedAtIsNull(username)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado: " + username));
+    }
+
+    private record TotalesEsperados(BigDecimal efectivo, BigDecimal yapePlin) {}
+
+    private TotalesEsperados calcularEsperados(Long cajaId) {
+        List<Venta> ventas = ventaRepository.findByCajaIdAndDeletedAtIsNullOrderByFechaVentaDesc(cajaId);
+        BigDecimal efectivo = ventas.stream()
+                .filter(v -> "EFECTIVO".equals(v.getMetodoPago()))
+                .map(Venta::getTotal)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal yapePlin = ventas.stream()
+                .filter(v -> "YAPE_PLIN".equals(v.getMetodoPago()))
+                .map(Venta::getTotal)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        return new TotalesEsperados(efectivo, yapePlin);
     }
 }

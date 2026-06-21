@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,4 +24,8 @@ public class CajaResponseDTO {
     private String observaciones;
     private String estado;
     private Integer cantidadVentas;
+    private BigDecimal esperadoEfectivo;
+    private BigDecimal esperadoYapePlin;
+    private BigDecimal diferenciaEfectivo;
+    private BigDecimal diferenciaYapePlin;
 }

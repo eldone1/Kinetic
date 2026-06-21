@@ -116,7 +116,8 @@
 | `GET` | `/api/doctores/{id}` | ADMIN, RECEPCION, DOCTOR | Buscar doctor por ID |
 | `GET` | `/api/doctores/buscar?q=` | ADMIN, RECEPCION | Buscar por nombre, DNI o especialidad |
 | `GET` | `/api/doctores/disponibles` | ADMIN, RECEPCION, DOCTOR | Listar solo doctores activos (para combos) |
-| `GET` | `/api/doctores/yo` | DOCTOR | Obtener perfil del doctor del usuario autenticado |
+| `GET` | `/api/doctores/yo` | DOCTOR | Obtener perfil básico del doctor autenticado |
+| `GET` | `/api/doctores/yo/perfil` | DOCTOR | Obtener perfil completo + horarios del doctor autenticado |
 | `POST` | `/api/doctores` | ADMIN | Crear doctor |
 | `PUT` | `/api/doctores/{id}` | ADMIN | Actualizar doctor |
 | `PATCH` | `/api/doctores/{id}/estado` | ADMIN | Activar/desactivar doctor |
@@ -135,6 +136,8 @@
 - RECEPCION solo visualiza horarios y disponibilidad
 - **Auto-creación desde Usuario:** Al crear un `Usuario` con rol `ROLE_DOCTOR`, se genera automáticamente un registro en `doctores` vinculado por `usuario_id`. El DNI queda `NULL` hasta que se edite manualmente desde el formulario de doctores.
 - **Migración V9:** Los usuarios existentes con `ROLE_DOCTOR` se backfillean a la tabla `doctores` al ejecutar la migración Flyway.
+- **Perfil de Doctor:** El rol DOCTOR ve "Mi Perfil" desde el dropdown del header (avatar en top bar). La pestaña "Doctores" del sidebar está oculta para DOCTOR. Si accede a `/doctores` por URL, es redirigido automáticamente a `/doctores/mi-perfil`.
+- **Filtro de hijos en menú:** Cada hijo del menú lateral verifica su propio rol (`tieneRol(child.roles)`) para decidir si se renderiza. Esto evita que hijos como "Doctores" aparezcan para roles no autorizados aunque el grupo padre sí lo esté.
 
 ---
 
@@ -144,22 +147,23 @@
 
 | Componente | Ruta | Descripción |
 |------------|------|-------------|
-| `DoctorListComponent` | `/doctores` | Tabla con búsqueda, activar/desactivar |
+| `DoctorListComponent` | `/doctores` | Tabla con búsqueda, activar/desactivar. DOCTOR redirigido a `/doctores/mi-perfil` |
 | `DoctorFormComponent` | `/doctores/nuevo` / `/doctores/:id/editar` | Crear/editar doctor |
 | `DoctorHorariosComponent` | `/doctores/:id/horarios` | Gestión de horarios semanales |
+| `DoctorPerfilComponent` | `/doctores/mi-perfil` | Perfil del doctor (solo DOCTOR): avatar, datos personales, horarios, acceso rápido |
 
 ### Servicios
 
 | Servicio | Métodos principales |
 |----------|-------------------|
-| `DoctorService` | `listarTodos()`, `buscarPorId()`, `buscar()`, `listarDisponibles()`, `crear()`, `actualizar()`, `cambiarEstado()`, `eliminar()`, `obtenerHorarios()`, `actualizarHorarios()` |
+| `DoctorService` | `listarTodos()`, `buscarPorId()`, `buscar()`, `listarDisponibles()`, `obtenerMiPerfil()`, `obtenerMiPerfilCompleto()`, `crear()`, `actualizar()`, `cambiarEstado()`, `eliminar()`, `obtenerHorarios()`, `actualizarHorarios()` |
 
 ### Guards
 
 | Guard | Rutas protegidas |
 |-------|------------------|
 | `AuthGuard` | Todas las rutas del módulo |
-| `RoleGuard` | Listado: ADMIN/RECEPCION — Crear/Editar/Horarios: solo ADMIN |
+| `RoleGuard` | Listado: ADMIN/RECEPCION/DOCTOR (DOCTOR redirige a perfil) — Crear/Editar/Horarios: solo ADMIN — Mi Perfil: solo DOCTOR |
 
 ---
 
@@ -207,8 +211,10 @@ frontend/src/app/
 │       │   └── doctor-list.component.ts
 │       ├── doctor-form/
 │       │   └── doctor-form.component.ts
-│       └── doctor-horarios/
-│           └── doctor-horarios.component.ts
+│       ├── doctor-horarios/
+│       │   └── doctor-horarios.component.ts
+│       └── doctor-perfil/
+│           └── doctor-perfil.component.ts
 └── models/
     └── doctor.model.ts
 ```

@@ -144,6 +144,9 @@ Arquitectura cliente-servidor en red local (LAN). Frontend SPA en Angular, Backe
 | Intentar cobrar cita ya facturada | ✅ OK | Error 409 Conflict |
 | Intentar cobrar sin caja activa | ✅ OK | Error 400 BadRequest |
 | Cerrar caja con resumen de ventas | ✅ OK | — |
+| Cierre de caja muestra montos esperados (efectivo + yape/plin) antes de declarar | ✅ OK | — |
+| Cierre de caja calcula diferencias declarado vs esperado (faltante/sobrante) | ✅ OK | Muestra verde si cero, rojo con advertencia si hay diferencia |
+| Cierre de caja loggea advertencia si hay diferencias no cero | ✅ OK | — |
 | Admin ve lista de cajas (activas/cerradas) con ventas | ✅ OK | — |
 | Intentar cobrar cita en estado no COMPLETADA | ✅ OK | Se filtra en backend |
 | Recepción ve solo sus propias cajas | ✅ OK | — |
@@ -166,16 +169,17 @@ Arquitectura cliente-servidor en red local (LAN). Frontend SPA en Angular, Backe
 | Falta vista de lista de citas con filtros y cambio de estado inline | Media | ✅ Fix: agregada vista Lista con toggle Calendario/Lista en cita-list.component.ts |
 | Doctor (ROLE_DOCTOR) no podía cargar lista de doctores (403 en `/disponibles`) ni preseleccionar su perfil | Alta | ✅ Fix: agregado DOCTOR a `@PreAuthorize` de `/disponibles`, nuevo endpoint `GET /api/doctores/yo`, frontend preselecciona doctor logueado |
 | Recepción usaba `listarDisponibles` (solo activos) en vez de `listarTodos` (todos los registrados) | Baja | ✅ Fix: cambiado a `listarTodos()` para ADMIN/RECEPCION en cita-list.component.ts |
+| Doctor veía pestaña "Doctores" en sidebar y al hacer clic cerraba sesión (roleGuard redirigía a login) | Alta | ✅ Fix: hijos del menú ahora filtran por `tieneRol(child.roles)`. DOCTOR redirigido a `/doctores/mi-perfil`. Nuevo dropdown en header con "Mi Perfil". |
 
 ---
 
 ## 7. Usuarios y Roles
 
 | Rol | Permisos |
-|---|---|
+|---|---|---|
 | Administrador | Acceso total al sistema. Crea y gestiona usuarios. Ve todos los reportes financieros. |
 | Recepción | Agenda citas, gestiona pacientes (datos personales), realiza ventas y cobros, apertura/cierre de caja. No ve reportes financieros ni datos clínicos. |
-| Doctor | Ve su agenda, crea y edita historia clínica, evaluaciones, tratamientos y sesiones de sus pacientes. No accede a ventas ni reportes financieros. |
+| Doctor | Ve su agenda, crea y edita historia clínica, evaluaciones, tratamientos y sesiones de sus pacientes. Ve su perfil personal con horarios. No accede a ventas ni reportes financieros. |
 
 > Solo el administrador puede crear, modificar o desactivar usuarios. Toda acción queda registrada en el log de auditoría con usuario, fecha y hora.
 

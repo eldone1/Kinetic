@@ -11,6 +11,10 @@ export interface CajaResponse {
   observaciones: string | null;
   estado: string;
   cantidadVentas: number | null;
+  esperadoEfectivo: number | null;
+  esperadoYapePlin: number | null;
+  diferenciaEfectivo: number | null;
+  diferenciaYapePlin: number | null;
 }
 
 export interface CajaAperturaRequest {

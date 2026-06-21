@@ -38,6 +38,9 @@
 3. Al cerrar caja, se registran los montos finales por método de pago
 4. El admin puede ver todas las cajas (activas y cerradas)
 5. La recepción solo ve su propia caja activa
+6. El sistema calcula automáticamente los **montos esperados** por método de pago (suma de ventas registradas en la caja) y los expone como `esperadoEfectivo` / `esperadoYapePlin` en la respuesta de toda consulta de caja
+7. Al cerrar caja, el sistema compara los montos **declarados** vs **esperados** y calcula las diferencias (`diferenciaEfectivo` / `diferenciaYapePlin`). Diferencias distintas de cero se loguean como advertencia
+8. En el frontend de cierre se muestran los esperados antes de declarar, y al cerrar se presenta un resumen con las diferencias (verde si es cero, rojo con advertencia si hay faltante/sobrante)
 
 ### Venta (Cobro de Servicios)
 1. Solo se pueden cobrar citas en estado `COMPLETADA`
@@ -302,8 +305,12 @@ src/app/
    - Botón "Cobrar" → registra venta
 4. **Cierre**:
    - Botón "Cerrar Caja" en la barra superior
-   - Muestra resumen: total efectivo, total yape/plin, cantidad de ventas
-   - Confirma cierre
+   - Muestra resumen: datos de la caja, cantidad de ventas
+   - **Muestra montos esperados** por método de pago (calculados desde las ventas registradas)
+   - Usuario declara montos finales y observaciones
+   - Al confirmar, sistema calcula diferencias declarado vs esperado
+   - Pantalla de resultado muestra diferencias: **verde** si es cero, **rojo con advertencia** si hay faltante/sobrante
+   - Botón "Volver a Ventas" para regresar manualmente
 
 #### Administrador
 1. **Ventas / Admin Cajas** → `/ventas/admin`
@@ -342,7 +349,11 @@ export interface CajaResponse {
   totalVentas: number | null;
   observaciones: string | null;
   estado: string;
-  cantidadVentas?: number;
+  cantidadVentas: number | null;
+  esperadoEfectivo: number | null;
+  esperadoYapePlin: number | null;
+  diferenciaEfectivo: number | null;
+  diferenciaYapePlin: number | null;
 }
 ```
 
@@ -439,5 +450,21 @@ Al final de la implementación se agregó:
 - **Backend**: `GlobalExceptionHandler` retorna `ErrorResponseDTO { status, mensaje, timestamp }` para `BadRequestException`
 - **Frontend `cita-form.component.ts`**: nuevo `@Input() errorMessage: string | null` + banner rojo (`bg-red-50 border-red-200`) entre campos y botones
 - **Frontend `cita-list.component.ts`**: extrae `err.error.mensaje` del error HTTP y lo pasa al form; se limpia al cerrar o guardar exitosamente
+
+---
+
+## 10. Última Sesión — Cálculo de Faltante/Sobrante en Cierre de Caja
+
+Se agregó el cálculo automático de **montos esperados** y **diferencias** al cerrar caja:
+
+- **Backend `CajaResponseDTO`**: nuevos campos `esperadoEfectivo`, `esperadoYapePlin`, `diferenciaEfectivo`, `diferenciaYapePlin`
+- **Backend `CajaMapper`**: nuevo método `toDTOConEsperados(...)` que recibe los esperados y calcula las diferencias contra los montos finales
+- **Backend `CajaServiceImpl`**: helper `calcularEsperados(cajaId)` que suma las ventas por método de pago. Todos los métodos (`cerrar`, `obtenerActiva`, `listarMias`, `listarTodas`, `obtenerPorId`) usan `toDTOConEsperados`. El cierre loggea `warn` si hay diferencias ≠ 0
+- **Frontend `caja.model.ts`**: agregados los 4 nuevos campos al `CajaResponse`
+- **Frontend `cierre.component.ts`**: 
+  - Antes de cerrar, muestra los esperados como referencia en tarjetas resaltadas
+  - Las etiquetas de los inputs muestran el valor esperado para comparación
+  - Al cerrar exitosamente, muestra un resumen con diferencias: verde si es 0, rojo con advertencia si hay faltante/sobrante
+  - Ya no redirige automáticamente — el usuario vuelve manualmente con "Volver a Ventas"
 
 ### Próximo módulo sugerido: Módulo 7 — Reportes y Dashboard
