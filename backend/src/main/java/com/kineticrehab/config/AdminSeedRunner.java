@@ -67,7 +67,13 @@ public class AdminSeedRunner implements ApplicationRunner {
         String normalizedEmail = email.trim().toLowerCase();
 
         Rol rolAdmin = rolRepository.findByNombre(ROLE_ADMIN)
-                .orElseThrow(() -> new IllegalStateException("No existe el rol ROLE_ADMIN"));
+                .orElseGet(() -> {
+                    log.info("El rol {} no existe. Creándolo en la base de datos...", ROLE_ADMIN);
+                    Rol nuevoRol = new Rol();
+                    nuevoRol.setNombre(ROLE_ADMIN);
+                    // Si tienes un campo 'descripcion', puedes setearlo aquí ej: nuevoRol.setDescripcion("Rol Administrador");
+                    return rolRepository.save(nuevoRol);
+                });
 
         usuarioRepository.findByUsernameAndDeletedAtIsNull(normalizedUsername)
                 .ifPresentOrElse(
