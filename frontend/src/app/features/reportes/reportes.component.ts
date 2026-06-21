@@ -370,7 +370,7 @@ interface Tab {
             <div *ngIf="!pacientesData.totalPacientes && !pacientesData.pacientesPorDia.length" class="text-center py-10 text-gray-400">Sin datos para el período seleccionado</div>
             <div *ngIf="pacientesData.totalPacientes > 0 || pacientesData.pacientesPorDia.length > 0" class="grid grid-cols-3 gap-4 mb-6">
               <div class="glass-card rounded-xl p-4 text-center">
-                <p class="text-2xl font-bold text-primary-600">{{ pacientesData?.pacientesNuevos }}</p>
+                <p class="text-2xl font-bold text-primary-600">{{ pacientesData.pacientesNuevos }}</p>
                 <p class="text-xs text-gray-500 mt-1">Nuevos</p>
               </div>
               <div class="glass-card rounded-xl p-4 text-center">
