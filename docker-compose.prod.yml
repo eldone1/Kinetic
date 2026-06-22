@@ -154,7 +154,7 @@ volumes:
   kinetic_mysql_data_prod:
     name: kinetic_mysql_data_prod
 
-proxy-manager:
+  proxy-manager:
     image: 'jc21/nginx-proxy-manager:latest'
     container_name: kinetic_proxy_manager
     restart: unless-stopped
