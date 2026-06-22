@@ -133,8 +133,6 @@ services:
       backend:
         condition: service_healthy
 
-    ports:
-      - "81:80"
 
     networks:
       - kinetic_net_prod
