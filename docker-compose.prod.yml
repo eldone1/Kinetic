@@ -136,6 +136,19 @@ services:
 
     networks:
       - kinetic_net_prod
+  proxy-manager:
+    image: 'jc21/nginx-proxy-manager:latest'
+    container_name: kinetic_proxy_manager
+    restart: unless-stopped
+    ports:
+      - '80:80'   
+      - '443:443' 
+      - '8181:81'
+    volumes:
+      - ./data:/data
+      - ./letsencrypt:/etc/letsencrypt
+    networks:
+      - kinetic_net_prod
 
 # =============================================================
 # NETWORKS
@@ -154,17 +167,5 @@ volumes:
   kinetic_mysql_data_prod:
     name: kinetic_mysql_data_prod
 
-  proxy-manager:
-    image: 'jc21/nginx-proxy-manager:latest'
-    container_name: kinetic_proxy_manager
-    restart: unless-stopped
-    ports:
-      - '80:80'   
-      - '443:443' 
-      - '8181:81'
-    volumes:
-      - ./data:/data
-      - ./letsencrypt:/etc/letsencrypt
-    networks:
-      - kinetic_net_prod
+  
     
