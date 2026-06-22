@@ -14,12 +14,16 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.util.List;
+
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public class AdminSeedRunner implements ApplicationRunner {
 
     private static final String ROLE_ADMIN = "ROLE_ADMIN";
+    private static final String ROLE_RECEPCION = "ROLE_RECEPCION";
+    private static final String ROLE_DOCTOR = "ROLE_DOCTOR";
 
     private final UsuarioRepository usuarioRepository;
     private final RolRepository rolRepository;
@@ -54,6 +58,8 @@ public class AdminSeedRunner implements ApplicationRunner {
             return;
         }
 
+        seedRoles();
+
         if (!StringUtils.hasText(username)
                 || !StringUtils.hasText(email)
                 || !StringUtils.hasText(password)
@@ -67,18 +73,48 @@ public class AdminSeedRunner implements ApplicationRunner {
         String normalizedEmail = email.trim().toLowerCase();
 
         Rol rolAdmin = rolRepository.findByNombre(ROLE_ADMIN)
-                .orElseGet(() -> {
-                    log.info("El rol {} no existe. Creándolo en la base de datos...", ROLE_ADMIN);
-                    Rol nuevoRol = new Rol();
-                    nuevoRol.setNombre(ROLE_ADMIN);
-                    // Si tienes un campo 'descripcion', puedes setearlo aquí ej: nuevoRol.setDescripcion("Rol Administrador");
-                    return rolRepository.save(nuevoRol);
-                });
+                .orElseThrow(() -> new IllegalStateException("No existe el rol ROLE_ADMIN después del seed"));
 
         usuarioRepository.findByUsernameAndDeletedAtIsNull(normalizedUsername)
                 .ifPresentOrElse(
                         usuario -> syncAdmin(usuario, rolAdmin, normalizedEmail),
                         () -> createAdminIfNotExists(rolAdmin, normalizedUsername, normalizedEmail)
+                );
+    }
+
+    private void seedRoles() {
+        List.of(
+                        new RoleSeed(ROLE_ADMIN, "Acceso total al sistema"),
+                        new RoleSeed(ROLE_RECEPCION, "Agenda, ventas y cobros"),
+                        new RoleSeed(ROLE_DOCTOR, "Historia clínica y agenda propia")
+                )
+                .forEach(this::ensureRoleExists);
+    }
+
+    private void ensureRoleExists(RoleSeed seed) {
+        rolRepository.findByNombre(seed.nombre())
+                .ifPresentOrElse(
+                        rol -> {
+                            boolean changed = false;
+
+                            if (!seed.descripcion().equals(rol.getDescripcion())) {
+                                rol.setDescripcion(seed.descripcion());
+                                changed = true;
+                            }
+
+                            if (changed) {
+                                rolRepository.save(rol);
+                                log.info("Rol {} actualizado desde seed", seed.nombre());
+                            }
+                        },
+                        () -> {
+                            Rol rol = Rol.builder()
+                                    .nombre(seed.nombre())
+                                    .descripcion(seed.descripcion())
+                                    .build();
+                            rolRepository.save(rol);
+                            log.info("Rol {} creado al iniciar la aplicación", seed.nombre());
+                        }
                 );
     }
 
@@ -149,5 +185,8 @@ public class AdminSeedRunner implements ApplicationRunner {
 
         usuarioRepository.save(admin);
         log.info("Administrador '{}' creado correctamente al iniciar la aplicación", normalizedUsername);
+    }
+
+    private record RoleSeed(String nombre, String descripcion) {
     }
 }
