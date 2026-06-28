@@ -16,7 +16,7 @@ import { CommonModule } from '@angular/common';
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()"
         class="glass-login rounded-2xl p-8 w-full max-w-md relative animate-fade-in">
         <div class="text-center mb-8">
-          <img src="assets/images/logo.png" alt="Kinetic Rehab" class="h-16 mx-auto mb-4" />
+          <img src="assets/images/ologo.png" alt="Kinetic Rehab" class="h-16 mx-auto mb-4" />
           <h1 class="text-3xl font-bold text-gray-800 font-heading">Kinetic Rehab</h1>
           <p class="text-gray-500 mt-1 text-sm">Centro de Rehabilitación</p>
         </div>

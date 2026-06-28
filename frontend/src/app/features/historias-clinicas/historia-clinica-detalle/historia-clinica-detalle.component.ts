@@ -528,11 +528,64 @@ type Tab = 'general' | 'evaluaciones' | 'tratamientos' | 'sesiones';
       </div>
       <div>
         <label class="block text-sm font-medium text-gray-600 mb-1">Evaluación de Movilidad (ROM)</label>
-        <textarea [(ngModel)]="evalForm.evaluacionMovilidad" rows="2" class="input-field font-mono text-xs" placeholder='[{"nombre":"Flexión lumbar","rango":"60°"},{"nombre":"Extensión","rango":"15°"}]'></textarea>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-gray-200 text-xs text-gray-500 uppercase">
+                <th class="text-left py-1 pr-2">Nombre del Movimiento</th>
+                <th class="text-left py-1 pr-2">Rango de Movimiento</th>
+                <th class="w-8"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let row of romRows; let i = index; trackBy: trackByIndex">
+                <td class="py-1 pr-2">
+                  <input type="text" [(ngModel)]="row.nombre" class="input-field text-xs py-1" placeholder="Flexión lumbar" [disabled]="evaluacionVer" [attr.name]="'rom-nombre-' + i" />
+                </td>
+                <td class="py-1 pr-2">
+                  <input type="text" [(ngModel)]="row.rango" class="input-field text-xs py-1" placeholder="60°" [disabled]="evaluacionVer" [attr.name]="'rom-rango-' + i" />
+                </td>
+                <td class="py-1 text-center">
+                  <button *ngIf="!evaluacionVer" type="button" (click)="eliminarFilaROM(i)" class="text-red-400 hover:text-red-600 text-sm leading-none">&times;</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <button *ngIf="!evaluacionVer" type="button" (click)="agregarFilaROM()" class="text-xs text-teal-600 hover:text-teal-700 mt-1">+ Agregar fila</button>
       </div>
       <div>
         <label class="block text-sm font-medium text-gray-600 mb-1">Evaluación Funcional y Pruebas</label>
-        <textarea [(ngModel)]="evalForm.evaluacionFuncional" rows="2" class="input-field font-mono text-xs" placeholder='{"pruebas":[{"nombre":"Trendelenburg","resultado":"Positivo bilateral"}],"analisis_dinamico":"..."}'></textarea>
+        <div class="text-xs text-gray-500 mb-1">Pruebas Especiales</div>
+        <div class="overflow-x-auto mb-2">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-gray-200 text-xs text-gray-500 uppercase">
+                <th class="text-left py-1 pr-2">Nombre de la Prueba</th>
+                <th class="text-left py-1 pr-2">Resultado</th>
+                <th class="w-8"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let row of pruebasRows; let i = index; trackBy: trackByIndex">
+                <td class="py-1 pr-2">
+                  <input type="text" [(ngModel)]="row.nombre" class="input-field text-xs py-1" placeholder="Trendelenburg" [disabled]="evaluacionVer" [attr.name]="'prueba-nombre-' + i" />
+                </td>
+                <td class="py-1 pr-2">
+                  <input type="text" [(ngModel)]="row.resultado" class="input-field text-xs py-1" placeholder="Positivo bilateral" [disabled]="evaluacionVer" [attr.name]="'prueba-resultado-' + i" />
+                </td>
+                <td class="py-1 text-center">
+                  <button *ngIf="!evaluacionVer" type="button" (click)="eliminarFilaPrueba(i)" class="text-red-400 hover:text-red-600 text-sm leading-none">&times;</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <button *ngIf="!evaluacionVer" type="button" (click)="agregarFilaPrueba()" class="text-xs text-teal-600 hover:text-teal-700 mt-1">+ Agregar prueba</button>
+        <div class="mt-2">
+          <label class="block text-xs text-gray-500 mb-1">Análisis Dinámico</label>
+          <textarea [(ngModel)]="analisisDinamico" rows="2" class="input-field text-xs" placeholder="Sentadilla, Apoyo Unipodal, Salto, FMS..." [disabled]="evaluacionVer"></textarea>
+        </div>
       </div>
       <div class="md:col-span-2">
         <label class="block text-sm font-medium text-gray-600 mb-1">Sensibilidad / Palpación</label>
@@ -588,7 +641,35 @@ type Tab = 'general' | 'evaluaciones' | 'tratamientos' | 'sesiones';
       <div class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">B. Re-evaluación Física</div>
       <div class="mb-4">
         <label class="block text-sm font-medium text-gray-600 mb-1">Evaluación de Movilidad Actualizada</label>
-        <textarea [(ngModel)]="evalForm.evaluacionMovilidadActualizada" rows="2" class="input-field font-mono text-xs" placeholder='[{"nombre":"Flex posterior","rango":"40°","evolucion":"Mejorado"}]'></textarea>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-gray-200 text-xs text-gray-500 uppercase">
+                <th class="text-left py-1 pr-2">Nombre del Movimiento</th>
+                <th class="text-left py-1 pr-2">Rango</th>
+                <th class="text-left py-1 pr-2">Evolución</th>
+                <th class="w-8"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let row of romActualizadaRows; let i = index; trackBy: trackByIndex">
+                <td class="py-1 pr-2">
+                  <input type="text" [(ngModel)]="row.nombre" class="input-field text-xs py-1" placeholder="Flex posterior" [disabled]="evaluacionVer" [attr.name]="'rom-act-nombre-' + i" />
+                </td>
+                <td class="py-1 pr-2">
+                  <input type="text" [(ngModel)]="row.rango" class="input-field text-xs py-1" placeholder="40°" [disabled]="evaluacionVer" [attr.name]="'rom-act-rango-' + i" />
+                </td>
+                <td class="py-1 pr-2">
+                  <input type="text" [(ngModel)]="row.evolucion" class="input-field text-xs py-1" placeholder="Mejorado" [disabled]="evaluacionVer" [attr.name]="'rom-act-evol-' + i" />
+                </td>
+                <td class="py-1 text-center">
+                  <button *ngIf="!evaluacionVer" type="button" (click)="eliminarFilaROMActualizada(i)" class="text-red-400 hover:text-red-600 text-sm leading-none">&times;</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <button *ngIf="!evaluacionVer" type="button" (click)="agregarFilaROMActualizada()" class="text-xs text-teal-600 hover:text-teal-700 mt-1">+ Agregar fila</button>
       </div>
 
       <div class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">C. Re-ajuste de Metas</div>
@@ -820,6 +901,12 @@ export class HistoriaClinicaDetalleComponent implements OnInit, OnDestroy {
     tipo: 'VALORACION',
   };
 
+  // Tablas dinámicas para Evaluación de Movilidad y Funcional
+  romRows: { nombre: string; rango: string }[] = [];
+  pruebasRows: { nombre: string; resultado: string }[] = [];
+  analisisDinamico = '';
+  romActualizadaRows: { nombre: string; rango: string; evolucion: string }[] = [];
+
   // Tratamientos
   tratamientos: Tratamiento[] = [];
   showModalTratamiento = false;
@@ -1041,6 +1128,60 @@ export class HistoriaClinicaDetalleComponent implements OnInit, OnDestroy {
       fecha: new Date().toISOString().substring(0, 10),
       tipo,
     };
+    this.romRows = [];
+    this.pruebasRows = [];
+    this.analisisDinamico = '';
+    this.romActualizadaRows = [];
+  }
+
+  // ==================== TABLAS DINÁMICAS ====================
+
+  trackByIndex(index: number): number { return index; }
+
+  agregarFilaROM(): void { this.romRows.push({ nombre: '', rango: '' }); }
+  eliminarFilaROM(i: number): void { this.romRows.splice(i, 1); }
+
+  agregarFilaPrueba(): void { this.pruebasRows.push({ nombre: '', resultado: '' }); }
+  eliminarFilaPrueba(i: number): void { this.pruebasRows.splice(i, 1); }
+
+  agregarFilaROMActualizada(): void { this.romActualizadaRows.push({ nombre: '', rango: '', evolucion: '' }); }
+  eliminarFilaROMActualizada(i: number): void { this.romActualizadaRows.splice(i, 1); }
+
+  private serializarROM(): void {
+    this.evalForm.evaluacionMovilidad = this.romRows.length > 0 ? JSON.stringify(this.romRows) : undefined;
+  }
+
+  private deserializarROM(): void {
+    try { this.romRows = JSON.parse(this.evalForm.evaluacionMovilidad || '[]'); }
+    catch { this.romRows = []; }
+  }
+
+  private serializarFuncional(): void {
+    const data: Record<string, unknown> = { pruebas: this.pruebasRows };
+    if (this.analisisDinamico) data['analisisDinamico'] = this.analisisDinamico;
+    this.evalForm.evaluacionFuncional = this.pruebasRows.length > 0 || this.analisisDinamico
+      ? JSON.stringify(data) : undefined;
+  }
+
+  private deserializarFuncional(): void {
+    try {
+      const parsed = JSON.parse(this.evalForm.evaluacionFuncional || '{}');
+      this.pruebasRows = Array.isArray(parsed.pruebas) ? parsed.pruebas : [];
+      this.analisisDinamico = parsed.analisisDinamico || '';
+    } catch {
+      this.pruebasRows = [];
+      this.analisisDinamico = '';
+    }
+  }
+
+  private serializarROMActualizada(): void {
+    this.evalForm.evaluacionMovilidadActualizada = this.romActualizadaRows.length > 0
+      ? JSON.stringify(this.romActualizadaRows) : undefined;
+  }
+
+  private deserializarROMActualizada(): void {
+    try { this.romActualizadaRows = JSON.parse(this.evalForm.evaluacionMovilidadActualizada || '[]'); }
+    catch { this.romActualizadaRows = []; }
   }
 
   abrirModalEvaluacion(tipo: string): void {
@@ -1056,6 +1197,9 @@ export class HistoriaClinicaDetalleComponent implements OnInit, OnDestroy {
     this.evaluacionVer = true;
     this.evalEditId = e.id;
     this.evalForm = { ...e, idHistoriaClinica: e.idHistoriaClinica, idDoctor: e.idDoctor } as EvaluacionRequest;
+    this.deserializarROM();
+    this.deserializarFuncional();
+    this.deserializarROMActualizada();
     this.showModalEvaluacion = true;
   }
 
@@ -1064,6 +1208,9 @@ export class HistoriaClinicaDetalleComponent implements OnInit, OnDestroy {
     this.evaluacionVer = false;
     this.evalEditId = e.id;
     this.evalForm = { ...e, idHistoriaClinica: e.idHistoriaClinica, idDoctor: e.idDoctor } as EvaluacionRequest;
+    this.deserializarROM();
+    this.deserializarFuncional();
+    this.deserializarROMActualizada();
     this.showModalEvaluacion = true;
   }
 
@@ -1073,6 +1220,9 @@ export class HistoriaClinicaDetalleComponent implements OnInit, OnDestroy {
 
   guardarEvaluacion(): void {
     if (!this.hc) return;
+    this.serializarROM();
+    this.serializarFuncional();
+    this.serializarROMActualizada();
     this.guardando = true;
     const obs = this.evalEditando
       ? this.hcService.actualizarEvaluacion(this.evalEditId!, this.evalForm)

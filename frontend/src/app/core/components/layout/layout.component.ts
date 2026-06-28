@@ -22,7 +22,7 @@ interface MenuItem {
         style="background: linear-gradient(180deg, #0d9488 0%, #115e59 30%, #134e4a 70%, #0f172a 100%);">
         <div class="p-5 border-b border-white/10">
           <div class="flex items-center gap-3">
-            <img src="assets/images/logo.png" alt="Kinetic Rehab" class="w-9 h-9 rounded-xl" />
+            <img src="assets/images/ologo.png" alt="Kinetic Rehab" class="w-9 h-9 rounded-xl" />
             <div>
               <h1 class="text-base font-bold font-heading text-white">Kinetic Rehab</h1>
               <p class="text-white/50 text-[10px] leading-tight">Centro de Rehabilitaci&oacute;n</p>
