@@ -105,6 +105,8 @@ services:
       ADMIN_NAME: ${ADMIN_NAME}
       ADMIN_LASTNAME: ${ADMIN_LASTNAME}
       ADMIN_PHONE: ${ADMIN_PHONE}
+    ports:
+      - "8081:8080"
 
     networks:
       - kinetic_net_prod
