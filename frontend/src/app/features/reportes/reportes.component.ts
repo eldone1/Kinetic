@@ -23,66 +23,68 @@ interface Tab {
   standalone: true,
   imports: [CommonModule, FormsModule],
   template: `
-    <div class="p-6 animate-fade-in">
-      <div class="flex items-center justify-between mb-6">
+    <div class="p-4 sm:p-6 animate-fade-in">
+      <div class="flex items-center justify-between mb-4 sm:mb-6">
         <div>
-          <h1 class="text-2xl font-bold text-gray-800 font-heading">Reportes</h1>
-          <p class="text-sm text-gray-500 mt-1">Visualiza y exporta reportes del negocio</p>
+          <h1 class="text-xl sm:text-2xl font-bold text-gray-800 font-heading">Reportes</h1>
+          <p class="text-xs sm:text-sm text-gray-500 mt-0.5 sm:mt-1">Visualiza y exporta reportes del negocio</p>
         </div>
       </div>
 
       <!-- Filtros -->
-      <div class="glass-card-strong rounded-2xl p-5 mb-6">
-        <div class="flex flex-wrap items-end gap-4">
-          <div>
+      <div class="glass-card-strong rounded-2xl p-4 sm:p-5 mb-4 sm:mb-6">
+        <div class="flex flex-wrap items-end gap-3 sm:gap-4">
+          <div class="flex-1 min-w-[120px] sm:min-w-0 sm:w-auto">
             <label class="block text-xs font-medium text-gray-500 mb-1.5">Fecha Inicio</label>
             <input type="date" [(ngModel)]="fechaInicio" (ngModelChange)="cargarReporte()"
-              class="input-field rounded-xl px-3 py-2 text-sm border border-gray-200 focus:ring-2 focus:ring-primary-500 focus:border-transparent w-44">
+              class="input-field text-sm w-full sm:w-36 lg:w-44">
           </div>
-          <div>
+          <div class="flex-1 min-w-[120px] sm:min-w-0 sm:w-auto">
             <label class="block text-xs font-medium text-gray-500 mb-1.5">Fecha Fin</label>
             <input type="date" [(ngModel)]="fechaFin" (ngModelChange)="cargarReporte()"
-              class="input-field rounded-xl px-3 py-2 text-sm border border-gray-200 focus:ring-2 focus:ring-primary-500 focus:border-transparent w-44">
+              class="input-field text-sm w-full sm:w-36 lg:w-44">
           </div>
-          <div>
+          <div class="flex-1 min-w-[120px] sm:min-w-0 sm:w-auto sm:hidden lg:block">
             <label class="block text-xs font-medium text-gray-500 mb-1.5">Doctor (opcional)</label>
             <select [(ngModel)]="idDoctor" (ngModelChange)="cargarReporte()"
-              class="input-field rounded-xl px-3 py-2 text-sm border border-gray-200 focus:ring-2 focus:ring-primary-500 focus:border-transparent w-44">
+              class="input-field text-sm w-full sm:w-36 lg:w-44">
               <option [ngValue]="null">Todos los doctores</option>
               <option *ngFor="let d of doctores" [ngValue]="d.id">{{ d.nombres }} {{ d.apellidos }}</option>
             </select>
           </div>
-          <button (click)="limpiarFiltros()"
-            class="btn-ghost px-4 py-2.5 text-sm font-medium rounded-xl border border-gray-200 hover:bg-gray-100">
-            Limpiar
-          </button>
-          <button (click)="setPeriodo('hoy')"
-            class="btn-ghost px-3 py-2 text-xs rounded-lg">Hoy</button>
-          <button (click)="setPeriodo('semana')"
-            class="btn-ghost px-3 py-2 text-xs rounded-lg">Esta Semana</button>
-          <button (click)="setPeriodo('mes')"
-            class="btn-ghost px-3 py-2 text-xs rounded-lg">Este Mes</button>
+          <div class="flex gap-2 sm:gap-3 w-full sm:w-auto">
+            <button (click)="setPeriodo('hoy')"
+              class="btn-ghost px-2.5 sm:px-3 py-2 text-xs rounded-lg">Hoy</button>
+            <button (click)="setPeriodo('semana')"
+              class="btn-ghost px-2.5 sm:px-3 py-2 text-xs rounded-lg">Semana</button>
+            <button (click)="setPeriodo('mes')"
+              class="btn-ghost px-2.5 sm:px-3 py-2 text-xs rounded-lg">Mes</button>
+            <button (click)="limpiarFiltros()"
+              class="btn-ghost px-3 py-2 text-xs rounded-lg border border-gray-200 hover:bg-gray-100">
+              Limpiar
+            </button>
+          </div>
         </div>
       </div>
 
       <!-- Tabs -->
-      <div class="flex gap-1 mb-6 flex-wrap">
+      <div class="flex gap-1 mb-4 sm:mb-6 overflow-x-auto pb-1 scrollbar-thin -mx-1 px-1">
         <button *ngFor="let tab of tabs"
           (click)="onTabChange(tab.id)"
-          class="px-4 py-2.5 text-sm font-medium rounded-xl transition-all duration-200"
+          class="whitespace-nowrap px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-medium rounded-xl transition-all duration-200 shrink-0"
           [class.bg-primary-600]="activeTab === tab.id"
           [class.text-white]="activeTab === tab.id"
           [class.shadow-sm]="activeTab === tab.id"
           [class.text-gray-600]="activeTab !== tab.id"
           [class.hover:bg-gray-100]="activeTab !== tab.id"
           [class.bg-white]="activeTab !== tab.id">
-          <span class="mr-1.5">{{ tab.icon }}</span>
+          <span class="mr-1 sm:mr-1.5">{{ tab.icon }}</span>
           {{ tab.label }}
         </button>
       </div>
 
       <!-- Contenido -->
-      <div class="glass-card-strong rounded-2xl p-6">
+      <div class="glass-card-strong rounded-2xl p-4 sm:p-6">
         <ng-container [ngSwitch]="activeTab">
 
           <!-- VENTAS PERIODO -->

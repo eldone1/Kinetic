@@ -14,21 +14,21 @@ const DIAS_ORDEN: Record<string, string> = {
   standalone: true,
   imports: [CommonModule, RouterLink],
   template: `
-    <div class="p-6 animate-fade-in max-w-5xl mx-auto">
-      <div class="glass-card-strong rounded-2xl overflow-hidden mb-6">
-        <div class="relative h-32 bg-gradient-to-r from-teal-600 to-teal-400">
-          <div class="absolute -bottom-12 left-8">
-            <div class="w-24 h-24 rounded-2xl bg-gradient-to-br from-teal-400 to-teal-600 flex items-center justify-center text-white text-3xl font-bold shadow-lg border-4 border-white">
+    <div class="p-4 sm:p-6 animate-fade-in max-w-5xl mx-auto">
+      <div class="glass-card-strong rounded-2xl overflow-hidden mb-4 sm:mb-6">
+        <div class="relative h-24 sm:h-32 bg-gradient-to-r from-teal-600 to-teal-400">
+          <div class="absolute -bottom-10 sm:-bottom-12 left-4 sm:left-8">
+            <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-gradient-to-br from-teal-400 to-teal-600 flex items-center justify-center text-white text-2xl sm:text-3xl font-bold shadow-lg border-4 border-white">
               {{ iniciales }}
             </div>
           </div>
         </div>
-        <div class="pt-16 pb-6 px-8">
-          <div class="flex flex-wrap items-start justify-between gap-4">
+        <div class="pt-14 sm:pt-16 pb-4 sm:pb-6 px-4 sm:px-8">
+          <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-3 sm:gap-4">
             <div>
-              <h2 class="text-2xl font-bold text-gray-800 font-heading">{{ perfil?.nombres }} {{ perfil?.apellidos }}</h2>
-              <p class="text-teal-600 font-medium text-sm mt-0.5">{{ perfil?.especialidad || 'Fisioterapia' }}</p>
-              <div class="flex flex-wrap gap-4 mt-3 text-sm text-gray-500">
+              <h2 class="text-xl sm:text-2xl font-bold text-gray-800 font-heading">{{ perfil?.nombres }} {{ perfil?.apellidos }}</h2>
+              <p class="text-teal-600 font-medium text-xs sm:text-sm mt-0.5">{{ perfil?.especialidad || 'Fisioterapia' }}</p>
+              <div class="flex flex-wrap gap-3 sm:gap-4 mt-2 sm:mt-3 text-xs sm:text-sm text-gray-500">
                 <span *ngIf="perfil?.cmp">CMP: <strong>{{ perfil?.cmp }}</strong></span>
                 <span *ngIf="perfil?.dni">DNI: <strong>{{ perfil?.dni }}</strong></span>
                 <span *ngIf="perfil?.telefono">Tel: <strong>{{ perfil?.telefono }}</strong></span>
@@ -36,10 +36,10 @@ const DIAS_ORDEN: Record<string, string> = {
               </div>
             </div>
             <div class="flex gap-2">
-              <a routerLink="/agenda" class="btn-primary text-sm flex items-center gap-1.5">
+              <a routerLink="/agenda" class="btn-primary text-xs sm:text-sm flex items-center gap-1.5">
                 Ir a mi Agenda
               </a>
-              <a routerLink="/pacientes" class="btn-secondary text-sm flex items-center gap-1.5">
+              <a routerLink="/pacientes" class="btn-secondary text-xs sm:text-sm flex items-center gap-1.5">
                 Ver Pacientes
               </a>
             </div>
@@ -47,18 +47,18 @@ const DIAS_ORDEN: Record<string, string> = {
         </div>
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
         <div class="lg:col-span-2">
-          <div class="glass-card-strong rounded-2xl p-6">
-            <h3 class="text-lg font-bold text-gray-800 font-heading mb-4">Horarios de Atención</h3>
-            <div *ngIf="horariosAgrupados.length > 0; else sinHorarios" class="space-y-3">
+          <div class="glass-card-strong rounded-2xl p-4 sm:p-6">
+            <h3 class="text-base sm:text-lg font-bold text-gray-800 font-heading mb-3 sm:mb-4">Horarios de Atención</h3>
+            <div *ngIf="horariosAgrupados.length > 0; else sinHorarios" class="space-y-2 sm:space-y-3">
               <div *ngFor="let dia of horariosAgrupados"
-                class="flex items-center justify-between p-4 rounded-xl border border-gray-100 hover:bg-gray-50/50 transition-colors">
+                class="flex flex-col sm:flex-row sm:items-center justify-between p-3 sm:p-4 rounded-xl border border-gray-100 hover:bg-gray-50/50 transition-colors gap-1 sm:gap-0">
                 <div class="flex items-center gap-3">
-                  <div class="w-2 h-2 rounded-full bg-teal-500"></div>
-                  <span class="font-medium text-gray-700 w-24">{{ dia.label }}</span>
+                  <div class="w-2 h-2 rounded-full bg-teal-500 shrink-0"></div>
+                  <span class="font-medium text-gray-700 text-sm sm:text-base">{{ dia.label }}</span>
                 </div>
-                <div class="text-sm text-gray-600 font-mono">
+                <div class="text-xs sm:text-sm text-gray-600 font-mono pl-5 sm:pl-0">
                   <ng-container *ngFor="let h of dia.horarios; let last = last">
                     {{ h.horaInicio | slice:0:5 }} - {{ h.horaFin | slice:0:5 }}<ng-container *ngIf="!last">, </ng-container>
                   </ng-container>
@@ -66,17 +66,17 @@ const DIAS_ORDEN: Record<string, string> = {
               </div>
             </div>
             <ng-template #sinHorarios>
-              <div class="text-center py-8">
-                <p class="text-gray-400">No tiene horarios configurados</p>
-                <p class="text-gray-300 text-sm mt-1">Consulte con el administrador</p>
+              <div class="text-center py-6 sm:py-8">
+                <p class="text-gray-400 text-sm">No tiene horarios configurados</p>
+                <p class="text-gray-300 text-xs sm:text-sm mt-1">Consulte con el administrador</p>
               </div>
             </ng-template>
           </div>
         </div>
 
-        <div class="space-y-4">
-          <div class="glass-card-strong rounded-2xl p-6">
-            <h3 class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-3">Acceso Rápido</h3>
+        <div class="space-y-3 sm:space-y-4">
+          <div class="glass-card-strong rounded-2xl p-4 sm:p-6">
+            <h3 class="text-xs sm:text-sm font-bold text-gray-500 uppercase tracking-wider mb-3">Acceso Rápido</h3>
             <div class="space-y-2">
               <a routerLink="/agenda"
                 class="flex items-center gap-3 px-4 py-3 rounded-xl bg-gray-50 hover:bg-teal-50 text-gray-700 hover:text-teal-700 transition-all text-sm font-medium">

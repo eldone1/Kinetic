@@ -30,7 +30,8 @@ import { PacienteService } from '../../../core/services/paciente.service';
         </div>
       </div>
 
-      <div class="glass-card-strong rounded-2xl overflow-hidden" *ngIf="pacientes.length > 0; else empty">
+      <!-- Desktop Table -->
+      <div class="glass-card-strong rounded-2xl overflow-hidden hidden md:block" *ngIf="pacientes.length > 0; else empty">
         <div class="overflow-x-auto">
           <table class="w-full">
             <thead>
@@ -43,7 +44,7 @@ import { PacienteService } from '../../../core/services/paciente.service';
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-50">
-              <tr *ngFor="let p of pacientes" class="hover:bg-gray-50/50 transition-colors">
+              <tr *ngFor="let p of pacientes; let i = index" class="hover:bg-gray-50/50 transition-colors stagger-item">
                 <td class="px-5 py-4">
                   <div class="flex items-center gap-2">
                     <span class="text-xs font-medium text-gray-400 uppercase bg-gray-50 px-1.5 py-0.5 rounded">{{ p.tipoDocumento }}</span>
@@ -78,10 +79,43 @@ import { PacienteService } from '../../../core/services/paciente.service';
         </div>
       </div>
 
+      <!-- Mobile Cards -->
+      <div class="md:hidden space-y-3" *ngIf="pacientes.length > 0; else empty">
+        <div *ngFor="let p of pacientes; let i = index" class="table-card card-hover stagger-item">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center text-white text-sm font-bold shadow-sm shrink-0">
+              {{ p.nombres.charAt(0) }}{{ p.apellidos.charAt(0) }}
+            </div>
+            <div class="min-w-0">
+              <p class="text-sm font-semibold text-gray-900 truncate">{{ p.nombres }} {{ p.apellidos }}</p>
+              <p class="text-xs text-gray-400">{{ p.tipoDocumento }}: {{ p.numeroDocumento }}</p>
+            </div>
+          </div>
+          <div class="table-card-row">
+            <span class="table-card-label">Teléfono</span>
+            <span class="table-card-value">{{ p.telefono || '-' }}</span>
+          </div>
+          <div class="table-card-row">
+            <span class="table-card-label">Correo</span>
+            <span class="table-card-value truncate max-w-[180px]">{{ p.correo || '-' }}</span>
+          </div>
+          <div class="flex gap-2 pt-2 border-t border-gray-50">
+            <button [routerLink]="['/pacientes', p.id, 'editar']"
+              class="btn-ghost flex-1 text-center text-xs">
+              Editar
+            </button>
+            <button (click)="eliminar(p)"
+              class="btn-danger flex-1 text-center">
+              Eliminar
+            </button>
+          </div>
+        </div>
+      </div>
+
       <ng-template #empty>
-        <div class="glass-card-strong rounded-2xl p-16 text-center animate-fade-in">
-          <div class="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <span class="text-3xl text-gray-300">&#128100;</span>
+        <div class="glass-card-strong rounded-2xl p-12 sm:p-16 text-center animate-fade-in">
+          <div class="w-14 h-14 sm:w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <span class="text-2xl sm:text-3xl text-gray-300">&#128100;</span>
           </div>
           <p class="text-gray-400 text-lg font-medium">No hay pacientes registrados</p>
           <p class="text-gray-300 text-sm mt-1">Comienza agregando un nuevo paciente</p>
